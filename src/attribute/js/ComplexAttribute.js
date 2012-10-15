@@ -87,7 +87,7 @@
                     valFn = this[valFn];
                 }
                 if (valFn) {
-                    val = valFn.call(this);
+                    val = valFn.call(this, attr);
                 }
             }
 
@@ -116,3 +116,6 @@
     };
 
     Y.mix(Y.Attribute, Y.Attribute.Complex, true, null, 1);
+
+    // Consistency with the rest of the Attribute addons for now. 
+    Y.AttributeComplex = Y.Attribute.Complex;

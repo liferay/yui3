@@ -40,6 +40,36 @@ Y.mix(Y.DOM, {
         return frag;
     },
 
+    _children: function(node, tag) {
+            var i = 0,
+            children = node.children,
+            childNodes,
+            hasComments,
+            child;
+
+        if (children && children.tags) { // use tags filter when possible
+            if (tag) {
+                children = node.children.tags(tag);
+            } else { // IE leaks comments into children
+                hasComments = children.tags('!').length;
+            }
+        }
+        
+        if (!children || (!children.tags && tag) || hasComments) {
+            childNodes = children || node.childNodes;
+            children = [];
+            while ((child = childNodes[i++])) {
+                if (child.nodeType === 1) {
+                    if (!tag || tag === child.tagName) {
+                        children.push(child);
+                    }
+                }
+            }
+        }
+
+        return children || [];
+    },
+
     /**
      * Creates a new dom node using the provided markup string. 
      * @method create
@@ -192,6 +222,42 @@ Y.mix(Y.DOM, {
         }
 
         return ret;
+    },
+
+    wrap: function(node, html) {
+        var parent = (html && html.nodeType) ? html : Y.DOM.create(html),
+            nodes = parent.getElementsByTagName('*');
+
+        if (nodes.length) {
+            parent = nodes[nodes.length - 1];
+        }
+
+        if (node.parentNode) { 
+            node.parentNode.replaceChild(parent, node);
+        }
+        parent.appendChild(node);
+    },
+
+    unwrap: function(node) {
+        var parent = node.parentNode,
+            lastChild = parent.lastChild,
+            next = node,
+            grandparent;
+
+        if (parent) {
+            grandparent = parent.parentNode;
+            if (grandparent) {
+                node = parent.firstChild;
+                while (node !== lastChild) {
+                    next = node.nextSibling;
+                    grandparent.insertBefore(node, parent);
+                    node = next;
+                }
+                grandparent.replaceChild(lastChild, parent);
+            } else {
+                parent.removeChild(node);
+            }
+        }
     }
 });
 
@@ -224,7 +290,7 @@ if (!testFeature('innerhtml', 'table')) {
         // IE adds TBODY when creating TABLE elements (which may share this impl)
     creators.tbody = function(html, doc) {
         var frag = Y_DOM.create(TABLE_OPEN + html + TABLE_CLOSE, doc),
-            tb = frag.children.tags('tbody')[0];
+            tb = Y.DOM._children(frag, 'tbody')[0];
 
         if (frag.children.length > 1 && tb && !re_tbody.test(html)) {
             tb.parentNode.removeChild(tb); // strip extraneous tbody

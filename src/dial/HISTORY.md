@@ -1,6 +1,21 @@
 Dial Change History
 ===================
 
+3.5.0
+-----
+
+  * Changed method name from _recalculateDialCenter to _calculateDialCenter
+   
+  * Changed property name from _centerXOnPage to _dialCenterX
+    and from _centerYOnPage to _dialCenterY
+    
+  * Known issue: On IE7, when browser is zoomed, clicking on dial gives the
+    wrong value.
+    
+  * Multiple instances of Dial all had the same ARIA label. 
+    They are now unique. Screenreaders now read both the label and the value.
+    [Ticket #2531505]   
+
 3.4.1
 -----
 

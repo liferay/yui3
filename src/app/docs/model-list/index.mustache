@@ -19,27 +19,48 @@ A Model instance may exist in zero or more lists. All events fired by a model au
 <h3>Instantiating a Model List</h3>
 
 <p>
-Most of the classes in the App Framework are meant to be extended, but if your needs are simple and you don't plan to implement a custom sort comparator or sync layer for your lists, you can probably just instantiate `Y.ModelList` directly.
+Most of the classes in the App Framework are meant to be extended, but if your needs are simple and you don't plan to implement a custom sort comparator or sync layer for your lists, you can just instantiate `Y.ModelList` directly.
 </p>
 
 ```
-// Instantiate a new list that will contain instances of the Y.PieModel model
-// class.
+// Instantiate a new list and add some models to it.
+var list = new Y.ModelList();
+
+list.add([
+  {name: 'Model One', arbitraryData: 'foo'},
+  {name: 'Model Two', arbitraryData: 'bar'}
+]);
+```
+
+<p>
+If you already have existing `Y.Model` instances, you can add those instead of
+passing in new objects.
+</p>
+
+```
+var modelOne = new Y.Model({name: 'Model One', arbitraryData: 'foo'}),
+    modelTwo = new Y.Model({name: 'Model Two', arbitraryData: 'bar'});
+
+list.add([modelOne, modelTwo]);
+```
+
+<p>
+ModelList's `model` config parameter allows you to specify the default Model class the list should use to create a new model when you pass a plain object to `add()` or `create()`. For example, if you set `model` to `Y.PieModel` (which you can read more about in the <a href="../model/index.html">Model User Guide</a>), then the list will create new instances of that class instead of `Y.Model`.
+</p>
+
+```
 var list = new Y.ModelList({model: Y.PieModel});
+
+list.add([
+  {type: 'Pumpkin', slices: 6},
+  {type: 'Pecan', slices: 9}
+]);
 ```
-
-<p>
-The `model` config parameter configures the list to contain models that are instances of the `Y.PieModel` class (which you can read more about in the <a href="../model/index.html">Model User Guide</a>).
-</p>
-
-<p>
-You're not strictly required to provide a `model` class, but doing so will allow you to pass plain hashes of attributes to the list's `add()` and `create()` methods and have them automatically turned into model instances. If you don't specify a `model` class, you'll need to pass existing model instances to these methods.
-</p>
 
 <h3>Extending `Y.ModelList`</h3>
 
 <p>
-Extending the `Y.ModelList` class allows you to create a custom class in which you may provide a custom sort comparator function, sync layer, or other logic specific to your lists. This is optional, but is a great way to add custom functionality to a model list in an efficient and maintainable way.
+Extending the `Y.ModelList` class allows you to create a custom class in which you may provide a custom sort comparator function, sync layer, or other logic specific to your lists. This is optional, but is a great way to add custom functionality to a model list in an efficient and maintainable way as your application's needs become more complex.
 </p>
 
 <p>
@@ -110,7 +131,7 @@ pies.create(new Y.PieModel({type: 'pumpkin'}));
 ```
 
 <p>
-If your list's `model` property is set to a model class, then you can just pass attribute hashes to the `add()` and `create()` methods, and the list will automatically create new model instances for you.
+You may also pass plain object hashes to the `add()` and `create()` methods, and the list will automatically create new model instances for you using the Model class specified by the list's `model` property (which defaults to `Y.Model`).
 </p>
 
 ```
@@ -125,6 +146,16 @@ pies.add([
 
 // Save a model, then add it to the list.
 pies.create({type: 'pumpkin'});
+```
+
+<p>
+You can even pass another ModelList instance to `add()` to add all the models from that list to this one as well.
+</p>
+
+```
+// Assuming `cheesecakes` is another ModelList instance, we can add all its
+// models to the `pies` list like this.
+pies.add(cheesecakes);
 ```
 
 <p>
@@ -150,6 +181,10 @@ pies.reset([
   {type: 'banana cream'}
 ]);
 ```
+
+<p>
+Just like with `add()`, you can pass another ModelList instance to `reset()` to add all the models from that list to the receiving list as well.
+</p>
 
 <p>
 You can also call `reset()` with no arguments to quickly empty the list.
@@ -184,6 +219,32 @@ pies.item(0);
 pies.indexOf(pies.getById('1234'));
 ```
 
+<h4>Filtering Models</h4>
+
+<p>
+The `filter()` method allows you to specify a custom callback function to select arbitrary models from the list based on your own criteria. It returns an array of models for which the callback function returns a truthy value.
+</p>
+
+```
+var applePies = pies.filter(function (pie) {
+  return pie.get('type') === 'apple';
+});
+
+// applePies is now an array of only apple pies.
+```
+
+<p>
+Pass `{asList: true}` as the first argument to `filter()` to get back a new ModelList containing the filtered models instead of a plain array.
+</p>
+
+```
+var applePiesList = pies.filter({asList: true}, function (pie) {
+  return pie.get('type') === 'apple';
+});
+
+// applePiesList is now a ModelList containing only apple pies.
+```
+
 <h4>Removing Models</h4>
 
 <p>
@@ -203,6 +264,10 @@ pies.remove([
 
 <p>
 This will only remove the specified model instances from the list; it won't actually call the models' <a href="{{apiDocs}}/classes/Model.html#method_destroy">`destroy()`</a> methods or delete them via the models' sync layer. Calling a model's `destroy()` method will automatically remove it from any lists it's in, so that would be a better option if you want to both remove and destroy or delete a model.
+</p>
+
+<p>
+You can pass another ModelList instance to `remove()` to remove all the models that exist in that list from this list (note that you may get `error` events if some of the models in the other list don't exist in the list you're trying to remove them from).
 </p>
 
 <h3>List Attributes</h3>
@@ -239,6 +304,7 @@ Model List instances provide the following events:
     <tr>
       <th>Event</th>
       <th>When</th>
+      <th>Preventable?</th>
       <th>Payload</th>
     </tr>
   </thead>
@@ -246,6 +312,7 @@ Model List instances provide the following events:
     <tr>
       <td>`add`</td>
       <td>A model is added to the list.</td>
+      <td style="text-align:center;">Y</td>
       <td>
         <dl>
           <dt>`model` (<em>Y.Model</em>)</dt>
@@ -262,11 +329,26 @@ Model List instances provide the following events:
     </tr>
 
     <tr>
-      <td>`error`</td>
-      <td>An error occurs, such as when an attempt is made to add a duplicate model to the list, or when a sync layer response can't be parsed.</td>
+      <td>`create`</td>
+      <td>A model is created or updated via the `create()` method, but before that model is saved or added to the list, and before the `add` event fires.</td>
+      <td style="text-align:center;">&nbsp;</td>
       <td>
         <dl>
-          <dt>`error` (<em>Any</em>)</dt>
+          <dt>`model` (<em>Y.Model</em>)</dt>
+          <dd>
+            The model instance being created or updated.
+          </dd>
+        </dl>
+      </td>
+    </tr>
+
+    <tr>
+      <td>`error`</td>
+      <td>An error occurs, such as when an attempt is made to add a duplicate model to the list, or when a sync layer response can't be parsed.</td>
+      <td style="text-align:center;">&nbsp;</td>
+      <td>
+        <dl>
+          <dt>`error` (<em>Mixed</em>)</dt>
           <dd>
             Error message, object, or exception generated by the error. Calling `toString()` on this should result in a meaningful error message.
           </dd>
@@ -298,8 +380,28 @@ Model List instances provide the following events:
     </tr>
 
     <tr>
+      <td>`load`</td>
+      <td>Models are loaded into the list from a sync layer.</td>
+      <td style="text-align:center;">&nbsp;</td>
+      <td>
+        <dl>
+          <dt>`parsed` (<em>Object</em>)</dt>
+          <dd>
+            The parsed version of the sync layer's response to the load request.
+          </dd>
+
+          <dt>`response` (<em>Mixed</em>)</dt>
+          <dd>
+            The sync layer's raw, unparsed response to the load request.
+          </dd>
+        </dl>
+      </td>
+    </tr>
+
+    <tr>
       <td>`remove`</td>
       <td>A model is removed from the list.</td>
+      <td style="text-align:center;">Y</td>
       <td>
         <dl>
           <dt>`model` (<em>Y.Model</em>)</dt>
@@ -318,6 +420,7 @@ Model List instances provide the following events:
     <tr>
       <td>`reset`</td>
       <td>The list is completely reset or sorted.</td>
+      <td style="text-align:center;">Y</td>
       <td>
         <dl>
           <dt>`models` (<em>Array</em>)</dt>
@@ -336,7 +439,7 @@ Model List instances provide the following events:
 </table>
 
 <p>
-Each of these events is preventable, which means you can subscribe to the "on" phase of an event and call `e.preventDefault()` in your subscriber function to prevent the event from actually occurring. This works because "on" subscribers actually run before an event causes any default logic to run.
+Some of these events are preventable, which means you can subscribe to the "on" phase of an event and call `e.preventDefault()` in your subscriber function to prevent the event from actually occurring. This works because "on" subscribers actually run before an event causes any default logic to run.
 </p>
 
 <p>

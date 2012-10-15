@@ -16,7 +16,10 @@
 <script type="text/javascript" src="../../../build/yui/yui.js"></script>
 
 <script>
+document.createElement('foo'); // enable custom element for IE native querySelector
+
 onload = function() {
+
     var SELECTOR_MODULE = 'selector-css3';
     YUI({filter: 'raw'}).use('node', SELECTOR_MODULE, 'console', 'test', 'dom-deprecated', function(Y) {
         String.prototype.test = function() {
@@ -331,7 +334,7 @@ onload = function() {
                 Assert.areEqual(Y.DOM.byId('test-custom-attr'), $("div[foo]", null, true), "div[foo], null, true");
                 ArrayAssert.itemsAreEqual([Y.DOM.byId('test-custom-attr')], $("[foo]"), "[foo]");
 
-                Assert.areEqual(document.body, $('body, div', null, true), "$('body, div', null, true)");
+                Assert.areEqual(document.body, $('body, span', null, true), "$('body, span', null, true)");
 
                 Assert.areEqual(document.getElementById('foo-bar'),
                     $('[id=foo-bar]', null, true),
@@ -537,8 +540,39 @@ onload = function() {
 
                 Assert.isNotNull(node);
                 Assert.areEqual(node, Y.Selector.query('#1', null, true));
-            }
+            },
 
+            'should omit comments from children': function() {
+                var node = document.getElementById('test-dl');
+                Assert.areEqual(document.getElementById('last-dd'),
+                        Y.Selector.query(':last-child', node, true));
+            },
+
+            'should allow documentFragment root node': function() {
+                var frag = document.createDocumentFragment();
+                frag.appendChild(document.createElement('div'));
+                Assert.areEqual('DIV',
+                        Y.Selector.query('div', frag, true).tagName);
+
+                frag.appendChild(document.createElement('span'));
+                Assert.areEqual('SPAN',
+                        Y.Selector.query('span', frag, true).tagName);
+            },
+
+            'should find custom element by tag': function() {
+                var node = Y.Selector.query('foo', null, true);
+                Assert.areEqual(document.getElementsByTagName('foo')[0], node);
+            },
+
+            'should find custom element by class': function() {
+                var node = Y.Selector.query('.custom-foo', null, true);
+                Assert.areEqual(document.getElementsByTagName('foo')[0], node);
+            },
+
+            'should find custom element by tag and class': function() {
+                var node = Y.Selector.query('foo.custom-foo', null, true);
+                Assert.areEqual(document.getElementsByTagName('foo')[0], node);
+            }
         });
 
         suite.add(selectorQueryAll);
@@ -630,13 +664,15 @@ onload = function() {
         <dt>Window size</dt>
         <dd class="test-dd1">dd1</dd>
         <dt>Document size</dt>
-        <dd class="test-dd2">dd2</dd>
-
+        <dd id="last-dd" class="test-dd2">dd2</dd>
+        <!-- test comment -->
     </dl>
     <div id="test:colon"><h2>test</h2></div>
     <div id="test-custom-attr" foo="bar" foo-bar="bar">custom attribute</div>
     <div id="1"></div>
     <div id="foo:bar"></div>
+
+    <foo class="custom-foo"></foo>
 
 </body>
 </html>

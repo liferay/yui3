@@ -5,7 +5,7 @@
     <title>AutoComplete manual test</title>
     <!-- <link rel="stylesheet" href="../../../../build/cssreset/reset-min.css">
     <link rel="stylesheet" href="../../../../build/cssbase/base-min.css"> -->
-    <link rel="stylesheet" href="../assets/test-console.css">
+    <link rel="stylesheet" href="../../../common/tests/assets/test-console.css">
     <!-- for design iteration -->
     <!-- <link rel="stylesheet" href="../../assets/autocomplete-list-core.css">
     <link rel="stylesheet" href="../../assets/skins/sam/autocomplete-list-skin.css"> -->
@@ -32,6 +32,12 @@
     }
 
     #log { margin-top: 4em; }
+
+    /* Scrollable result list */
+    .yui3-aclist-content {
+        max-height: 300px;
+        overflow-y: auto;
+    }
 
     .flickr {
         height: 32px;
@@ -74,7 +80,6 @@
     }
 
     .twitter .user { margin-right: 6px; }
-
     </style>
 </head>
 <body class="yui3-skin-sam">
@@ -99,6 +104,9 @@
                 <option value="twitter">Remote (Twitter Search)</option>
                 <option value="xhr">Remote (XHR)</option>
             </select>
+
+            <input type="checkbox" id="enable-cache" value="1" checked="checked">
+            <label for="enable-cache">Enable cache</label>
         </div>
     </fieldset>
 
@@ -162,7 +170,10 @@ new Y.Console({
 }).plug(Y.Plugin.ConsoleFilters, {}).render('#log');
 
 // -- AutoComplete setup -------------------------------------------------------
-var autoComplete = new Y.AutoComplete({inputNode: '#ac-input'});
+var autoComplete = new Y.AutoComplete({
+    inputNode     : '#ac-input',
+    scrollIntoView: true
+});
 
 // For easier debugging.
 Y.ac = autoComplete;
@@ -228,6 +239,9 @@ Y.one('#source').on('change', function (e) {
     }
 });
 
+// Handle clicks on options.
+Y.on('click', setCache, '#enable-cache');
+
 // Handle clicks on filters.
 Y.delegate('click', setFilters, '#filters', 'input[type="checkbox"]');
 
@@ -279,6 +293,10 @@ function twitterFormatter(query, results) {
             user  : result.raw.from_user
         });
     });
+}
+
+function setCache(e) {
+    autoComplete.set('enableCache', e.target.get('checked'));
 }
 
 function setDelimiter(e) {

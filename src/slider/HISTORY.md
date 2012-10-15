@@ -1,6 +1,16 @@
 Slider Change History
 =====================
 
+3.5.0
+-----
+
+  * Added ARIA roles and states [#2528788]
+  * Added keyboard support. Arrows, pageUp/Down, home/end [#2528788]
+  * Fixed a bug where set('value', x) could be ignored if the max - min was
+    less than the configured length. [#2531498]
+  * Added click on thumb or clickable rail gives the thumb focus, allowing 
+    keyboard access. [#2531569] 
+
 3.4.1
 -----
 

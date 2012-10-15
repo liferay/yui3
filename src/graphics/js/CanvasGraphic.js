@@ -158,7 +158,10 @@ CanvasGraphic.ATTRS = {
         setter: function(val)
         {
             this._resizeDown = val;
-            this._redraw();
+            if(this._node)
+            {
+                this._redraw();
+            }
             return val;
         }
     },
@@ -343,11 +346,11 @@ Y.extend(CanvasGraphic, Y.BaseGraphic, {
      */
     destroy: function()
     {
-        this._removeAllShapes();
-        this._removeChildren(this._node);
-        if(this._node && this._node.parentNode)
+        this.removeAllShapes();
+        if(this._node)
         {
-            this._node.parentNode.removeChild(this._node);
+            this._removeChildren(this._node);
+            Y.one(this._node).destroy();
         }
     },
 
@@ -405,7 +408,7 @@ Y.extend(CanvasGraphic, Y.BaseGraphic, {
         }
         if(shape && shape instanceof CanvasShape)
         {
-            shape.destroy();
+            shape._destroy();
             delete this._shapes[shape.get("id")];
         }
         if(this.get("autoDraw")) 
@@ -443,7 +446,7 @@ Y.extend(CanvasGraphic, Y.BaseGraphic, {
      */
     _removeChildren: function(node)
     {
-        if(node.hasChildNodes())
+        if(node && node.hasChildNodes())
         {
             var child;
             while(node.firstChild)

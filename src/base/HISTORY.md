@@ -1,6 +1,71 @@
 Base Change History
 ===================
 
+3.5.0
+-----
+
+  * Only invoke Base constructor logic once to 
+    support multi-inheritance scenario in which
+    an extension passed to Base.create inherits from Base
+    itself.
+
+    NOTE: To support multiple inhertiance more deeply, we'd 
+    need to remove the hasOwnProperty restriction around object
+    key iteration.
+
+  * Added Y.BaseCore which is core Base functionality without
+    Custom Events (it uses Y.AttributeCore instead of Y.Attribute).
+
+    Y.BaseCore still maintains the ATTRS handling, init/destroy
+    lifecycle and plugin support, but doesn't fire any custom evnets
+    of it's own (the idea is that it will the base for Node-Plugin 
+    type components, built off of a WidgetCore) 
+
+    Y.Base is now Y.BaseCore + Y.Attribute, and is 100% backwards
+    compatible.
+
+    Summary:
+
+    Y.Attribute     - Common Attribute Functionality (100% backwards compat)
+    Y.Base          - Common Base Functionality (100% backwards compat)
+   
+    Y.AttributeCore - Lightest Attribute support, without CustomEvents
+    Y.BaseCore      - Lightest Base support, without CustomEvents
+
+    --
+
+    Y.AttributeEvents - Augmentable Attribute Events support
+    Y.AttributeExtras - Augmentable 20% usage for Attribute (modifyAttr, removeAttr, reset ...)
+    Y.AttributeComplex - Augmentable support for constructor complex attribute parsing ({"x.y":foo})
+
+    --
+ 
+    Y.Attribute = Y.AttributeCore + Y.AttributeEvents + Y.AttributeExtras
+    Y.Base      = Y.BaseCore + Y.Attribute
+
+    -- 
+
+    Modules:
+    
+    "base-base" : Y.Base
+    "base-core" : Y.BaseCore
+
+    "base-build" : Y.Base.build/create/mix mixin
+
+  * Extended Base.create/mix support for _buildCfg, to Extensions, mainly so that
+    extensions can define a whitelist of statics which need to be copied to the 
+    main class.
+
+    e.g.
+
+    MyExtension._buildCfg = {
+       aggregates:["newPropsToAggregate"...],
+       custom: {
+           newPropsToCustomMix
+       },
+       statics: ["newPropsToCopy"]
+    };
+
 3.4.1
 -----
 

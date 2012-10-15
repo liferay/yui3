@@ -185,6 +185,25 @@ Y.extend(CategoryAxis, Y.AxisType,
     {
         return l/ct;
     },
+
+    /**
+     * Returns a value based of a key value and an index.
+     *
+     * @method getKeyValueAt
+     * @param {String} key value used to look up the correct array
+     * @param {Number} index within the array
+     * @return String 
+     */
+    getKeyValueAt: function(key, index)
+    {
+        var value = NaN,
+            keys = this.get("keys");
+        if(keys[key] && keys[key][index]) 
+        {
+            value = keys[key][index];
+        }
+        return value;
+    },
    
     /**
      * Calculates and returns a value based on the number of labels and the index of
@@ -208,6 +227,35 @@ Y.extend(CategoryAxis, Y.AxisType,
         {
             label = data[l - (i + 1)];
         }   
+        return label;
+    },
+
+    /**
+     * Returns a string corresponding to the first label on an 
+     * axis.
+     *
+     * @method getMinimumValue
+     * @return String
+     */
+    getMinimumValue: function()
+    {
+        var data = this.get("data"),
+            label = data[0];
+        return label;
+    },
+
+    /**
+     * Returns a string corresponding to the last label on an 
+     * axis.
+     *
+     * @method getMaximumValue
+     * @return String
+     */
+    getMaximumValue: function()
+    {
+        var data = this.get("data"),
+            len = data.length - 1,
+            label = data[len];
         return label;
     }
 });

@@ -154,7 +154,10 @@ VMLGraphic.ATTRS = {
         setter: function(val)
         {
             this._resizeDown = val;
-            this._redraw();
+            if(this._node)
+            {
+                this._redraw();
+            }
             return val;
         }
     },
@@ -322,7 +325,7 @@ Y.extend(VMLGraphic, Y.BaseGraphic, {
     destroy: function()
     {
         this.clear();
-        this._node.parentNode.removeChild(this._node);
+        Y.one(this._node).remove(true);
     },
 
     /**
@@ -379,7 +382,8 @@ Y.extend(VMLGraphic, Y.BaseGraphic, {
         }
         if(shape && shape instanceof VMLShape)
         {
-            shape.destroy();
+            shape._destroy();
+            this._shapes[shape.get("id")] = null;
             delete this._shapes[shape.get("id")];
         }
         if(this.get("autoDraw"))
@@ -434,7 +438,7 @@ Y.extend(VMLGraphic, Y.BaseGraphic, {
      * @method clear
      */
     clear: function() {
-        this._removeAllShapes();
+        this.removeAllShapes();
         this._removeChildren(this._node);
     },
 
@@ -609,7 +613,7 @@ Y.extend(VMLGraphic, Y.BaseGraphic, {
         var shapeBox,
             box;
         this._shapes[shape.get("id")] = shape;
-        if(!this.get("resizeDown"))
+        if(!this._resizeDown)
         {
             shapeBox = shape.getBounds();
             box = this._contentBounds;
@@ -635,7 +639,7 @@ Y.extend(VMLGraphic, Y.BaseGraphic, {
      */
     _redraw: function()
     {
-        var box = this.get("resizeDown") ? this._getUpdatedContentBounds() : this._contentBounds;
+        var box = this._resizeDown ? this._getUpdatedContentBounds() : this._contentBounds;
         if(this.get("autoSize"))
         {
             this.setSize(box.right, box.bottom);

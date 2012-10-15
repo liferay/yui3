@@ -17,12 +17,12 @@ Y.StackedColumnSeries = Y.Base.create("stackedColumnSeries", Y.ColumnSeries, [Y.
 	 */
 	drawSeries: function()
 	{
-	    if(this.get("xcoords").length < 1) 
-		{
-			return;
-		}
+        if(this.get("xcoords").length < 1) 
+        {
+            return;
+        }
         var isNumber = Y_Lang.isNumber,
-            style = this.get("styles").marker, 
+            style = Y.clone(this.get("styles").marker), 
             w = style.width,
             h = style.height,
             xcoords = this.get("xcoords"),
@@ -38,11 +38,28 @@ Y.StackedColumnSeries = Y.Base.create("stackedColumnSeries", Y.ColumnSeries, [Y.
             graphOrder = this.get("graphOrder"),
             left,
             marker,
+            fillColors,
+            borderColors,
             lastCollection,
             negativeBaseValues,
             positiveBaseValues,
             useOrigin = order === 0,
-            totalWidth = len * w;
+            totalWidth = len * w,
+            dimensions = {
+                width: [],
+                height: []
+            },
+            xvalues = [],
+            yvalues = [],
+            groupMarkers = this.get("groupMarkers");
+        if(Y_Lang.isArray(style.fill.color))
+        {
+            fillColors = style.fill.color.concat(); 
+        }
+        if(Y_Lang.isArray(style.border.color))
+        {
+            borderColors = style.border.colors.concat();
+        }
         this._createMarkerCache();
         if(totalWidth > this.get("width"))
         {
@@ -123,18 +140,50 @@ Y.StackedColumnSeries = Y.Base.create("stackedColumnSeries", Y.ColumnSeries, [Y.
             if(!isNaN(h) && h > 0)
             {
                 left -= w/2;
-                style.width = w;
-                style.height = h;
-                style.x = left;
-                style.y = top;
-                marker = this.getMarker(style, graphOrder, i);
+                if(groupMarkers)
+                {
+                    dimensions.width[i] = w;
+                    dimensions.height[i] = h;
+                    xvalues.push(left);
+                    yvalues.push(top);
+                }
+                else
+                {
+                    style.width = w;
+                    style.height = h;
+                    style.x = left;
+                    style.y = top;
+                    if(fillColors)
+                    {
+                        style.fill.color = fillColors[i % fillColors.length];
+                    }
+                    if(borderColors)
+                    {
+                        style.border.color = borderColors[i % borderColors.length];
+                    }
+                    marker = this.getMarker(style, graphOrder, i);
+                }
             }
-            else
+            else if(!groupMarkers)
             {
-                this._markers.push(null);
+               this._markers.push(null);
             }
         }
-        this._clearMarkerCache();
+        if(groupMarkers)
+        {
+            this._createGroupMarker({
+                fill: style.fill,
+                border: style.border,
+                dimensions: dimensions,
+                xvalues: xvalues,
+                yvalues: yvalues,
+                shape: style.shape
+            });
+        }
+        else
+        {
+            this._clearMarkerCache();
+        }
     },
 
     /**
@@ -147,21 +196,41 @@ Y.StackedColumnSeries = Y.Base.create("stackedColumnSeries", Y.ColumnSeries, [Y.
      */
     updateMarkerState: function(type, i)
     {
-        if(this._markers[i])
+        if(this._markers && this._markers[i])
         {
             var styles,
                 markerStyles,
                 state = this._getState(type),
                 xcoords = this.get("xcoords"),
                 marker = this._markers[i],
-                offset = 0;        
+                offset = 0,
+                fillColor,
+                borderColor;        
             styles = this.get("styles").marker;
             offset = styles.width * 0.5;
-            markerStyles = state == "off" || !styles[state] ? styles : styles[state]; 
+            markerStyles = state == "off" || !styles[state] ? Y.clone(styles) : Y.clone(styles[state]); 
             markerStyles.height = marker.get("height");
             markerStyles.x = (xcoords[i] - offset);
             markerStyles.y = marker.get("y");
             markerStyles.id = marker.get("id");
+            fillColor = markerStyles.fill.color; 
+            borderColor = markerStyles.border.color;
+            if(Y_Lang.isArray(fillColor))
+            {
+                markerStyles.fill.color = fillColor[i % fillColor.length];
+            }
+            else
+            {
+                markerStyles.fill.color = this._getItemColor(markerStyles.fill.color, i);
+            }
+            if(Y_Lang.isArray(borderColor))
+            {
+                markerStyles.border.color = borderColor[i % borderColor.length];
+            }
+            else
+            {
+                markerStyles.border.color = this._getItemColor(markerStyles.border.color, i);
+            }
             marker.set(markerStyles);
         }
     },

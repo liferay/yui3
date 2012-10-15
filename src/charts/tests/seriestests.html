@@ -70,7 +70,7 @@
                 {
                     Y.detach(this.handler);
                     //remove the element
-                    this.chart.destroy();
+                    this.chart.destroy(true);
                 },
                 
                 //---------------------------------------------------------------------
@@ -193,7 +193,7 @@
                                             {
                                                 categoryValue = getNumber(categoryValue);
                                             }
-                                            seriesValue = this.chart.get("dataProvider")[markerData.index][seriesKey];
+                                            seriesValue = parseFloat(this.chart.get("dataProvider")[markerData.index][seriesKey]);
                                             Y.assert(markerData.categoryItem.displayName == categoryDisplayName);
                                             Y.assert(markerData.valueItem.displayName == seriesDisplayName);
                                             Y.assert(markerData.series == currentSeries);

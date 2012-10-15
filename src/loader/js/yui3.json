@@ -48,6 +48,13 @@
             "anim-base"
         ]
     }, 
+    "anim-transform": {
+        "requires": [
+            "anim-base", 
+            "anim-easing", 
+            "matrix"
+        ]
+    }, 
     "anim-xy": {
         "requires": [
             "anim-base", 
@@ -56,10 +63,26 @@
     }, 
     "app": {
         "use": [
-            "controller", 
+            "app-base", 
             "model", 
             "model-list", 
+            "router", 
             "view"
+        ]
+    }, 
+    "app-base": {
+        "requires": [
+            "classnamemanager", 
+            "pjax-base", 
+            "router", 
+            "view"
+        ]
+    }, 
+    "app-transitions": {
+        "requires": [
+            "app-base", 
+            "parallel", 
+            "transition"
         ]
     }, 
     "array-extras": {
@@ -105,12 +128,29 @@
     }, 
     "attribute-base": {
         "requires": [
-            "event-custom"
+            "attribute-core", 
+            "attribute-events", 
+            "attribute-extras"
         ]
     }, 
     "attribute-complex": {
         "requires": [
             "attribute-base"
+        ]
+    }, 
+    "attribute-core": {
+        "requires": [
+            "yui-base"
+        ]
+    }, 
+    "attribute-events": {
+        "requires": [
+            "event-custom"
+        ]
+    }, 
+    "attribute-extras": {
+        "requires": [
+            "yui-base"
         ]
     }, 
     "autocomplete": {
@@ -217,6 +257,7 @@
             "attribute-complex"
         ], 
         "requires": [
+            "base-core", 
             "attribute-base"
         ]
     }, 
@@ -225,10 +266,36 @@
             "base-base"
         ]
     }, 
+    "base-core": {
+        "requires": [
+            "attribute-core"
+        ]
+    }, 
     "base-pluginhost": {
         "requires": [
             "base-base", 
             "pluginhost"
+        ]
+    }, 
+    "button": {
+        "use": [
+            "button-base", 
+            "button-group", 
+            "cssbutton"
+        ]
+    }, 
+    "button-base": {
+        "requires": [
+            "base", 
+            "classnamemanager", 
+            "node"
+        ]
+    }, 
+    "button-group": {
+        "requires": [
+            "button-base", 
+            "arraylist", 
+            "arraylist-add"
         ]
     }, 
     "cache": {
@@ -345,13 +412,8 @@
         "skinnable": true
     }, 
     "controller": {
-        "optional": [
-            "querystring-parse"
-        ], 
-        "requires": [
-            "array-extras", 
-            "base-build", 
-            "history"
+        "use": [
+            "router"
         ]
     }, 
     "cookie": {
@@ -384,6 +446,9 @@
             "cssfonts-context", 
             "cssgrids-context"
         ], 
+        "type": "css"
+    }, 
+    "cssbutton": {
         "type": "css"
     }, 
     "cssfonts": {
@@ -518,20 +583,46 @@
     }, 
     "datatable": {
         "use": [
+            "datatable-core", 
+            "datatable-head", 
+            "datatable-body", 
             "datatable-base", 
+            "datatable-column-widths", 
+            "datatable-message", 
+            "datatable-mutable", 
+            "datatable-scroll", 
             "datatable-datasource", 
-            "datatable-sort", 
-            "datatable-scroll"
+            "datatable-sort"
         ]
     }, 
     "datatable-base": {
         "requires": [
-            "recordset-base", 
-            "widget", 
-            "substitute", 
-            "event-mouseenter"
+            "datatable-core", 
+            "datatable-head", 
+            "datatable-body", 
+            "base-build", 
+            "widget"
         ], 
         "skinnable": true
+    }, 
+    "datatable-body": {
+        "requires": [
+            "datatable-core", 
+            "view", 
+            "classnamemanager"
+        ]
+    }, 
+    "datatable-column-widths": {
+        "requires": [
+            "datatable-base"
+        ]
+    }, 
+    "datatable-core": {
+        "requires": [
+            "escape", 
+            "model-list", 
+            "node-event-delegate"
+        ]
     }, 
     "datatable-datasource": {
         "requires": [
@@ -540,21 +631,43 @@
             "datasource-local"
         ]
     }, 
+    "datatable-head": {
+        "requires": [
+            "datatable-core", 
+            "view", 
+            "classnamemanager"
+        ]
+    }, 
+    "datatable-message": {
+        "lang": [
+            "en"
+        ], 
+        "requires": [
+            "datatable-base"
+        ], 
+        "skinnable": true
+    }, 
+    "datatable-mutable": {
+        "requires": [
+            "datatable-base"
+        ]
+    }, 
     "datatable-scroll": {
         "requires": [
             "datatable-base", 
-            "plugin"
-        ]
+            "datatable-column-widths", 
+            "dom-screen"
+        ], 
+        "skinnable": true
     }, 
     "datatable-sort": {
         "lang": [
             "en"
         ], 
         "requires": [
-            "datatable-base", 
-            "plugin", 
-            "recordset-sort"
-        ]
+            "datatable-base"
+        ], 
+        "skinnable": true
     }, 
     "datatype": {
         "use": [
@@ -840,7 +953,7 @@
     "editor": {
         "use": [
             "frame", 
-            "selection", 
+            "editor-selection", 
             "exec-command", 
             "editor-base", 
             "editor-para", 
@@ -856,7 +969,7 @@
             "frame", 
             "node", 
             "exec-command", 
-            "selection"
+            "editor-selection"
         ]
     }, 
     "editor-bidi": {
@@ -877,6 +990,11 @@
     "editor-para": {
         "requires": [
             "editor-base"
+        ]
+    }, 
+    "editor-selection": {
+        "requires": [
+            "node"
         ]
     }, 
     "editor-tab": {
@@ -903,7 +1021,11 @@
             "event-focus", 
             "event-resize", 
             "event-hover", 
-            "event-outside"
+            "event-outside", 
+            "event-touch", 
+            "event-move", 
+            "event-flick", 
+            "event-valuechange"
         ]
     }, 
     "event-base": {
@@ -925,6 +1047,12 @@
         }, 
         "requires": [
             "node-base"
+        ]
+    }, 
+    "event-contextmenu": {
+        "requires": [
+            "event-synthetic", 
+            "dom-screen"
         ]
     }, 
     "event-custom": {
@@ -1036,6 +1164,11 @@
             "yui-base"
         ]
     }, 
+    "file": {
+        "requires": [
+            "base"
+        ]
+    }, 
     "frame": {
         "requires": [
             "base", 
@@ -1054,7 +1187,8 @@
         "requires": [
             "node", 
             "event-custom", 
-            "pluginhost"
+            "pluginhost", 
+            "matrix"
         ]
     }, 
     "graphics-canvas": {
@@ -1107,6 +1241,21 @@
             "test": "graphics-vml.js", 
             "trigger": "graphics"
         }
+    }, 
+    "handlebars": {
+        "use": [
+            "handlebars-compiler"
+        ]
+    }, 
+    "handlebars-base": {
+        "requires": [
+            "escape"
+        ]
+    }, 
+    "handlebars-compiler": {
+        "requires": [
+            "handlebars-base"
+        ]
     }, 
     "highlight": {
         "use": [
@@ -1265,7 +1414,8 @@
     }, 
     "loader-base": {
         "requires": [
-            "get"
+            "get", 
+            "features"
         ]
     }, 
     "loader-rollup": {
@@ -1276,6 +1426,11 @@
     "loader-yui3": {
         "requires": [
             "loader-base"
+        ]
+    }, 
+    "matrix": {
+        "requires": [
+            "yui-base"
         ]
     }, 
     "model": {
@@ -1411,16 +1566,41 @@
     "panel": {
         "requires": [
             "widget", 
-            "widget-stdmod", 
+            "widget-autohide", 
+            "widget-buttons", 
+            "widget-modality", 
             "widget-position", 
             "widget-position-align", 
-            "widget-stack", 
             "widget-position-constrain", 
-            "widget-modality", 
-            "widget-autohide", 
-            "widget-buttons"
+            "widget-stack", 
+            "widget-stdmod"
         ], 
         "skinnable": true
+    }, 
+    "parallel": {
+        "requires": [
+            "yui-base"
+        ]
+    }, 
+    "pjax": {
+        "requires": [
+            "pjax-base", 
+            "io-base"
+        ]
+    }, 
+    "pjax-base": {
+        "requires": [
+            "classnamemanager", 
+            "node-event-delegate", 
+            "router"
+        ]
+    }, 
+    "pjax-plugin": {
+        "requires": [
+            "node-pluginhost", 
+            "pjax", 
+            "plugin"
+        ]
     }, 
     "plugin": {
         "requires": [
@@ -1568,6 +1748,16 @@
             "features"
         ]
     }, 
+    "router": {
+        "optional": [
+            "querystring-parse"
+        ], 
+        "requires": [
+            "array-extras", 
+            "base-build", 
+            "history"
+        ]
+    }, 
     "scrollview": {
         "requires": [
             "scrollview-base", 
@@ -1611,11 +1801,6 @@
             "plugin"
         ], 
         "skinnable": true
-    }, 
-    "selection": {
-        "requires": [
-            "node"
-        ]
     }, 
     "selector": {
         "requires": [
@@ -1661,7 +1846,8 @@
         "requires": [
             "widget", 
             "dd-constrain", 
-            "substitute"
+            "substitute", 
+            "event-key"
         ], 
         "skinnable": true
     }, 
@@ -1741,6 +1927,13 @@
         ], 
         "skinnable": true
     }, 
+    "test-console": {
+        "requires": [
+            "console-filters", 
+            "test"
+        ], 
+        "skinnable": true
+    }, 
     "text": {
         "use": [
             "text-accentfold", 
@@ -1786,16 +1979,45 @@
     }, 
     "uploader": {
         "requires": [
-            "event-custom", 
-            "node", 
+            "uploader-html5", 
+            "uploader-flash"
+        ]
+    }, 
+    "uploader-flash": {
+        "requires": [
+            "swf", 
+            "widget", 
+            "substitute", 
             "base", 
-            "swf"
+            "node", 
+            "event-custom", 
+            "file", 
+            "uploader-queue"
+        ]
+    }, 
+    "uploader-html5": {
+        "requires": [
+            "widget", 
+            "node-event-simulate", 
+            "substitute", 
+            "file", 
+            "uploader-queue"
+        ]
+    }, 
+    "uploader-queue": {
+        "requires": [
+            "base"
         ]
     }, 
     "view": {
         "requires": [
             "base-build", 
             "node-event-delegate"
+        ]
+    }, 
+    "view-node-map": {
+        "requires": [
+            "view"
         ]
     }, 
     "widget": {
@@ -1846,8 +2068,9 @@
     }, 
     "widget-buttons": {
         "requires": [
-            "widget", 
+            "cssbutton", 
             "base-build", 
+            "widget", 
             "widget-stdmod"
         ], 
         "skinnable": true

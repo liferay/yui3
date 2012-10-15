@@ -1,6 +1,13 @@
 MenuNav Change History
 ======================
 
+3.5.0
+-----
+
+  * Added Night skin for MenuNav
+  * Removed console logging message (#2531192)
+   
+
 3.4.1
 -----
 

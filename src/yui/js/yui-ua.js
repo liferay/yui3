@@ -29,7 +29,7 @@
 * @static
 * @method parseUA
 * @param {String} [subUA=navigator.userAgent] UA string to parse
-* @returns {Object} The Y.UA object
+* @return {Object} The Y.UA object
 */
 YUI.Env.parseUA = function(subUA) {
 
@@ -180,6 +180,20 @@ YUI.Env.parseUA = function(subUA) {
          */
         android: 0,
         /**
+         * Detects Kindle Silk
+         * @property silk
+         * @type float
+         * @static
+         */
+        silk: 0,
+        /**
+         * Detects Kindle Silk Acceleration
+         * @property accel
+         * @type Boolean
+         * @static
+         */
+        accel: false,
+        /**
          * Detects Palms WebOS version
          * @property webos
          * @type float
@@ -209,8 +223,16 @@ YUI.Env.parseUA = function(subUA) {
          * @default null
          * @static
          */
-        os: null
+        os: null,
 
+        /**
+         * The Nodejs Version
+         * @property nodejs
+         * @type float
+         * @default 0
+         * @static
+         */
+        nodejs: 0
     },
 
     ua = subUA || nav && nav.userAgent,
@@ -236,8 +258,14 @@ YUI.Env.parseUA = function(subUA) {
 
         if ((/windows|win32/i).test(ua)) {
             o.os = 'windows';
-        } else if ((/macintosh/i).test(ua)) {
+        } else if ((/macintosh|mac_powerpc/i).test(ua)) {
             o.os = 'macintosh';
+        } else if ((/android/i).test(ua)) {
+            o.os = 'android';
+        } else if ((/symbos/i).test(ua)) {
+            o.os = 'symbos';
+        } else if ((/linux/i).test(ua)) {
+            o.os = 'linux';
         } else if ((/rhino/i).test(ua)) {
             o.os = 'rhino';
         }
@@ -246,6 +274,12 @@ YUI.Env.parseUA = function(subUA) {
         if ((/KHTML/).test(ua)) {
             o.webkit = 1;
         }
+        if ((/IEMobile|XBLWP7/).test(ua)) {
+            o.mobile = 'windows';
+        }
+        if ((/Fennec/).test(ua)) {
+            o.mobile = 'gecko';
+        }
         // Modern WebKit browsers are at least X-Grade
         m = ua.match(/AppleWebKit\/([^\s]*)/);
         if (m && m[1]) {
@@ -253,7 +287,7 @@ YUI.Env.parseUA = function(subUA) {
             o.safari = o.webkit;
 
             // Mobile browser check
-            if (/ Mobile\//.test(ua)) {
+            if (/ Mobile\//.test(ua) || (/iPad|iPod|iPhone/).test(ua)) {
                 o.mobile = 'Apple'; // iPhone or iPod Touch
 
                 m = ua.match(/OS ([^\s]*)/);
@@ -261,6 +295,7 @@ YUI.Env.parseUA = function(subUA) {
                     m = numberify(m[1].replace('_', '.'));
                 }
                 o.ios = m;
+                o.os = 'ios';
                 o.ipad = o.ipod = o.iphone = 0;
 
                 m = ua.match(/iPad|iPod|iPhone/);
@@ -290,6 +325,19 @@ YUI.Env.parseUA = function(subUA) {
                     }
 
                 }
+                if (/Silk/.test(ua)) {
+                    m = ua.match(/Silk\/([^\s]*)\)/);
+                    if (m && m[1]) {
+                        o.silk = numberify(m[1]);
+                    }
+                    if (!o.android) {
+                        o.android = 2.34; //Hack for desktop mode in Kindle
+                        o.os = 'Android';
+                    }
+                    if (/Accelerated=true/.test(ua)) {
+                        o.accel = true;
+                    }
+                }
             }
 
             m = ua.match(/Chrome\/([^\s]*)/);
@@ -306,14 +354,23 @@ YUI.Env.parseUA = function(subUA) {
 
         if (!o.webkit) { // not webkit
 // @todo check Opera/8.01 (J2ME/MIDP; Opera Mini/2.0.4509/1316; fi; U; ssr)
-            m = ua.match(/Opera[\s\/]([^\s]*)/);
-            if (m && m[1]) {
-                o.opera = numberify(m[1]);
+            if (/Opera/.test(ua)) {
+                m = ua.match(/Opera[\s\/]([^\s]*)/);
+                if (m && m[1]) {
+                    o.opera = numberify(m[1]);
+                }
                 m = ua.match(/Version\/([^\s]*)/);
                 if (m && m[1]) {
                     o.opera = numberify(m[1]); // opera 10+
                 }
 
+                if (/Opera Mobi/.test(ua)) {
+                    o.mobile = 'opera';
+                    m = ua.replace('Opera Mobi', '').match(/Opera ([^\s]*)/);
+                    if (m && m[1]) {
+                        o.opera = numberify(m[1]);
+                    }
+                }
                 m = ua.match(/Opera Mini[^;]*/);
 
                 if (m) {
@@ -339,7 +396,18 @@ YUI.Env.parseUA = function(subUA) {
 
     //It was a parsed UA, do not assign the global value.
     if (!subUA) {
+
+        if (typeof process == 'object') {
+
+            if (process.versions && process.versions.node) {
+                //NodeJS
+                o.os = process.platform;
+                o.nodejs = process.versions.node;
+            }
+        }
+
         YUI.Env.UA = o;
+
     }
 
     return o;

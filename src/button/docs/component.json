@@ -1,0 +1,36 @@
+{
+    "name"       : "button",
+    "displayName": "Button",
+    "description": "The Button component is a light-weight, Y.Base wrapper around DOM elements you'd like treated like a button.",
+    "author"     : "drgath",
+
+    "tags": ["widget", "button"],
+    "use" : ["button"],
+
+    "examples": [
+        {
+            "name"       : "simple-button",
+            "displayName": "Button",
+            "description": "",
+            "modules"    : ["button-base", "cssbutton"],
+            "tags"       : ["button"],
+            "hideTableOfContents": true
+        },
+        {
+            "name"       : "css-button",
+            "displayName": "CSS Buttons",
+            "description": "",
+            "modules"    : ["button-base", "cssbutton"],
+            "tags"       : ["button"],
+            "hideTableOfContents": true
+        },
+        {
+            "name"       : "button-group",
+            "displayName": "Button Group",
+            "description": "",
+            "modules"    : ["button-group"],
+            "tags"       : ["button", "button-group"],
+            "hideTableOfContents": true
+        }
+    ]
+}

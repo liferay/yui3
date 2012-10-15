@@ -26,7 +26,6 @@ var HistoryBase = Y.HistoryBase,
     oldHash,
     oldUrl,
     win             = Y.config.win,
-    location        = win.location,
     useHistoryHTML5 = Y.config.useHistoryHTML5;
 
 function HistoryHash() {
@@ -210,15 +209,17 @@ Y.extend(HistoryHash, HistoryBase, {
         // window.location.href instead. We have to use UA sniffing rather than
         // feature detection, since the only way to detect this would be to
         // actually change the hash.
-        var matches = /#(.*)$/.exec(location.href),
-            hash    = matches && matches[1] || '',
-            prefix  = HistoryHash.hashPrefix;
+        var location = Y.getLocation(),
+            matches  = /#(.*)$/.exec(location.href),
+            hash     = matches && matches[1] || '',
+            prefix   = HistoryHash.hashPrefix;
 
         return prefix && hash.indexOf(prefix) === 0 ?
                     hash.replace(prefix, '') : hash;
     } : function () {
-        var hash   = location.hash.substring(1),
-            prefix = HistoryHash.hashPrefix;
+        var location = Y.getLocation(),
+            hash     = location.hash.substring(1),
+            prefix   = HistoryHash.hashPrefix;
 
         // Slight code duplication here, but execution speed is of the essence
         // since getHash() is called every 50ms to poll for changes in browsers
@@ -290,7 +291,8 @@ Y.extend(HistoryHash, HistoryBase, {
      * @static
      */
     replaceHash: function (hash) {
-        var base = location.href.replace(/#.*$/, '');
+        var location = Y.getLocation(),
+            base     = location.href.replace(/#.*$/, '');
 
         if (hash.charAt(0) === '#') {
             hash = hash.substring(1);
@@ -308,6 +310,8 @@ Y.extend(HistoryHash, HistoryBase, {
      * @static
      */
     setHash: function (hash) {
+        var location = Y.getLocation();
+
         if (hash.charAt(0) === '#') {
             hash = hash.substring(1);
         }
@@ -421,21 +425,6 @@ if (HistoryBase.nativeHashChange) {
     // Begin polling for location hash changes if there's not already a global
     // poll running.
     if (!GlobalEnv._hashPoll) {
-        if (Y.UA.webkit && !Y.UA.chrome &&
-                navigator.vendor.indexOf('Apple') !== -1) {
-            // Attach a noop unload handler to disable Safari's back/forward
-            // cache. This works around a nasty Safari bug when the back button
-            // is used to return from a page on another domain, but results in
-            // slightly worse performance. This bug is not present in Chrome.
-            //
-            // Unfortunately a UA sniff is unavoidable here, but the
-            // consequences of a false positive are minor.
-            //
-            // Current as of Safari 5.0 (6533.16).
-            // See: https://bugs.webkit.org/show_bug.cgi?id=34679
-            Y.on('unload', function () {}, win);
-        }
-
         GlobalEnv._hashPoll = Y.later(50, null, function () {
             var newHash = HistoryHash.getHash(),
                 facade, newUrl;

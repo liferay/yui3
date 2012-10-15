@@ -195,11 +195,11 @@ Y_Node.addMethod = function(name, fn, context) {
                 node = this,
                 ret;
 
-            if (args[0] && Y.instanceOf(args[0], Y_Node)) {
+            if (args[0] && args[0]._node) {
                 args[0] = args[0]._node;
             }
 
-            if (args[1] && Y.instanceOf(args[1], Y_Node)) {
+            if (args[1] && args[1]._node) {
                 args[1] = args[1]._node;
             }
             args.unshift(node._node);
@@ -347,6 +347,8 @@ Y_Node.DEFAULT_GETTER = function(name) {
 };
 
 Y.mix(Y_Node.prototype, {
+    DATA_PREFIX: 'data-',
+
     /**
      * The method called when outputting Node instances as strings
      * @method toString
@@ -501,7 +503,7 @@ Y.mix(Y_Node.prototype, {
     compareTo: function(refNode) {
         var node = this._node;
 
-        if (Y.instanceOf(refNode, Y_Node)) {
+        if (refNode && refNode._node) {
             refNode = refNode._node;
         }
         return node === refNode;
@@ -748,11 +750,11 @@ Y.mix(Y_Node.prototype, {
         var node = this._node,
             ret;
 
-        if (a && Y.instanceOf(a, Y_Node)) {
+        if (a && a._node) {
             a = a._node;
         }
 
-        if (b && Y.instanceOf(b, Y_Node)) {
+        if (b && b._node) {
             b = b._node;
         }
 
@@ -788,67 +790,6 @@ Y.mix(Y_Node.prototype, {
             return this;
         },
 
-
-    /**
-    * @method getData
-    * @description Retrieves arbitrary data stored on a Node instance.
-    * This is not stored with the DOM node.
-    * @param {string} name Optional name of the data field to retrieve.
-    * If no name is given, all data is returned.
-    * @return {any | Object} Whatever is stored at the given field,
-    * or an object hash of all fields.
-    */
-    getData: function(name) {
-        var ret;
-        this._data = this._data || {};
-        if (arguments.length) {
-            ret = this._data[name];
-        } else {
-            ret = this._data;
-        }
-
-        return ret;
-
-    },
-
-    /**
-    * @method setData
-    * @description Stores arbitrary data on a Node instance.
-    * This is not stored with the DOM node.
-    * @param {string} name The name of the field to set. If no name
-    * is given, name is treated as the data and overrides any existing data.
-    * @param {any} val The value to be assigned to the field.
-    * @chainable
-    */
-    setData: function(name, val) {
-        this._data = this._data || {};
-        if (arguments.length > 1) {
-            this._data[name] = val;
-        } else {
-            this._data = name;
-        }
-
-       return this;
-    },
-
-    /**
-    * @method clearData
-    * @description Clears stored data.
-    * @param {string} name The name of the field to clear. If no name
-    * is given, all data is cleared.
-    * @chainable
-    */
-    clearData: function(name) {
-        if ('_data' in this) {
-            if (name) {
-                delete this._data[name];
-            } else {
-                delete this._data;
-            }
-        }
-
-        return this;
-    },
 
     hasMethod: function(method) {
         var node = this._node;
@@ -1005,6 +946,19 @@ NodeList._getTempNode = function(node) {
 };
 
 Y.mix(NodeList.prototype, {
+    _invoke: function(method, args, getter) {
+        var ret = (getter) ? [] : this;
+
+        this.each(function(node) {
+            var val = node[method].apply(node, args);
+            if (getter) {
+                ret.push(val);
+            }
+        });
+
+        return ret;
+    },
+
     /**
      * Retrieves the Node instance at the given index.
      * @method item

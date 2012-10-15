@@ -11,6 +11,7 @@ YUI({
 			showPrevMonth: false,
 			showNextMonth: false,
 			selectionMode: 'multiple',
+			enabledDatesRule: "all_weekends",
 			date: new Date(2011, 6)}).render();
 
 		 var rules = {
@@ -61,6 +62,13 @@ YUI({
 
 		Y.one("#getSelectedDates").on('click', function () {
 		  Y.log(calendar.get('selectedDates'));
+		});
+
+		Y.one("#setNightSkin").on('click', function () {
+		  Y.one('body').replaceClass('yui3-skin-sam','yui3-skin-night');
+		});
+		Y.one("#setBkgBlack").on('click', function () {
+		  Y.one('html').setStyle('backgroundColor', '#000');
 		});
 
 		calendar.on("selectionChange", function (ev) {Y.log(ev);});

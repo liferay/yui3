@@ -966,6 +966,7 @@ YUI.add('dd-drag', function(Y) {
         * @description Internal init handler
         */
         initializer: function(cfg) {
+
             this.get(NODE).dd = this;
 
             if (!this.get(NODE).get('id')) {
@@ -1011,7 +1012,16 @@ YUI.add('dd-drag', function(Y) {
         _unprep: function() {
             var node = this.get(NODE);
             node.removeClass(DDM.CSS_PREFIX + '-draggable');
-            node.detachAll();
+            node.detachAll('mouseup');
+            node.detachAll('dragstart');
+            node.detachAll(Drag.START_EVENT);
+            this.mouseXY = null;
+            this.deltaXY = null;
+            this.startXY = null;
+            this.nodeXY = null;
+            this.lastXY = null;
+            this.actXY = null;
+            this.realXY = null;
         },
         /**
         * @method start
@@ -1235,7 +1245,6 @@ YUI.add('dd-drag', function(Y) {
         */
         destructor: function() {
             this._unprep();
-            this.detachAll();
             if (this.target) {
                 this.target.destroy();
             }
@@ -1248,4 +1257,4 @@ YUI.add('dd-drag', function(Y) {
 
 
 
-}, '@VERSION@' ,{skinnable:false, requires:['dd-ddm-base']});
+}, '@VERSION@' ,{requires:['dd-ddm-base'], skinnable:false});

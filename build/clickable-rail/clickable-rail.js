@@ -88,6 +88,7 @@ Y.ClickableRail = Y.mix(ClickableRail, {
         _onRailMouseDown: function (e) {
             if (this.get('clickableRail') && !this.get('disabled')) {
                 this.fire('railMouseDown', { ev: e });
+                this.thumb.focus();
             }
         },
 
@@ -128,7 +129,7 @@ Y.ClickableRail = Y.mix(ClickableRail, {
                         Math.max(xy, 0),
                         (length - thumbSize));
 
-                this._uiMoveThumb(xy);
+                this._uiMoveThumb(xy, { source: 'rail' });
 
                 // Set e.target for DD's IE9 patch which calls
                 // e.target._node.setCapture() to allow imgs to be dragged.
@@ -206,6 +207,7 @@ Y.ClickableRail = Y.mix(ClickableRail, {
     }
 
 }, true);
+
 
 
 }, '@VERSION@' ,{requires:['slider-base']});

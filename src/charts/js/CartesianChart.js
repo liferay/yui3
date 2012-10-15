@@ -226,6 +226,24 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
     },
 
     /**
+     * Adds axis instance to the appropriate array based on position
+     *
+     * @method _addToAxesCollection
+     * @param {String} position The position of the axis
+     * @param {Axis} axis The `Axis` instance
+     */
+    _addToAxesCollection: function(position, axis)
+    {
+        var axesCollection = this.get(position + "AxesCollection");
+        if(!axesCollection)
+        {
+            axesCollection = [];
+            this.set(position + "AxesCollection", axesCollection);
+        }
+        axesCollection.push(axis);
+    },
+
+    /**
      * Returns the default value for the `seriesCollection` attribute.
      *
      * @method _getDefaultSeriesCollection
@@ -233,7 +251,20 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
      * @return Array
      * @private
      */
-    _getDefaultSeriesCollection: function(val)
+    _getDefaultSeriesCollection: function()
+    {
+        return this._parseSeriesCollection();
+    },
+
+    /**
+     * Parses and returns a series collection from an object and default properties.
+     *
+     * @method _parseSeriesCollection
+     * @param {Object} val Object contain properties for series being set.
+     * @return Object
+     * @private
+     */
+    _parseSeriesCollection: function(val)
     {
         var dir = this.get("direction"), 
             sc = val || [], 
@@ -467,14 +498,14 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
     /**
      * Creates `Axis` instances.
      *
-     * @method _parseAxes
+     * @method _setAxes
      * @param {Object} val Object containing `Axis` instances or objects in which to construct `Axis` instances.
      * @return Object
      * @private
      */
-    _parseAxes: function(val)
+    _setAxes: function(val)
     {
-        var hash = this._getDefaultAxes(val),
+        var hash = this._parseAxes(val),
             axes = {},
             axesAttrs = {
                 edgeOffset: "edgeOffset", 
@@ -487,13 +518,16 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
                 minimum:"minimum", 
                 roundingMethod:"roundingMethod",
                 alwaysShowZero:"alwaysShowZero",
-                title:"title"
+                title:"title",
+                width:"width",
+                height:"height"
             },
             dp = this.get("dataProvider"),
             ai,
             i, 
             pos, 
             axis,
+            axisPosition,
             dh, 
             axisClass, 
             config,
@@ -509,7 +543,7 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
                 }
                 else
                 {
-                    axisClass = this._getAxisClass(dh.type);
+                    axis = null;
                     config = {};
                     config.dataProvider = dh.dataProvider || dp;
                     config.keys = dh.keys;
@@ -531,7 +565,36 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
                             config[ai] = dh[ai];
                         }
                     }
-                    axis = new axisClass(config);
+                   
+                    //only check for existing axis if we constructed the default axes already
+                    if(val)
+                    {
+                        axis = this.getAxisByKey(i);
+                    }
+                    
+                    if(axis && axis instanceof Y.Axis)
+                    {
+                        axisPosition = axis.get("position");
+                        if(pos != axisPosition)
+                        {
+                            if(axisPosition != "none")
+                            {
+                                axesCollection = this.get(axisPosition + "AxesCollection");
+                                axesCollection.splice(Y.Array.indexOf(axesCollection, axis), 1);
+                            }
+                            if(pos != "none")
+                            {
+                                this._addToAxesCollection(pos, axis);
+                            }
+                        }
+                        axis.setAttrs(config);
+                    }
+                    else
+                    {
+                        axisClass = this._getAxisClass(dh.type);
+                        axis = new axisClass(config);
+                        axis.after("axisRendered", Y.bind(this._axisRendered, this));
+                    }
                 }
 
                 if(axis)
@@ -541,7 +604,6 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
                     {
                         axis.set("overlapGraph", false);
                     }
-                    axis.after("axisRendered", Y.bind(this._axisRendered, this));
                     axes[i] = axis;
                 }
             }
@@ -585,8 +647,6 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
                         this.set("height", node.get("offsetHeight"));
                         h = this.get("height");
                     }
-                    axis.set("width", w);
-                    axis.set("height", h);
                     this._addToAxesRenderQueue(axis);
                     pos = axis.get("position");
                     if(!this.get(pos + "AxesCollection"))
@@ -694,16 +754,56 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
             }
         }
     },
+   
+    /**
+     * Returns all the keys contained in a  `dataProvider`.
+     *
+     * @method _getAllKeys
+     * @param {Array} dp Collection of objects to be parsed.
+     * @return Object
+     */
+    _getAllKeys: function(dp)
+    {
+        var i = 0,
+            len = dp.length,
+            item,
+            key,
+            keys = {};
+        for(; i < len; ++i)
+        {
+            item = dp[i];
+            for(key in item)
+            {
+                if(item.hasOwnProperty(key))
+                {
+                    keys[key] = true;
+                }
+            }
+        }
+        return keys;
+    },
+    
+    /**
+     * Default Function for the axes attribute.
+     *
+     * @method _getDefaultAxes
+     * @return Object
+     * @private
+     */
+    _getDefaultAxes: function()
+    {
+        return this._parseAxes();
+    },
 
     /**
      * Generates and returns a key-indexed object containing `Axis` instances or objects used to create `Axis` instances.
      *
-     * @method _getDefaultAxes
+     * @method _parseAxes
      * @param {Object} axes Object containing `Axis` instances or `Axis` attributes.
      * @return Object
      * @private
      */
-    _getDefaultAxes: function(axes)
+    _parseAxes: function(axes)
     {
         var catKey = this.get("categoryKey"),
             axis,
@@ -726,7 +826,6 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
             categoryPosition,
             valueAxes = [],
             seriesAxis = this.get("stacked") ? "stacked" : "numeric";
-        dv = dp[0];
         if(direction == "vertical")
         {
             seriesPosition = "bottom";
@@ -787,6 +886,7 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
         }
         if(seriesKeys.length < 1)
         {
+            dv = this._getAllKeys(dp);
             for(i in dv)
             {
                 if(dv.hasOwnProperty(i) && i != catKey && Y.Array.indexOf(claimedKeys, i) == -1)
@@ -907,12 +1007,29 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
 
    
     /**
-     * Returns an object literal containing a categoryItem and a valueItem for a given series index.
-     *
-     * @method getSeriesItem
+     * Returns an object literal containing a categoryItem and a valueItem for a given series index. Below is the structure of each:
+     * 
+     * @method getSeriesItems
      * @param {CartesianSeries} series Reference to a series.
      * @param {Number} index Index of the specified item within a series.
-     * @return Object
+     * @return Object An object literal containing the following:
+     *
+     *  <dl>
+     *      <dt>categoryItem</dt><dd>Object containing the following data related to the category axis of the series.
+     *  <dl>
+     *      <dt>axis</dt><dd>Reference to the category axis of the series.</dd>
+     *      <dt>key</dt><dd>Category key for the series.</dd>
+     *      <dt>value</dt><dd>Value on the axis corresponding to the series index.</dd>
+     *  </dl>
+     *      </dd>
+     *      <dt>valueItem</dt><dd>Object containing the following data related to the category axis of the series.
+     *  <dl>
+     *      <dt>axis</dt><dd>Reference to the value axis of the series.</dd>
+     *      <dt>key</dt><dd>Value key for the series.</dd>
+     *      <dt>value</dt><dd>Value on the axis corresponding to the series index.</dd>
+     *  </dl>
+     *      </dd>
+     *  </dl>
      */
     getSeriesItems: function(series, index)
     {
@@ -992,6 +1109,158 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
             this._redraw();
         }
     },
+    
+    /**
+     * Returns the maximum distance in pixels that the extends outside the top bounds of all vertical axes.
+     *
+     * @method _getTopOverflow
+     * @param {Array} set1 Collection of axes to check.
+     * @param {Array} set2 Seconf collection of axes to check.
+     * @param {Number} width Width of the axes
+     * @return Number
+     * @private
+     */
+    _getTopOverflow: function(set1, set2, height)
+    {
+        var i = 0,
+            len,
+            overflow = 0,
+            axis;
+        if(set1)
+        {
+            len = set1.length;
+            for(; i < len; ++i)
+            {
+                axis = set1[i];
+                overflow = Math.max(overflow, Math.abs(axis.getMaxLabelBounds().top) - (axis.getEdgeOffset(axis.get("styles").majorTicks.count, height) * 0.5));
+            }
+        }
+        if(set2)
+        {
+            i = 0;
+            len = set2.length;
+            for(; i < len; ++i)
+            {
+                axis = set2[i];
+                overflow = Math.max(overflow, Math.abs(axis.getMaxLabelBounds().top) - (axis.getEdgeOffset(axis.get("styles").majorTicks.count, height) * 0.5));
+            }
+        }
+        return overflow;
+    },
+    
+    /**
+     * Returns the maximum distance in pixels that the extends outside the right bounds of all horizontal axes.
+     *
+     * @method _getRightOverflow
+     * @param {Array} set1 Collection of axes to check.
+     * @param {Array} set2 Seconf collection of axes to check.
+     * @param {Number} width Width of the axes
+     * @return Number
+     * @private
+     */
+    _getRightOverflow: function(set1, set2, width)
+    {
+        var i = 0,
+            len,
+            overflow = 0,
+            axis;
+        if(set1)
+        {
+            len = set1.length;
+            for(; i < len; ++i)
+            {
+                axis = set1[i];
+                overflow = Math.max(overflow, axis.getMaxLabelBounds().right - (axis.getEdgeOffset(axis.get("styles").majorTicks.count, width) * 0.5));
+            }
+        }
+        if(set2)
+        {
+            i = 0;
+            len = set2.length;
+            for(; i < len; ++i)
+            {
+                axis = set2[i];
+                overflow = Math.max(overflow, axis.getMaxLabelBounds().right - (axis.getEdgeOffset(axis.get("styles").majorTicks.count, width) * 0.5));
+            }
+        }
+        return overflow;
+    },
+    
+    /**
+     * Returns the maximum distance in pixels that the extends outside the left bounds of all horizontal axes.
+     *
+     * @method _getLeftOverflow
+     * @param {Array} set1 Collection of axes to check.
+     * @param {Array} set2 Seconf collection of axes to check.
+     * @param {Number} width Width of the axes
+     * @return Number
+     * @private
+     */
+    _getLeftOverflow: function(set1, set2, width)
+    {
+        var i = 0,
+            len,
+            overflow = 0,
+            axis;
+        if(set1)
+        {
+            len = set1.length;
+            for(; i < len; ++i)
+            {
+                axis = set1[i];
+                overflow = Math.max(overflow, Math.abs(axis.getMinLabelBounds().left) - (axis.getEdgeOffset(axis.get("styles").majorTicks.count, width) * 0.5));
+            }
+        }
+        if(set2)
+        {
+            i = 0;
+            len = set2.length;
+            for(; i < len; ++i)
+            {
+                axis = set2[i];
+                overflow = Math.max(overflow, Math.abs(axis.getMinLabelBounds().left) - (axis.getEdgeOffset(axis.get("styles").majorTicks.count, width) * 0.5));
+            }
+        }
+        return overflow;
+    },
+    
+    /**
+     * Returns the maximum distance in pixels that the extends outside the bottom bounds of all vertical axes.
+     *
+     * @method _getBottomOverflow
+     * @param {Array} set1 Collection of axes to check.
+     * @param {Array} set2 Seconf collection of axes to check.
+     * @param {Number} height Height of the axes
+     * @return Number
+     * @private
+     */
+    _getBottomOverflow: function(set1, set2, height)
+    {
+        var i = 0,
+            len,
+            overflow = 0,
+            axis;
+        if(set1)
+        {
+            len = set1.length;
+            for(; i < len; ++i)
+            {
+                axis = set1[i];
+                overflow = Math.max(overflow, axis.getMinLabelBounds().bottom - (axis.getEdgeOffset(axis.get("styles").majorTicks.count, height) * 0.5));
+            }
+        }
+        if(set2)
+        {
+            i = 0;
+            len = set2.length;
+            for(; i < len; ++i)
+            {
+                axis = set2[i];
+                overflow = Math.max(overflow, axis.getMinLabelBounds().bottom - (axis.getEdgeOffset(axis.get("styles").majorTicks.count, height) * 0.5));
+            }
+        }
+        return overflow;
+    },
 
     /**
      * Redraws and position all the components of the chart instance.
@@ -1010,89 +1279,229 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
         this._callLater = false;
         var w = this.get("width"),
             h = this.get("height"),
-            lw = 0,
-            rw = 0,
-            th = 0,
-            bh = 0,
-            lc = this.get("leftAxesCollection"),
-            rc = this.get("rightAxesCollection"),
-            tc = this.get("topAxesCollection"),
-            bc = this.get("bottomAxesCollection"),
+            leftAxesWidth = 0,
+            rightAxesWidth = 0,
+            topAxesHeight = 0,
+            bottomAxesHeight = 0,
+            leftAxesCollection = this.get("leftAxesCollection"),
+            rightAxesCollection = this.get("rightAxesCollection"),
+            topAxesCollection = this.get("topAxesCollection"),
+            bottomAxesCollection = this.get("bottomAxesCollection"),
             i = 0,
             l,
             axis,
-            pos,
-            pts = [],
             graphOverflow = "visible",
-            graph = this.get("graph"); 
-        if(lc)
+            graph = this.get("graph"),
+            topOverflow,
+            bottomOverflow,
+            leftOverflow,
+            rightOverflow,
+            graphWidth,
+            graphHeight,
+            graphX,
+            graphY,
+            allowContentOverflow = this.get("allowContentOverflow"),
+            diff,
+            rightAxesXCoords,
+            leftAxesXCoords,
+            topAxesYCoords,
+            bottomAxesYCoords,
+            graphRect = {};
+        if(leftAxesCollection)
         {
-            l = lc.length;
+            leftAxesXCoords = [];
+            l = leftAxesCollection.length;
             for(i = l - 1; i > -1; --i)
             {
-                pts[Y.Array.indexOf(this._axesCollection, lc[i])] = {x:lw + "px"};
-                lw += lc[i].get("width");
+                leftAxesXCoords.unshift(leftAxesWidth);
+                leftAxesWidth += leftAxesCollection[i].get("width");
             }
         }
-        if(rc)
+        if(rightAxesCollection)
         {
-            l = rc.length;
+            rightAxesXCoords = [];
+            l = rightAxesCollection.length;
             i = 0;
             for(i = l - 1; i > -1; --i)
             {
-                rw += rc[i].get("width");
-                pts[Y.Array.indexOf(this._axesCollection, rc[i])] = {x:(w - rw) + "px"};
+                rightAxesWidth += rightAxesCollection[i].get("width");
+                rightAxesXCoords.unshift(w - rightAxesWidth);
             }
         }
-        if(tc)
+        if(topAxesCollection)
         {
-            l = tc.length;
+            topAxesYCoords = [];
+            l = topAxesCollection.length;
             for(i = l - 1; i > -1; --i)
             {
-                pts[Y.Array.indexOf(this._axesCollection, tc[i])] = {y:th + "px"};
-                th += tc[i].get("height");
+                topAxesYCoords.unshift(topAxesHeight);
+                topAxesHeight += topAxesCollection[i].get("height");
             }
         }
-        if(bc)
+        if(bottomAxesCollection)
         {
-            l = bc.length;
+            bottomAxesYCoords = [];
+            l = bottomAxesCollection.length;
             for(i = l - 1; i > -1; --i)
             {
-                bh += bc[i].get("height");
-                pts[Y.Array.indexOf(this._axesCollection, bc[i])] = {y:(h - bh) + "px"};
+                bottomAxesHeight += bottomAxesCollection[i].get("height");
+                bottomAxesYCoords.unshift(h - bottomAxesHeight);
             }
         }
-        l = this._axesCollection.length;
-        i = 0;
         
-        for(; i < l; ++i)
+        graphWidth = w - (leftAxesWidth + rightAxesWidth);
+        graphHeight = h - (bottomAxesHeight + topAxesHeight);
+        graphRect.left = leftAxesWidth;
+        graphRect.top = topAxesHeight;
+        graphRect.bottom = h - bottomAxesHeight;
+        graphRect.right = w - rightAxesWidth;
+        if(!allowContentOverflow)
         {
-            axis = this._axesCollection[i];
-            pos = axis.get("position");
-            if(pos == "left" || pos === "right")
+            topOverflow = this._getTopOverflow(leftAxesCollection, rightAxesCollection);
+            bottomOverflow = this._getBottomOverflow(leftAxesCollection, rightAxesCollection);
+            leftOverflow = this._getLeftOverflow(bottomAxesCollection, topAxesCollection);
+            rightOverflow = this._getRightOverflow(bottomAxesCollection, topAxesCollection);
+            
+            diff = topOverflow - topAxesHeight;
+            if(diff > 0)
             {
-                axis.get("boundingBox").setStyle("top", th + "px");
-                axis.get("boundingBox").setStyle("left", pts[i].x);
-                if(axis.get("height") !== h - (bh + th))
+                graphRect.top = topOverflow;
+                if(topAxesYCoords)
                 {
-                    axis.set("height", h - (bh + th));
+                    i = 0;
+                    l = topAxesYCoords.length;
+                    for(; i < l; ++i)
+                    {
+                        topAxesYCoords[i] += diff;
+                    }
                 }
             }
-            else if(pos == "bottom" || pos == "top")
+
+            diff = bottomOverflow - bottomAxesHeight;
+            if(diff > 0)
             {
-                if(axis.get("width") !== w - (lw + rw))
+                graphRect.bottom = h - bottomOverflow;
+                if(bottomAxesYCoords)
                 {
-                    axis.set("width", w - (lw + rw));
+                    i = 0;
+                    l = bottomAxesYCoords.length;
+                    for(; i < l; ++i)
+                    {
+                        bottomAxesYCoords[i] -= diff;
+                    }
                 }
-                axis.get("boundingBox").setStyle("left", lw + "px");
-                axis.get("boundingBox").setStyle("top", pts[i].y);
+            }
+
+            diff = leftOverflow - leftAxesWidth;
+            if(diff > 0)
+            {
+                graphRect.left = leftOverflow;
+                if(leftAxesXCoords)
+                {
+                    i = 0;
+                    l = leftAxesXCoords.length;
+                    for(; i < l; ++i)
+                    {
+                        leftAxesXCoords[i] += diff;
+                    }
+                }
+            }
+
+            diff = rightOverflow - rightAxesWidth;
+            if(diff > 0)
+            {
+                graphRect.right = w - rightOverflow;
+                if(rightAxesXCoords)
+                {
+                    i = 0;
+                    l = rightAxesXCoords.length;
+                    for(; i < l; ++i)
+                    {
+                        rightAxesXCoords[i] -= diff;
+                    }
+                }
+            }
+        }
+        graphWidth = graphRect.right - graphRect.left;
+        graphHeight = graphRect.bottom - graphRect.top;
+        graphX = graphRect.left;
+        graphY = graphRect.top;
+        if(topAxesCollection)
+        {
+            l = topAxesCollection.length;
+            i = 0;
+            for(; i < l; i++)
+            {
+                axis = topAxesCollection[i];
+                if(axis.get("width") !== graphWidth)
+                {
+                    axis.set("width", graphWidth);
+                }
+                axis.get("boundingBox").setStyle("left", graphX + "px");
+                axis.get("boundingBox").setStyle("top", topAxesYCoords[i] + "px");
             }
             if(axis._hasDataOverflow())
             {
                 graphOverflow = "hidden";
             }
         }
-        
+        if(bottomAxesCollection)
+        {
+            l = bottomAxesCollection.length;
+            i = 0;
+            for(; i < l; i++)
+            {
+                axis = bottomAxesCollection[i];
+                if(axis.get("width") !== graphWidth)
+                {
+                    axis.set("width", graphWidth);
+                }
+                axis.get("boundingBox").setStyle("left", graphX + "px");
+                axis.get("boundingBox").setStyle("top", bottomAxesYCoords[i] + "px");
+            }
+            if(axis._hasDataOverflow())
+            {
+                graphOverflow = "hidden";
+            }
+        }
+        if(leftAxesCollection)
+        {
+            l = leftAxesCollection.length;
+            i = 0;
+            for(; i < l; ++i)
+            {
+                axis = leftAxesCollection[i];
+                axis.get("boundingBox").setStyle("top", graphY + "px");
+                axis.get("boundingBox").setStyle("left", leftAxesXCoords[i] + "px");
+                if(axis.get("height") !== graphHeight)
+                {
+                    axis.set("height", graphHeight);
+                }
+            }
+            if(axis._hasDataOverflow())
+            {
+                graphOverflow = "hidden";
+            }
+        }
+        if(rightAxesCollection)
+        {
+            l = rightAxesCollection.length;
+            i = 0;
+            for(; i < l; ++i)
+            {
+                axis = rightAxesCollection[i];
+                axis.get("boundingBox").setStyle("top", graphY + "px");
+                axis.get("boundingBox").setStyle("left", rightAxesXCoords[i] + "px");
+                if(axis.get("height") !== graphHeight)
+                {
+                    axis.set("height", graphHeight);
+                }
+            }
+            if(axis._hasDataOverflow())
+            {
+                graphOverflow = "hidden";
+            }
+        }
         this._drawing = false;
         if(this._callLater)
         {
@@ -1101,23 +1510,78 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
         }
         if(graph)
         {
-            graph.get("boundingBox").setStyle("left", lw + "px");
-            graph.get("boundingBox").setStyle("top", th + "px");
-            graph.set("width", w - (lw + rw));
-            graph.set("height", h - (th + bh));
+            graph.get("boundingBox").setStyle("left", graphX + "px");
+            graph.get("boundingBox").setStyle("top", graphY + "px");
+            graph.set("width", graphWidth);
+            graph.set("height", graphHeight);
             graph.get("boundingBox").setStyle("overflow", graphOverflow);
         }
 
         if(this._overlay)
         {
-            this._overlay.setStyle("left", lw + "px");
-            this._overlay.setStyle("top", th + "px");
-            this._overlay.setStyle("width", (w - (lw + rw)) + "px");
-            this._overlay.setStyle("height", (h - (th + bh)) + "px");
+            this._overlay.setStyle("left", graphX + "px");
+            this._overlay.setStyle("top", graphY + "px");
+            this._overlay.setStyle("width", graphWidth + "px");
+            this._overlay.setStyle("height", graphHeight + "px");
+        }
+    },
+
+    /**
+     * Destructor implementation for the CartesianChart class. Calls destroy on all axes, series and the Graph instance.
+     * Removes the tooltip and overlay HTML elements.
+     *
+     * @method destructor
+     * @protected
+     */
+    destructor: function()
+    {
+        var graph = this.get("graph"),
+            i = 0,
+            len,
+            seriesCollection = this.get("seriesCollection"),
+            axesCollection = this._axesCollection,
+            tooltip = this.get("tooltip").node;
+        len = seriesCollection ? seriesCollection.length : 0;
+        for(; i < len; ++i)
+        {
+            if(seriesCollection[i] instanceof Y.CartesianSeries)
+            {
+                seriesCollection[i].destroy(true);
+            }
+        }
+        len = axesCollection ? axesCollection.length : 0;
+        for(i = 0; i < len; ++i)
+        {
+            if(axesCollection[i] instanceof Y.Axis)
+            {
+                axesCollection[i].destroy(true);
+            }
+        }
+        if(graph)
+        {
+            graph.destroy(true);
+        }
+        if(tooltip)
+        {
+            tooltip.remove(true);
+        }
+        if(this._overlay)
+        {
+            this._overlay.remove(true);
         }
     }
 }, {
     ATTRS: {
+        /**
+         * Indicates whether axis labels are allowed to overflow beyond the bounds of the chart's content box.
+         *
+         * @attribute allowContentOverflow
+         * @type Boolean
+         */
+        allowContentOverflow: {
+            value: false
+        },
+
         /**
          * Style object for the axes.
          *
@@ -1324,11 +1788,11 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
          * @type Object
          */
         axes: {
-            valueFn: "_parseAxes",
+            valueFn: "_getDefaultAxes",
 
             setter: function(val)
             {
-                return this._parseAxes(val);
+                return this._setAxes(val);
             }
         },
 
@@ -1344,7 +1808,7 @@ Y.CartesianChart = Y.Base.create("cartesianChart", Y.Widget, [Y.ChartBase], {
             
             setter: function(val)
             {
-                return this._getDefaultSeriesCollection(val);
+                return this._parseSeriesCollection(val);
             }
         },
 

@@ -1,6 +1,20 @@
 Widget Change History
 =====================
 
+3.5.0
+-----
+
+ * Refactored some of the box stamping code, to avoid Node references
+   until render. Changed caching mechanism for Y.Widget.getByNode to use node.get("id")
+
+ * Patched after listeners in Widget with a if (e.target === this), so that homogenous 
+   bubbles don't end up changing state at both the source and the target. Broader
+   fix needs to go into Event/EventTarget
+
+ * Optimized focus handler registration, by only registering a single document focus
+   listener and using Widget.getByNode to ship out handling to the specific widget
+   instance.
+
 3.4.1
 -----
 

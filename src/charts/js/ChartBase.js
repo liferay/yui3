@@ -19,12 +19,64 @@ ChartBase.ATTRS = {
      *      <dt>show</dt><dd>Indicates whether or not to show the tooltip</dd>
      *      <dt>markerEventHandler</dt><dd>Displays and hides tooltip based on marker events</dd>
      *      <dt>planarEventHandler</dt><dd>Displays and hides tooltip based on planar events</dd>
-     *      <dt>markerLabelFunction</dt><dd>Reference to the function used to format a marker event triggered tooltip's text</dd>
-     *      <dt>planarLabelFunction</dt><dd>Reference to the function used to format a planar event triggered tooltip's text</dd>
+     *      <dt>markerLabelFunction</dt><dd>Reference to the function used to format a marker event triggered tooltip's text. The method contains 
+     *      the following arguments:
+     *  <dl>
+     *      <dt>categoryItem</dt><dd>An object containing the following:
+     *  <dl>
+     *      <dt>axis</dt><dd>The axis to which the category is bound.</dd>
+     *      <dt>displayName</dt><dd>The display name set to the category (defaults to key if not provided).</dd>
+     *      <dt>key</dt><dd>The key of the category.</dd>
+     *      <dt>value</dt><dd>The value of the category.</dd>
+     *  </dl>
+     *  </dd>
+     *  <dt>valueItem</dt><dd>An object containing the following:
+     *      <dl>
+     *          <dt>axis</dt><dd>The axis to which the item's series is bound.</dd>
+     *          <dt>displayName</dt><dd>The display name of the series. (defaults to key if not provided)</dd>
+     *          <dt>key</dt><dd>The key for the series.</dd>
+     *          <dt>value</dt><dd>The value for the series item.</dd> 
+     *      </dl>
+     *  </dd>
+     *  <dt>itemIndex</dt><dd>The index of the item within the series.</dd>
+     *  <dt>series</dt><dd> The `CartesianSeries` instance of the item.</dd>
+     *  <dt>seriesIndex</dt><dd>The index of the series in the `seriesCollection`.</dd>
+     *  </dl>
+     *  The method returns an `HTMLElement` which is written into the DOM using `appendChild`. If you override this method and choose to return an html string, you
+     *  will also need to override the tooltip's `setTextFunction` method to accept an html string.
+     *  </dd>
+     *  <dt>planarLabelFunction</dt><dd>Reference to the function used to format a planar event triggered tooltip's text
+     *  <dl>
+     *      <dt>categoryAxis</dt><dd> `CategoryAxis` Reference to the categoryAxis of the chart.
+     *      <dt>valueItems</dt><dd>Array of objects for each series that has a data point in the coordinate plane of the event. Each object contains the following data:
+     *  <dl>
+     *      <dt>axis</dt><dd>The value axis of the series.</dd>
+     *      <dt>key</dt><dd>The key for the series.</dd>
+     *      <dt>value</dt><dd>The value for the series item.</dd>
+     *      <dt>displayName</dt><dd>The display name of the series. (defaults to key if not provided)</dd>
+     *  </dl> 
+     *  </dd>
+     *      <dt>index</dt><dd>The index of the item within its series.</dd>
+     *      <dt>seriesArray</dt><dd>Array of series instances for each value item.</dd>
+     *      <dt>seriesIndex</dt><dd>The index of the series in the `seriesCollection`.</dd>
+     *  </dl>
+     *  </dd>
+     *  </dl>
+     *  The method returns an `HTMLElement` which is written into the DOM using `appendChild`. If you override this method and choose to return an html string, you
+     *  will also need to override the tooltip's `setTextFunction` method to accept an html string.
+     *  </dd>
+     *  <dt>setTextFunction</dt><dd>Method that writes content returned from `planarLabelFunction` or `markerLabelFunction` into the the tooltip node.
+     *  has the following signature:
+     *  <dl>
+     *      <dt>label</dt><dd>The `HTMLElement` that the content is to be added.</dd>
+     *      <dt>val</dt><dd>The content to be rendered into tooltip. This can be a `String` or `HTMLElement`. If an HTML string is used, it will be rendered as a
+     *      string.</dd>
+     *  </dl>
+     *  </dd>
      *  </dl>
      * @attribute tooltip
      * @type Object
-     */
+     */ 
     tooltip: {
         valueFn: "_getTooltip",
 
@@ -117,7 +169,26 @@ ChartBase.ATTRS = {
      */
     graph: {
         valueFn: "_getGraph"
-   }
+    },
+
+    /**
+     * Indicates whether or not markers for a series will be grouped and rendered in a single complex shape instance.
+     *
+     * @attribute groupMarkers
+     * @type Boolean
+     */
+    groupMarkers: {
+        value: false,
+
+        setter: function(val)
+        {
+            if(this.get("graph"))
+            {
+                this.get("graph").set("groupMarkers", val);
+            }
+            return val;
+        }
+    }
 };
 
 ChartBase.prototype = {
@@ -130,7 +201,10 @@ ChartBase.prototype = {
      */
     _getGraph: function()
     {
-        var graph = new Y.Graph({chart:this});
+        var graph = new Y.Graph({
+            chart:this,
+            groupMarkers: this.get("groupMarkers")    
+        });
         graph.after("chartRendered", Y.bind(function(e) {
             this.fire("chartRendered");
         }, this));
@@ -176,7 +250,7 @@ ChartBase.prototype = {
     {
         var axis,
             axes = this.get("axes");
-        if(axes.hasOwnProperty(val))
+        if(axes && axes.hasOwnProperty(val))
         {
             axis = axes[val];
         }
@@ -310,6 +384,16 @@ ChartBase.prototype = {
     _axes: null,
 
     /**
+     * @method initializer
+     * @private
+     */
+    initializer: function()
+    {
+        this._axesRenderQueue = [];
+        this.after("dataProviderChange", this._dataProviderChangeHandler);
+    },
+
+    /**
      * @method renderUI
      * @private
      */
@@ -327,7 +411,7 @@ ChartBase.prototype = {
         }
         this._redraw();
     },
-    
+   
     /**
      * @property bindUI
      * @private
@@ -337,7 +421,6 @@ ChartBase.prototype = {
         this.after("tooltipChange", Y.bind(this._tooltipChangeHandler, this));
         this.after("widthChange", this._sizeChanged);
         this.after("heightChange", this._sizeChanged);
-        this.after("dataProviderChange", this._dataProviderChangeHandler);
         var tt = this.get("tooltip"),
             hideEvent = "mouseout",
             showEvent = "mouseover",
@@ -543,14 +626,17 @@ ChartBase.prototype = {
             axes = this.get("axes"),
             i,
             axis;
-        for(i in axes)
+        if(axes)
         {
-            if(axes.hasOwnProperty(i))
+            for(i in axes)
             {
-                axis = axes[i];
-                if(axis instanceof Y.Axis)
+                if(axes.hasOwnProperty(i))
                 {
-                    axis.set("dataProvider", dataProvider);
+                    axis = axes[i];
+                    if(axis instanceof Y.Axis)
+                    {
+                        axis.set("dataProvider", dataProvider);
+                    }
                 }
             }
         }
@@ -592,7 +678,7 @@ ChartBase.prototype = {
         if(msg)
         {
             tt.visible = true;
-            node.set("innerHTML", msg);
+            tt.setTextFunction(node, msg);
             node.setStyle("top", y + "px");
             node.setStyle("left", x + "px");
             node.setStyle("visibility", "visible");
@@ -674,6 +760,7 @@ ChartBase.prototype = {
             props = {
                 markerLabelFunction:"markerLabelFunction",
                 planarLabelFunction:"planarLabelFunction",
+                setTextFunction:"setTextFunction",
                 showEvent:"showEvent",
                 hideEvent:"hideEvent",
                 markerEventHandler:"markerEventHandler",
@@ -717,6 +804,7 @@ ChartBase.prototype = {
     {
         var node = DOCUMENT.createElement("div"),
             tt = {
+                setTextFunction: this._setText,
                 markerLabelFunction: this._tooltipLabelFunction,
                 planarLabelFunction: this._planarLabelFunction,
                 show: true,
@@ -772,11 +860,12 @@ ChartBase.prototype = {
      *  @param {Number} index The index of the item within its series.
      *  @param {Array} seriesArray Array of series instances for each value item.
      *  @param {Number} seriesIndex The index of the series in the `seriesCollection`.
+     *  @return {String | HTML} 
      * @private
      */
     _planarLabelFunction: function(categoryAxis, valueItems, index, seriesArray, seriesIndex)
     {
-        var msg = "",
+        var msg = DOCUMENT.createElement("div"),
             valueItem,
             i = 0,
             len = seriesArray.length,
@@ -784,7 +873,7 @@ ChartBase.prototype = {
             series;
         if(categoryAxis)
         {
-            msg += categoryAxis.get("labelFunction").apply(this, [categoryAxis.getKeyValueAt(this.get("categoryKey"), index), categoryAxis.get("labelFormat")]);
+            msg.appendChild(DOCUMENT.createTextNode(categoryAxis.get("labelFunction").apply(this, [categoryAxis.getKeyValueAt(this.get("categoryKey"), index), categoryAxis.get("labelFormat")])));
         }
 
         for(; i < len; ++i)
@@ -794,7 +883,8 @@ ChartBase.prototype = {
             {
                 valueItem = valueItems[i];
                 axis = valueItem.axis;
-                msg += "<br/><span>" + valueItem.displayName + ": " + axis.get("labelFunction").apply(this, [axis.getKeyValueAt(valueItem.key, index), axis.get("labelFormat")]) + "</span>";
+                msg.appendChild(DOCUMENT.createElement("br"));
+                msg.appendChild(DOCUMENT.createTextNode(valueItem.displayName + ": " + axis.get("labelFunction").apply(this, [axis.getKeyValueAt(valueItem.key, index), axis.get("labelFormat")])));
             }
         }
         return msg;
@@ -821,14 +911,17 @@ ChartBase.prototype = {
      * @param {Number} itemIndex The index of the item within the series.
      * @param {CartesianSeries} series The `CartesianSeries` instance of the item.
      * @param {Number} seriesIndex The index of the series in the `seriesCollection`.
+     * @return {String | HTML}
      * @private
      */
     _tooltipLabelFunction: function(categoryItem, valueItem, itemIndex, series, seriesIndex)
     {
-        var msg = categoryItem.displayName +
-        ":&nbsp;" + categoryItem.axis.get("labelFunction").apply(this, [categoryItem.value, categoryItem.axis.get("labelFormat")]) + 
-        "<br/>" + valueItem.displayName + 
-        ":&nbsp;" + valueItem.axis.get("labelFunction").apply(this, [valueItem.value, valueItem.axis.get("labelFormat")]);
+        var msg = DOCUMENT.createElement("div");
+        msg.appendChild(DOCUMENT.createTextNode(categoryItem.displayName +
+        ": " + categoryItem.axis.get("labelFunction").apply(this, [categoryItem.value, categoryItem.axis.get("labelFormat")]))); 
+        msg.appendChild(DOCUMENT.createElement("br"));
+        msg.appendChild(DOCUMENT.createTextNode(valueItem.displayName + 
+        ": " + valueItem.axis.get("labelFunction").apply(this, [valueItem.value, valueItem.axis.get("labelFormat")])));
         return msg; 
     },
 
@@ -855,6 +948,33 @@ ChartBase.prototype = {
                 }
             }
         }
+    },
+    
+    /**
+     * Updates the content of text field. This method writes a value into a text field using 
+     * `appendChild`. If the value is a `String`, it is converted to a `TextNode` first. 
+     *
+     * @method _setText
+     * @param label {HTMLElement} label to be updated
+     * @param val {String} value with which to update the label
+     * @private
+     */
+    _setText: function(textField, val)
+    { 
+        textField.setContent("");
+        if(Y_Lang.isNumber(val))
+        {
+            val = val + "";
+        }
+        else if(!val)
+        {
+            val = "";
+        }
+        if(IS_STRING(val))
+        {
+            val = DOCUMENT.createTextNode(val);
+        }
+        textField.appendChild(val);
     }
 };
 Y.ChartBase = ChartBase;

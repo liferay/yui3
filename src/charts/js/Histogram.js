@@ -45,7 +45,20 @@ Histogram.prototype = {
             calculatedSizeKey,
             config,
             fillColors = null,
-            borderColors = null;
+            borderColors = null,
+            xMarkerPlane = [],
+            yMarkerPlane = [],
+            xMarkerPlaneLeft,
+            xMarkerPlaneRight,
+            yMarkerPlaneTop,
+            yMarkerPlaneBottom,
+            dimensions = {
+                width: [],
+                height: []
+            },
+            xvalues = [],
+            yvalues = [],
+            groupMarkers = this.get("groupMarkers");
         if(Y_Lang.isArray(style.fill.color))
         {
             fillColors = style.fill.color.concat(); 
@@ -77,17 +90,25 @@ Histogram.prototype = {
             }
         }
         totalSize = len * seriesSize;
-        if(totalSize > graph.get(setSizeKey))
+        this._maxSize = graph.get(setSizeKey);
+        if(totalSize > this._maxSize)
         {
             ratio = graph.get(setSizeKey)/totalSize;
             seriesSize *= ratio;
             offset *= ratio;
             setSize *= ratio;
             setSize = Math.max(setSize, 1);
+            this._maxSize = setSize;
         }
         offset -= seriesSize/2;
         for(i = 0; i < len; ++i)
         {
+            xMarkerPlaneLeft = xcoords[i] - seriesSize/2;
+            xMarkerPlaneRight = xMarkerPlaneLeft + seriesSize;
+            yMarkerPlaneTop = ycoords[i] - seriesSize/2;
+            yMarkerPlaneBottom = yMarkerPlaneTop + seriesSize;
+            xMarkerPlane.push({start: xMarkerPlaneLeft, end: xMarkerPlaneRight});
+            yMarkerPlane.push({start: yMarkerPlaneTop, end: yMarkerPlaneBottom});
             if(isNaN(xcoords[i]) || isNaN(ycoords[i]))
             {
                 this._markers.push(null);
@@ -98,26 +119,54 @@ Histogram.prototype = {
             {
                 top = config.top;
                 left = config.left;
-                style[setSizeKey] = setSize;
-                style[calculatedSizeKey] = config.calculatedSize;
-                style.x = left;
-                style.y = top;
-                if(fillColors)
+
+                if(groupMarkers)
                 {
-                    style.fill.color = fillColors[i % fillColors.length];
+                    dimensions[setSizeKey][i] = setSize;
+                    dimensions[calculatedSizeKey][i] = config.calculatedSize;
+                    xvalues.push(left);
+                    yvalues.push(top);
                 }
-                if(borderColors)
+                else
                 {
-                    style.border.colors = borderColors[i % borderColors.length];
+                    style[setSizeKey] = setSize;
+                    style[calculatedSizeKey] = config.calculatedSize;
+                    style.x = left;
+                    style.y = top;
+                    if(fillColors)
+                    {
+                        style.fill.color = fillColors[i % fillColors.length];
+                    }
+                    if(borderColors)
+                    {
+                        style.border.colors = borderColors[i % borderColors.length];
+                    }
+                    marker = this.getMarker(style, graphOrder, i);
                 }
-                marker = this.getMarker(style, graphOrder, i);
+
             }
-            else
+            else if(!groupMarkers)
             {
                 this._markers.push(null);
             }
         }
-        this._clearMarkerCache();
+        this.set("xMarkerPlane", xMarkerPlane);
+        this.set("yMarkerPlane", yMarkerPlane);
+        if(groupMarkers)
+        {
+            this._createGroupMarker({
+                fill: style.fill,
+                border: style.border,
+                dimensions: dimensions,
+                xvalues: xvalues,
+                yvalues: yvalues,
+                shape: style.shape
+            });
+        }
+        else
+        {
+            this._clearMarkerCache();
+        }
     },
     
     /**

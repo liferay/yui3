@@ -16,6 +16,10 @@
 
 <script src="../../../build/yui/yui.js"></script>
 <script>
+var YUI_config = {
+    useNativeES5: (/[?&]useNativeES5=(?:0|false|no)(?:&|$)/i.test(window.location.search) ? false : true)
+};
+
 var Y = YUI({
     allowRollup: false,
     filter: (window.location.search.match(/[?&]filter=([^&]+)/) || [])[1] || 'min',
@@ -23,21 +27,10 @@ var Y = YUI({
         'array-test': {
             fullpath: 'array-test.js',
             requires: ['test']
-        },
-
-        'test-console': {
-            fullpath : '../../common/tests/assets/test-console.js',
-            requires : ['console-filters'],
-            skinnable: true
-        },
-
-        'skin-sam-test-console': {
-            fullpath: '../../common/tests/assets/test-console.css',
-            type    : 'css'
         }
-    },
-    useBrowserConsole: false
+    }
 }).use('array-test', 'test-console', function (Y) {
+    new Y.Test.Console().render('#log');
     Y.Test.Runner.run();
 });
 </script>

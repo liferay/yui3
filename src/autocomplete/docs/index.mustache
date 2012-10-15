@@ -272,6 +272,14 @@ These attributes are provided by `AutoCompleteBase`, which is the core foundatio
     </tr>
 
     <tr>
+      <td>`enableCache`</td>
+      <td>`true`</td>
+      <td>
+        Whether or not to enable in-memory caching in result sources that support it. This can significantly improve performance for result sources that make remote requests (like JSONP, YQL, and XHR), so it's best to leave this enabled unless you have a good reason to disable it.
+      </td>
+    </tr>
+
+    <tr>
       <td>`inputNode`</td>
       <td><em>none</em></td>
       <td>
@@ -321,7 +329,13 @@ These attributes are provided by `AutoCompleteBase`, which is the core foundatio
       <td>`requestTemplate`</td>
       <td>`null`</td>
       <td>
+        <p>
         Source request template. This can be a function that accepts a query as a parameter and returns a string, or it can be a string containing the placeholder "{query}", which will be replaced with the URI-encoded query. The resulting string will be appended to the request URL when the `source` attribute is set to a remote DataSource, JSONP URL, or XHR URL.
+        </p>
+
+        <p>
+        When the `source` attribute is set to a YQL query, the `requestTemplate` value will be inserted in place of the "{request}" placeholder rather than being appended to the YQL query. This can be useful if you need to double-encode query values used in YQL queries.
+        </p>
       </td>
     </tr>
 
@@ -890,7 +904,7 @@ Set the `source` attribute to a <a href="http://developer.yahoo.com/yql/">YQL</a
 </p>
 
 <p>
-The string must include a `{query}` placeholder. On each query, AutoComplete will replace this with the current query and will make a call to YQL to get results.
+The string may include a `{query}` placeholder. On each query, AutoComplete will replace this with the current query and will make a call to YQL to get results.
 </p>
 
 ```
@@ -898,6 +912,10 @@ Y.one('#ac-input').plug(Y.Plugin.AutoComplete, {
   source: 'select * from search.suggest where query="{query}"'
 });
 ```
+
+<p>
+You may use a `{request}` placeholder to insert the `requestTemplate` value rather than the raw query. This allows you to customize the query if desired (such as by double-escaping it, which is necessary for some YQL queries that embed URLs).
+</p>
 
 <p>
 You may also optionally include a `{maxResults}` placeholder in the YQL query, which will be replaced with the value of the `maxResults` attribute (or 1000 if the `maxResults` attribute is less than or equal to 0).
@@ -1629,12 +1647,6 @@ The list markup, which is rendered dynamically, uses the following ARIA attribut
 <h2>Known Issues</h2>
 
 <ul>
-  <li>
-    <p>
-    The accent folding and word breaking implementations require the use of UTF-8 character data. If YUI is used on a page that doesn't specify a UTF-8 charset either via the `Content-Type` HTTP response header or a `<meta charset="utf-8">` tag, an "Invalid range in character set" error may occur in Internet Explorer when the page is loaded from the cache. Specify a charset to avoid triggering this IE bug (you should always specify a charset in any case, since all kinds of bad things can happen if you don't).
-    </p>
-  </li>
-
   <li>
     <p>
     The accent folding implementation used for filters and highlighters is not comprehensive, since it wouldn't be practical to serve a complete set of character data to clients via JS. The implementation used here provides basic accent folding for common alphanumeric characters only, and is not locale-aware. Whenever possible, accent folding should be done on the server, where more complete character data can be used, and not on the client.

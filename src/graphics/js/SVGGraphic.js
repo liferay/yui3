@@ -156,7 +156,10 @@ SVGGraphic.ATTRS = {
         setter: function(val)
         {
             this._resizeDown = val;
-            this._redraw();
+            if(this._contentNode)
+            {
+                this._redraw();
+            }
             return val;
         }
     },
@@ -323,12 +326,11 @@ Y.extend(SVGGraphic, Y.BaseGraphic, {
         var parentNode = Y.one(render),
             w = this.get("width") || parseInt(parentNode.getComputedStyle("width"), 10),
             h = this.get("height") || parseInt(parentNode.getComputedStyle("height"), 10);
-        parentNode = parentNode || DOCUMENT.body;
-        parentNode.appendChild(this._node);
+        parentNode = parentNode || Y.one(DOCUMENT.body);
+        parentNode.append(this._node);
         this.parentNode = parentNode;
         this.set("width", w);
         this.set("height", h);
-        this.parentNode = parentNode;
         return this;
     },
 
@@ -340,10 +342,20 @@ Y.extend(SVGGraphic, Y.BaseGraphic, {
     destroy: function()
     {
         this.removeAllShapes();
-        this._removeChildren(this._node);
-        if(this._node && this._node.parentNode)
+        if(this._contentNode)
         {
-            this._node.parentNode.removeChild(this._node);
+            this._removeChildren(this._contentNode);
+            if(this._contentNode.parentNode)
+            {
+                this._contentNode.parentNode.removeChild(this._contentNode);
+            }
+            this._contentNode = null;
+        }
+        if(this._node)
+        {
+            this._removeChildren(this._node);
+            Y.one(this._node).remove(true);
+            this._node = null;
         }
     },
 
@@ -401,7 +413,7 @@ Y.extend(SVGGraphic, Y.BaseGraphic, {
         }
         if(shape && shape instanceof SVGShape)
         {
-            shape.destroy();
+            shape._destroy();
             delete this._shapes[shape.get("id")];
         }
         if(this.get("autoDraw")) 
@@ -424,7 +436,7 @@ Y.extend(SVGGraphic, Y.BaseGraphic, {
         {
             if(shapes.hasOwnProperty(i))
             {
-                shapes[i].destroy();
+                shapes[i]._destroy();
             }
         }
         this._shapes = {};
@@ -669,7 +681,7 @@ Y.extend(SVGGraphic, Y.BaseGraphic, {
         var contentNode = this._createGraphicNode("svg"),
             pointerEvents = this.get("pointerEvents");
         contentNode.style.position = "absolute";
-        contentNode.style.top = "px";
+        contentNode.style.top = "0px";
         contentNode.style.left = "0px";
         contentNode.style.overflow = "auto";
         contentNode.setAttribute("overflow", "auto");

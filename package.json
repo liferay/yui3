@@ -1,21 +1,24 @@
 {
-    "name": "yui3-core",
-    "version": "3.4.0",
+    "name": "yui",
+    "version": "3.5.0pre",
     "description": "YUI 3 Source",
     "author": "Dav Glass <davglass@gmail.com>",
-    "bugs": { "web" : "http://yuilibrary.com/projects/yui3/" },
+    "bugs": { "url" : "http://yuilibrary.com/projects/yui3/" },
     "os": ["darwin", "linux"],
     "engines": {
-        "node" : ">=0.2.0"
+        "node" : ">=0.4.0"
     },
     "directories": {
         "lib" : "."
     },
-    "main": "./package.js",
+    "main": "./index.js",
+    "dependencies": {
+        "request": "2.9.100"
+    },
     "licenses":[
         {
             "type" : "BSD",
-            "url" : "http://developer.yahoo.com/yui/license.html"
+            "url" : "http://yuilibrary.com/license/"
         }
     ],
     "repository": {

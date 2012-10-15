@@ -120,17 +120,24 @@ Y.mix(Y_DOM, {
                 var xy = null,
                     scrollLeft,
                     scrollTop,
-                    box,
-                    off1, off2,
-                    bLeft, bTop,
                     mode,
+                    box,
+                    offX,
+                    offY,
                     doc,
+                    win,
                     inDoc,
                     rootNode;
 
                 if (node && node.tagName) {
                     doc = node.ownerDocument;
-                    rootNode = doc[DOCUMENT_ELEMENT];
+                    mode = doc[COMPAT_MODE];
+
+                    if (mode !== _BACK_COMPAT) {
+                        rootNode = doc[DOCUMENT_ELEMENT];
+                    } else {
+                        rootNode = doc.body;
+                    }
 
                     // inline inDoc check for perf
                     if (rootNode.contains) {
@@ -140,39 +147,31 @@ Y.mix(Y_DOM, {
                     }
 
                     if (inDoc) {
-                        scrollLeft = (SCROLL_NODE) ? doc[SCROLL_NODE].scrollLeft : Y_DOM.docScrollX(node, doc);
-                        scrollTop = (SCROLL_NODE) ? doc[SCROLL_NODE].scrollTop : Y_DOM.docScrollY(node, doc);
+                        win = doc.defaultView;
+
+                        // inline scroll calc for perf
+                        if (win && 'pageXOffset' in win) {
+                            scrollLeft = win.pageXOffset;
+                            scrollTop = win.pageYOffset;
+                        } else {
+                            scrollLeft = (SCROLL_NODE) ? doc[SCROLL_NODE].scrollLeft : Y_DOM.docScrollX(node, doc);
+                            scrollTop = (SCROLL_NODE) ? doc[SCROLL_NODE].scrollTop : Y_DOM.docScrollY(node, doc);
+                        }
+
+                        if (Y.UA.ie) { // IE < 8, quirks, or compatMode
+                            if (!doc.documentMode || doc.documentMode < 8 || mode === _BACK_COMPAT) {
+                                offX = rootNode.clientLeft;
+                                offY = rootNode.clientTop;
+                            }
+                        }
                         box = node[GET_BOUNDING_CLIENT_RECT]();
                         xy = [box.left, box.top];
 
-                            if (Y.UA.ie) {
-                                off1 = 2;
-                                off2 = 2;
-                                mode = doc[COMPAT_MODE];
-                                bLeft = Y_DOM[GET_COMPUTED_STYLE](doc[DOCUMENT_ELEMENT], BORDER_LEFT_WIDTH);
-                                bTop = Y_DOM[GET_COMPUTED_STYLE](doc[DOCUMENT_ELEMENT], BORDER_TOP_WIDTH);
-
-                                if (Y.UA.ie === 6) {
-                                    if (mode !== _BACK_COMPAT) {
-                                        off1 = 0;
-                                        off2 = 0;
-                                    }
-                                }
-                                
-                                if ((mode == _BACK_COMPAT)) {
-                                    if (bLeft !== MEDIUM) {
-                                        off1 = parseInt(bLeft, 10);
-                                    }
-                                    if (bTop !== MEDIUM) {
-                                        off2 = parseInt(bTop, 10);
-                                    }
-                                }
-                                
-                                xy[0] -= off1;
-                                xy[1] -= off2;
-
-                            }
-
+                        if (offX || offY) {
+                                xy[0] -= offX;
+                                xy[1] -= offY;
+                            
+                        }
                         if ((scrollTop || scrollLeft)) {
                             if (!Y.UA.ios || (Y.UA.ios >= 4.2)) {
                                 xy[0] += scrollLeft;
@@ -185,7 +184,7 @@ Y.mix(Y_DOM, {
                     }
                 }
                 return xy;                   
-            }
+            };
         } else {
             return function(node) { // manually calculate by crawling up offsetParents
                 //Calculate the Top and Left border sizes (assumes pixels)
@@ -249,6 +248,32 @@ Y.mix(Y_DOM, {
             };
         }
     }(),// NOTE: Executing for loadtime branching
+
+    /**
+    Gets the width of vertical scrollbars on overflowed containers in the body
+    content.
+
+    @method getScrollbarWidth
+    @return {Number} Pixel width of a scrollbar in the current browser
+    **/
+    getScrollbarWidth: Y.cached(function () {
+        var doc      = Y.config.doc,
+            testNode = doc.createElement('div'),
+            body     = doc.getElementsByTagName('body')[0],
+            // 0.1 because cached doesn't support falsy refetch values
+            width    = 0.1;
+            
+        if (body) {
+            testNode.style.cssText = "position:absolute;visibility:hidden;overflow:scroll;width:20px;";
+            testNode.appendChild(doc.createElement('p')).style.height = '1px';
+            body.insertBefore(testNode, body.firstChild);
+            width = testNode.offsetWidth - testNode.clientWidth;
+
+            body.removeChild(testNode);
+        }
+
+        return width;
+    }, null, 0.1),
 
     /**
      * Gets the current X position of an element based on page coordinates. 

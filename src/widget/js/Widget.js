@@ -803,15 +803,18 @@ Y.extend(Widget, Y.Base, {
         var classes = this._getClasses(),
             cl,
             boundingBox = this.get(BOUNDING_BOX),
-            i;
+            i,
+            buffer = [];
 
-        boundingBox.addClass(_getWidgetClassName());
+        buffer.push(_getWidgetClassName());
 
         // Start from Widget Sub Class
         for (i = classes.length-3; i >= 0; i--) {
             cl = classes[i];
-            boundingBox.addClass(cl.CSS_PREFIX || _getClassName(cl.NAME.toLowerCase()));
+            buffer.push(cl.CSS_PREFIX || _getClassName(cl.NAME.toLowerCase()));
         }
+
+        boundingBox.addClass(buffer.join(' '));
 
         // Use instance based name for content box
         this.get(CONTENT_BOX).addClass(this.getClassName(CONTENT));

@@ -160,4 +160,5 @@ Y.mix(Widget.prototype, {
 });
 
 
+
 }, '@VERSION@' ,{requires:['widget-base']});

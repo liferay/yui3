@@ -40,4 +40,5 @@ Y.Widget.prototype.getSkinName = function () {
 };
 
 
+
 }, '@VERSION@' ,{requires:['widget-base']});

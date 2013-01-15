@@ -223,4 +223,5 @@ Y.mix(Widget.prototype, {
 }, true); // overwrite existing EventTarget methods
 
 
+
 }, '@VERSION@' ,{requires:['widget-base', 'node-event-delegate']});

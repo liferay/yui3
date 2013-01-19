@@ -10,6 +10,7 @@ if (!GLOBAL_ENV._ready) {
     GLOBAL_ENV.add(YUI.config.doc, 'DOMContentLoaded', GLOBAL_ENV._ready);
 }
 })();
+
 YUI.add('event-base', function(Y) {
 
 /*
@@ -49,6 +50,7 @@ if (YUI.Env.DOMReady) {
 } else {
     Y.Do.before(function() { Y.fire('domready'); }, YUI.Env, '_ready');
 }
+
 
 /**
  * Custom event engine, DOM event listener abstraction layer, synthetic DOM
@@ -361,6 +363,7 @@ Y.DOMEventFacade = DOMEventFacade;
      * @param immediate {boolean} if true additional listeners
      * on the current target will not be executed
      */
+
 (function() {
 /**
  * The event utility provides functions to add and remove event listeners,
@@ -420,7 +423,7 @@ var _eventenv = Y.Env.evt,
     _deleteAndClean = function(s) {
         var ret = _ceProtoDelete.apply(this, arguments);
 
-        if (!this.subCount && !this.afterCount) {
+        if (!this.hasSubs()) {
             Y.Event._clean(this);
         }
 
@@ -1293,6 +1296,7 @@ Event._poll();
 
 })();
 
+
 /**
  * DOM event listener abstraction layer
  * @module event
@@ -1346,4 +1350,6 @@ Y.Env.evt.plugins.contentready = {
 };
 
 
+
 }, '@VERSION@' ,{requires:['event-custom-base']});
+

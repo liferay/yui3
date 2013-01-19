@@ -38,6 +38,7 @@ if (docElement.doScroll && !GLOBAL_ENV._ieready) {
 }
 
 })();
+
 YUI.add('event-base-ie', function(Y) {
 
 /*
@@ -318,4 +319,6 @@ if (imp && (!imp.hasFeature('Events', '2.0'))) {
 }
 
 
-}, '@VERSION@' ,{after:['event-base'], requires:['node-base']});
+
+}, '@VERSION@' ,{requires:['node-base'], after:['event-base']});
+

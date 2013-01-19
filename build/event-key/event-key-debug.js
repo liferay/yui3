@@ -161,4 +161,5 @@ eventDef.detachDelegate = eventDef.detach;
 Y.Event.define('key', eventDef, true);
 
 
+
 }, '@VERSION@' ,{requires:['event-synthetic']});

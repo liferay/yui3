@@ -50,4 +50,5 @@ Y.Event.define('windowresize', {
 });
 
 
+
 }, '@VERSION@' ,{requires:['event-synthetic']});

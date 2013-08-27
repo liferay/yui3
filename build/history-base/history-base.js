@@ -8,6 +8,7 @@ YUI.add('history-base', function(Y) {
  * application that doesn't perform full-page refreshes.
  *
  * @module history
+ * @main history
  * @since 3.2.0
  */
 
@@ -633,6 +634,7 @@ Y.mix(HistoryBase.prototype, {
 }, true);
 
 Y.HistoryBase = HistoryBase;
+
 
 
 }, '@VERSION@' ,{requires:['event-custom-complex']});

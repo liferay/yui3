@@ -156,6 +156,12 @@ button {
             <li class="bar">item 4</li>
         </ol>
     </div>
+    <div id="test-comments">
+        <!-- comment -->
+        <div>child 1</div>
+        <!-- comment -->
+        <div>child 2</div>
+    </div>
 
     <table id="test-table">
         <tr><td id="test-td"><div><div>grandchild of td</div></div></td></tr>
@@ -1384,7 +1390,7 @@ YUI({
                 called = true;
             });
 
-            Assert.isTrue(called);            
+            Assert.isTrue(called);
             node.removeAttribute('hidden');
             node.setStyle('display', 'block');
         },
@@ -1400,7 +1406,7 @@ YUI({
                 called = true;
             });
 
-            Assert.isTrue(called); 
+            Assert.isTrue(called);
             node.removeAttribute('hidden');
             node.setStyle('display', 'block');
         },
@@ -1426,7 +1432,7 @@ YUI({
                 called = true;
             });
 
-            Assert.isTrue(called); 
+            Assert.isTrue(called);
             node.removeAttribute('hidden');
             node.setStyle('display', 'block');
         },
@@ -1446,14 +1452,14 @@ YUI({
             var node = Y.one('body'),
                 called = false;
 
-            node.setAttribute('hidden', true);    
+            node.setAttribute('hidden', true);
             node.setStyle('display', 'none');
 
             node.toggleView('foo', function() {
                 called = true;
             });
 
-            Assert.isTrue(called);            
+            Assert.isTrue(called);
             node.removeAttribute('hidden');
             Assert.areEqual('block', node.getStyle('display'));
         },
@@ -1949,7 +1955,7 @@ YUI({
             node.setHTML(html);
             Assert.areEqual(html, node.getHTML());
 
-            // make sure node's contents have not disappeared 
+            // make sure node's contents have not disappeared
             Assert.areEqual(node.get("children").size(), 1);
         }
     }));

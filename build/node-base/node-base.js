@@ -436,12 +436,12 @@ Y_Node.ATTRS = {
                 children = node.children,
                 childNodes, i, len;
 
-            if (!children) {
+            if (!children || (Y.UA.ie && Y.UA.ie < 9)) {
                 childNodes = node.childNodes;
                 children = [];
 
                 for (i = 0, len = childNodes.length; i < len; ++i) {
-                    if (childNodes[i].tagName) {
+                    if (childNodes[i].tagName && (childNodes[i].nodeType === 1)) {
                         children[children.length] = childNodes[i];
                     }
                 }

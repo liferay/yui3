@@ -124,6 +124,10 @@ YUI.add('node-attrs-test', function(Y) {
             Assert.isTrue('slice' in Y.one('form').get('childNodes')._nodes);
         },
 
+        'should return children excluding comments': function() {
+            Assert.areEqual(2, Y.one('#test-comments').get('children').size());
+        },
+
         test_getters: function() {
             var id = 'test-nodes',
                 element = document.getElementById(id),

@@ -1,4 +1,3 @@
-(function(Y) {
 /**
  * Add style management functionality to DOM.
  * @module dom
@@ -17,9 +16,7 @@ var DOCUMENT_ELEMENT = 'documentElement',
     GET_COMPUTED_STYLE = 'getComputedStyle',
     GET_BOUNDING_CLIENT_RECT = 'getBoundingClientRect',
 
-    WINDOW = Y.config.win,
     DOCUMENT = Y.config.doc,
-    UNDEFINED = undefined,
 
     Y_DOM = Y.DOM,
 
@@ -52,9 +49,10 @@ Y.mix(Y_DOM, {
     /**
      * Sets a style property for a given element.
      * @method setStyle
-     * @param {HTMLElement} An HTMLElement to apply the style to.
+     * @param {HTMLElement} node The HTMLElement to apply the style to.
      * @param {String} att The style property to set.
      * @param {String|Number} val The value.
+     * @param {Object} [style] The style node. Defaults to `node.style`.
      */
     setStyle: function(node, att, val, style) {
         style = style || node.style;
@@ -63,7 +61,7 @@ Y.mix(Y_DOM, {
         if (style) {
             if (val === null || val === '') { // normalize unsetting
                 val = '';
-            } else if (!isNaN(new Number(val)) && re_unit.test(att)) { // number values may need a unit
+            } else if (!isNaN(Number(val)) && re_unit.test(att)) { // number values may need a unit
                 val += Y_DOM.DEFAULT_UNIT;
             }
 
@@ -85,8 +83,9 @@ Y.mix(Y_DOM, {
     /**
      * Returns the current style value for the given property.
      * @method getStyle
-     * @param {HTMLElement} An HTMLElement to get the style from.
+     * @param {HTMLElement} node The HTMLElement to get the style from.
      * @param {String} att The style property to get.
+     * @param {Object} [style] The style node. Defaults to `node.style`.
      */
     getStyle: function(node, att, style) {
         style = style || node.style;
@@ -113,7 +112,7 @@ Y.mix(Y_DOM, {
     /**
      * Sets multiple style properties.
      * @method setStyles
-     * @param {HTMLElement} node An HTMLElement to apply the styles to.
+     * @param {HTMLElement} node The HTMLElement to apply the styles to.
      * @param {Object} hash An object literal of property:value pairs.
      */
     setStyles: function(node, hash) {
@@ -126,7 +125,7 @@ Y.mix(Y_DOM, {
     /**
      * Returns the computed style for the given node.
      * @method getComputedStyle
-     * @param {HTMLElement} An HTMLElement to get the style from.
+     * @param {HTMLElement} node The HTMLElement to get the style from.
      * @param {String} att The style property to get.
      * @return {String} The computed value of the style property.
      */
@@ -146,9 +145,9 @@ Y.mix(Y_DOM, {
 });
 
 // normalize reserved word float alternatives ("cssFloat" or "styleFloat")
-if (DOCUMENT[DOCUMENT_ELEMENT][STYLE][CSS_FLOAT] !== UNDEFINED) {
+if (DOCUMENT[DOCUMENT_ELEMENT][STYLE][CSS_FLOAT] !== undefined) {
     Y_DOM.CUSTOM_STYLES[FLOAT] = CSS_FLOAT;
-} else if (DOCUMENT[DOCUMENT_ELEMENT][STYLE][STYLE_FLOAT] !== UNDEFINED) {
+} else if (DOCUMENT[DOCUMENT_ELEMENT][STYLE][STYLE_FLOAT] !== undefined) {
     Y_DOM.CUSTOM_STYLES[FLOAT] = STYLE_FLOAT;
 }
 
@@ -207,21 +206,33 @@ Y.DOM._getAttrOffset = function(node, attr) {
     return val;
 };
 
-Y.DOM._getOffset = function(node) {
+Y.DOM._getOffset = function(node, dir) {
     var pos,
-        xy = null;
+        xy = null,
+        offset = {
+            left: 'offsetLeft',
+            right: 'offsetRight'
+        },
+        margins = {
+            left: 'marginLeft',
+            right: 'marginRight'
+        },
+        margin;
+
+    dir = dir || 'left';
 
     if (node) {
         pos = Y_DOM.getStyle(node, 'position');
+        margin = parseInt(Y_DOM[GET_COMPUTED_STYLE](node, margins[dir]), 10);
         xy = [
-            parseInt(Y_DOM[GET_COMPUTED_STYLE](node, 'left'), 10),
+            parseInt(Y_DOM[GET_COMPUTED_STYLE](node, dir), 10),
             parseInt(Y_DOM[GET_COMPUTED_STYLE](node, 'top'), 10)
         ];
 
         if ( isNaN(xy[0]) ) { // in case of 'auto'
-            xy[0] = parseInt(Y_DOM.getStyle(node, 'left'), 10); // try inline
+            xy[0] = parseInt(Y_DOM.getStyle(node, dir), 10); // try inline
             if ( isNaN(xy[0]) ) { // default to offset value
-                xy[0] = (pos === 'relative') ? 0 : node.offsetLeft || 0;
+                xy[0] = (pos === 'relative') ? 0 : (node[offset[dir]] - margin) || 0;
             }
         }
 
@@ -242,7 +253,7 @@ Y_DOM.CUSTOM_STYLES.transform = {
         style[TRANSFORM] = val;
     },
 
-    get: function(node, style) {
+    get: function(node) {
         return Y_DOM[GET_COMPUTED_STYLE](node, TRANSFORM);
     }
 };
@@ -252,10 +263,7 @@ Y_DOM.CUSTOM_STYLES.transformOrigin = {
         style[TRANSFORMORIGIN] = val;
     },
 
-    get: function(node, style) {
+    get: function(node) {
         return Y_DOM[GET_COMPUTED_STYLE](node, TRANSFORMORIGIN);
     }
 };
-
-
-})(Y);

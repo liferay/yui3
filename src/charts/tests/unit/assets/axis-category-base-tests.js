@@ -2,7 +2,7 @@ YUI.add('axis-category-base-tests', function(Y) {
     Y.CategoryAxisBaseTest = function() {
         Y.CategoryAxisBaseTest.superclass.constructor.apply(this, arguments);
         this.prepValues();
-    }
+    };
     Y.extend(Y.CategoryAxisBaseTest, Y.ChartTestTemplate, {
         prepValues : function() {
             this.dataMaximum = this.dataProvider.length - 1;
@@ -17,7 +17,9 @@ YUI.add('axis-category-base-tests', function(Y) {
 
         tearDown: function() {
             this.axis = null;
+            Y.Event.purgeElement(DOC, false);
         },
+
 
         "test: get('type')" : function() {
             Y.Assert.isInstanceOf(Y.CategoryAxisBase, this.axis, "The axis should be and instanceof CategoryAxisBase.");
@@ -40,16 +42,16 @@ YUI.add('axis-category-base-tests', function(Y) {
                 if(defaultMajorUnit.hasOwnProperty(key)) {
                     Y.Assert.isTrue(axisMajorUnit.hasOwnProperty(key), "The default axis styles.majorUnit should contain a " + key + " property.");
                     Y.Assert.areEqual(
-                        defaultMajorUnit[key], 
-                        axisMajorUnit[key], 
+                        defaultMajorUnit[key],
+                        axisMajorUnit[key],
                         "The default axis styles.majorUnit." + key + " property should be equal to the defaultMajorUnit." + key + " property."
-                    ); 
+                    );
                 }
            }
         },
 
         "test: set('dataProvider')" : function() {
-            Y.Assert.areEqual(this.dataProvider, this.axis.get("dataProvider"), "The dataProvider attribute should equal the values it received.");  
+            Y.Assert.areEqual(this.dataProvider, this.axis.get("dataProvider"), "The dataProvider attribute should equal the values it received.");
         },
 
         "test: set('keys')" : function() {
@@ -62,21 +64,21 @@ YUI.add('axis-category-base-tests', function(Y) {
             axisKeys = this.axis.get("keys");
             dateDataByKey = this.axis.getDataByKey("date");
             len = this.dataProvider.length;
-            
+
             for(i = 0; i < len; i = i + 1) {
                 Y.Assert.areEqual(this.dateValues[i], axisKeys.date[i], "The keys attribute should be equal to the values it received.");
                 Y.Assert.areEqual(i, dateDataByKey[i], "The getDataByKey method should return the correct values.");
                 dateKeyValue = this.axis.getKeyValueAt("date", i);
                 Y.Assert.areEqual(
-                    this.dateValues[i], 
-                    dateKeyValue, 
+                    this.dateValues[i],
+                    dateKeyValue,
                     'The axis.getKeyValueAt("date", ' + i + ') method should return a value of ' + this.dateValues[i] + '.'
                 );
             }
 
             Y.Assert.isNaN(this.axis.getKeyValueAt("nonexistantkey", 4), "The axis.getKeyValueAt method should return NaN for a non-existant key.");
         },
-        
+
         "test: addKey()" : function() {
             var i,
                 len = this.dataProvider.length,
@@ -91,8 +93,8 @@ YUI.add('axis-category-base-tests', function(Y) {
                 Y.Assert.areEqual(i, dateDataByKey[i], "The getDataByKey method should return the correct values.");
                 dateKeyValue = this.axis.getKeyValueAt("date", i);
                 Y.Assert.areEqual(
-                    this.dateValues[i], 
-                    dateKeyValue, 
+                    this.dateValues[i],
+                    dateKeyValue,
                     'The axis.getKeyValueAt("date", ' + i + ') method should return a value of ' + this.dateValues[i] + '.'
                 );
             }
@@ -126,7 +128,7 @@ YUI.add('axis-category-base-tests', function(Y) {
         "test: get('dataMaximum')" : function() {
             var dataMaximum;
             this.axis.set("keys", this.keys);
-            dataMaximum = this.axis.get("dataMaximum")
+            dataMaximum = this.axis.get("dataMaximum");
             Y.Assert.isTrue(dataMaximum >= this.dataMaximum, "The value for the attribute dataMaximum (" + dataMaximum + ") should be greater than or equal to " + this.dataMaximum + ".");
         },
 
@@ -138,13 +140,13 @@ YUI.add('axis-category-base-tests', function(Y) {
         },
 
         "test: getTotalMajorUnits()" : function() {
-            var len = this.dataProvider.length; 
+            var len = this.dataProvider.length;
             this.axis.set("keys", this.keys);
             Y.Assert.areEqual(len, this.axis.getTotalMajorUnits(), "The getTotalMajorUnits method should return " + len + ".");
         },
 
         "test: set('maximum')" : function() {
-            var setMaximum = this.setMaximum; 
+            var setMaximum = this.setMaximum;
             this.axis.set("keys", this.keys);
             this.axis.set("maximum", this.setMaximum);
             Y.Assert.areEqual(setMaximum, this.axis.get("maximum"), "The get max method should return " + this.setMaximum + ".");
@@ -172,7 +174,7 @@ YUI.add('axis-category-base-tests', function(Y) {
             Y.Assert.isTrue(this.axis._getSetMax(), "The _getSetMax method should return true.");
             Y.Assert.isTrue(this.axis._getSetMin(), "The _getSetMin method should return true.");
         },
-        
+
         "test: labelFunction()" : function() {
             var val = "10/15/2012";
              Y.Assert.areEqual(val, this.axis.get("labelFunction")(val), "The label should equal " + val + ".");
@@ -202,15 +204,38 @@ YUI.add('axis-category-base-tests', function(Y) {
                 Y.Assert.areEqual(i, dateDataByKey[i], "The getDataByKey method should return the correct values.");
                 dateKeyValue = this.axis.getKeyValueAt("date", i);
                 Y.Assert.areEqual(
-                    this.dateValues[i], 
-                    dateKeyValue, 
+                    this.dateValues[i],
+                    dateKeyValue,
                     'The axis.getKeyValueAt("date", ' + i + ') method should return a value of ' + this.dateValues[i] + '.'
                 );
             }
+        },
+
+        "test: _getCoordFromValue()" : function() {
+            var axis = this.axis,
+                min = 0,
+                max = 10,
+                dataValue = 4,
+                length = 400,
+                offset = 5,
+                testResult = ((dataValue - min) * (length/(max.valueOf() - min.valueOf()))) + offset,
+                result;
+            result = axis._getCoordFromValue.apply(
+                axis,
+                [min, max, length, dataValue, offset]
+            );
+            Y.Assert.isNumber(result, "The value should be a number.");
+            Y.Assert.areEqual(testResult, result, "The result should be " + testResult + ".");
+            result = axis._getCoordFromValue.apply(
+                axis,
+                [min, max, length, null, offset]
+            );
+            Y.Assert.isNaN(result, "The value should not be a number.");
         }
     });
-    
+
     var suite = new Y.Test.Suite("Charts: CategoryAxisBase"),
+        DOC = Y.config.doc,
         plainOldDataProvider = [
             {date: "01/01/2009", open: 90.27, close: 170.27},
             {date: "01/02/2009", open: 91.55, close: 8.55},
@@ -238,7 +263,7 @@ YUI.add('axis-category-base-tests', function(Y) {
         dateValues = [
             "01/01/2009",
             "01/02/2009",
-            "01/03/2009", 
+            "01/03/2009",
             "01/04/2009",
             "01/05/2009",
             "01/06/2009",

@@ -1,9 +1,11 @@
 YUI.add('series-tests', function(Y) {
-    var suite = new Y.Test.Suite("Charts: SeriesMarker"),
+    var DOC = Y.config.doc,
+        suite = new Y.Test.Suite("Charts: SeriesMarker"),
+        parentDiv = Y.DOM.create('<div style="position:absolute;top:500px;left:0px;width:500px;height:400px" id="testdiv"></div>'),
         ASSERT = Y.Assert,
         ObjectAssert = Y.ObjectAssert;
-            
-            
+    DOC.body.appendChild(parentDiv);
+
     //-------------------------------------------------------------------------
     // Chart Event Test Case
     //-------------------------------------------------------------------------
@@ -20,46 +22,43 @@ YUI.add('series-tests', function(Y) {
         //---------------------------------------------------------------------
         // Setup and teardown of test harnesses
         //---------------------------------------------------------------------
-        
+
         /*
          * Sets up several event handlers used to test UserAction mouse events.
          */
-        setUp : function() 
+        setUp : function()
         {
-            Y.one("body").append('<div id="testbed"></div>');
-            Y.one("#testbed").setContent('<div style="position:absolute;top:0px;left:0px;width:500px;height:400px" id="mychart"></div>');
-            
-            //create the chart 
+            //create the chart
             this.chart = new Y.Chart(this.attrCfg);
 
             this.contentBox = this.chart.get("contentBox");
-        
+
             //reset the result
             this.result = null;
-            
-            //assign event handler                
+
+            //assign event handler
             this.handler = Y.delegate(this.eventType, Y.bind(this.handleEvent, this), this.contentBox, this.eventNode);
         },
-        
+
         /*
          * Removes event handlers that were used during the test.
          */
-        tearDown : function() 
+        tearDown : function()
         {
             Y.detach(this.handler);
             this.chart.destroy(true);
-            Y.one("#testbed").destroy(true);
+            Y.Event.purgeElement(DOC, false);
         },
-        
+
         //---------------------------------------------------------------------
         // Event handler
         //---------------------------------------------------------------------
-        
+
         /*
          * Uses to trap and assign the event object for interrogation.
          * @param {Event} event The event object created from the event.
          */
-        handleEvent : function(event) 
+        handleEvent : function(event)
         {
             this.result = event;
         }
@@ -86,18 +85,18 @@ YUI.add('series-tests', function(Y) {
                 pageY = e.pageY,
                 x = pageX - cb.getX(),
                 y = pageY - cb.getY();
-            return { 
-                type: "markerEvent:" + type, 
+            return {
+                type: "markerEvent:" + type,
                 originEvent: e,
-                pageX:pageX, 
-                pageY:pageY, 
-                categoryItem:items.category, 
-                valueItem:items.value, 
-                node:markerNode, 
-                x:x, 
-                y:y, 
-                series:series, 
-                index:index, 
+                pageX:pageX,
+                pageY:pageY,
+                categoryItem:items.category,
+                valueItem:items.value,
+                node:markerNode,
+                x:x,
+                y:y,
+                series:series,
+                index:index,
                 seriesIndex:seriesIndex
             };
         },
@@ -128,13 +127,16 @@ YUI.add('series-tests', function(Y) {
                 seriesAxis = direction == "horizontal" ? "y" : "x",
                 markerXY,
                 markerWidth,
-                markerHeight
-                getNumber = Y.TimeAxis.prototype._getNumber;
+                markerHeight,
+                getNumber = Y.TimeAxis.prototype._getNumber,
+                nodeReferences = [],
+                instances = Y.Node._instances,
+                instance;
             for(; i < len; ++i)
             {
                 keys[this.seriesKeys[i]] = i;
             }
-            
+
             for(key in keys)
             {
                 if(keys.hasOwnProperty(key))
@@ -164,8 +166,9 @@ YUI.add('series-tests', function(Y) {
                                     Y.Event.simulate(marker.get("node"), "mouseover", {
                                         clientX: markerXY[0] + markerWidth/2,
                                         clientY: markerXY[1] + markerHeight/2
-                                    }); 
-                                    markerData = this.getMarkerData(this.result);                
+                                    });
+                                    nodeReferences.push(marker.node._yuid || marker.node.uniqueID);
+                                    markerData = this.getMarkerData(this.result);
                                     categoryValue = this.chart.get("dataProvider")[markerData.index][categoryKey];
                                     if(this.chart.get("categoryType") == "time")
                                     {
@@ -183,6 +186,15 @@ YUI.add('series-tests', function(Y) {
                                     Y.assert(markerData.pageY === markerData.originEvent.pageY);
                                 }
                             }
+                            //clear out the Node references
+                            while(nodeReferences.length > 0)
+                            {
+                                instance = instances[nodeReferences.shift()];
+                                if(instance)
+                                {
+                                    instance.destroy();
+                                }
+                            }
                         }
                     }
                 }
@@ -190,7 +202,7 @@ YUI.add('series-tests', function(Y) {
         }
     });
     Y.ChartMarkerEventTestCase = ChartMarkerEventTestCase;
-    
+
     var DataProviderWithZeros = [
                 {category:"1/1/2010", miscellaneous:1000, expenses:0, revenue:2200},
                 {category:"2/1/2010", miscellaneous:0, expenses:0, revenue:100},
@@ -219,153 +231,153 @@ YUI.add('series-tests', function(Y) {
     MissingSeriesAndSeriesStartingWithZeroConfig = {
         dataProvider: [
                 {
-                    "Time":new Date(2011,09,01,19,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,01,20,00,00,000),
-                    "miscellaneous":5
-                },
-                {
-                    "Time":new Date(2011,09,01,21,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,01,22,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,01,23,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,00,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,01,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,02,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,03,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,04,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,05,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,06,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,07,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,08,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,09,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,10,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,11,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,12,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,13,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,14,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,15,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,16,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,17,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,18,00,00,000),
-                    "miscellaneous":0
-                },
-                {
-                    "Time":new Date(2011,09,02,19,00,00,000),
+                    "Time":new Date(2011,09,01,19,0,0,0),
                     "miscellaneous": 0
                 },
                 {
-                    "Time":new Date(2011,09,02,20,00,00,000),
-                    "miscellaneous":0
+                    "Time":new Date(2011,09,01,20,0,0,0),
+                    "miscellaneous":5
                 },
                 {
-                    "Time":new Date(2011,09,02,21,00,00,000),
-                    "miscellaneous":0
+                    "Time":new Date(2011,09,01,21,0,0,0),
+                    "miscellaneous": 0
                 },
                 {
-                    "Time":new Date(2011,09,02,22,00,00,000),
-                    "miscellaneous":0
+                    "Time":new Date(2011,09,01,22,0,0,0),
+                    "miscellaneous": 0
                 },
                 {
-                    "Time":new Date(2011,09,02,23,00,00,000),
-                    "miscellaneous":0
+                    "Time":new Date(2011,09,01,23,0,0,0),
+                    "miscellaneous": 0
                 },
                 {
-                    "Time":new Date(2011,09,03,00,00,00,000),
-                    "miscellaneous":0
+                    "Time":new Date(2011,09,02,0,0,0,0),
+                    "miscellaneous": 0
                 },
                 {
-                    "Time":new Date(2011,09,03,01,00,00,000),
-                    "miscellaneous":0
+                    "Time":new Date(2011,09,02,01,0,0,0),
+                    "miscellaneous": 0
                 },
                 {
-                    "Time":new Date(2011,09,03,02,00,00,000),
-                    "miscellaneous":0
+                    "Time":new Date(2011,09,02,02,0,0,0),
+                    "miscellaneous": 0
                 },
                 {
-                    "Time":new Date(2011,09,03,03,00,00,000),
-                    "miscellaneous":0
+                    "Time":new Date(2011,09,02,03,0,0,0),
+                    "miscellaneous": 0
                 },
                 {
-                    "Time":new Date(2011,09,03,04,00,00,000),
-                    "miscellaneous":0
+                    "Time":new Date(2011,09,02,04,0,0,0),
+                    "miscellaneous": 0
                 },
                 {
-                    "Time":new Date(2011,09,03,05,00,00,000),
-                    "miscellaneous":0
+                    "Time":new Date(2011,09,02,05,0,0,0),
+                    "miscellaneous": 0
                 },
                 {
-                    "Time":new Date(2011,09,03,06,00,00,000),
-                    "miscellaneous":0
+                    "Time":new Date(2011,09,02,06,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,07,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,08,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,09,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,10,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,11,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,12,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,13,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,14,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,15,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,16,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,17,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,18,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,19,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,20,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,21,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,22,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,02,23,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,03,0,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,03,01,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,03,02,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,03,03,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,03,04,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,03,05,0,0,0),
+                    "miscellaneous": 0
+                },
+                {
+                    "Time":new Date(2011,09,03,06,0,0,0),
+                    "miscellaneous": 0
                 }
         ],
         type: "column",
         stacked: true,
-        render: "#mychart",
+        render: "#testdiv",
         categoryType: "time",
         axes: {
             values:{
@@ -403,115 +415,114 @@ YUI.add('series-tests', function(Y) {
         {category: 4, miscellaneous: 4233},
         {category: 5, miscellaneous: 3800},
         {category: 6, miscellaneous: 4899},
-        {category: 7, miscellaneous: 3333}, 
+        {category: 7, miscellaneous: 3333},
         {category: 8, miscellaneous: 5210},
         {category: 9, miscellaneous: 2011},
         {category: 10, miscellaneous: 3100}
     ],
     regularDataProvider = [
-        {category:"5/1/2010", miscellaneous:2000, expenses:3700, revenue:2200}, 
-        {category:"5/2/2010", miscellaneous:50, expenses:9100, revenue:100}, 
-        {category:"5/3/2010", miscellaneous:400, expenses:1100, revenue:1500}, 
-        {category:"5/4/2010", miscellaneous:200, expenses:1900, revenue:2800}, 
+        {category:"5/1/2010", miscellaneous:2000, expenses:3700, revenue:2200},
+        {category:"5/2/2010", miscellaneous:50, expenses:9100, revenue:100},
+        {category:"5/3/2010", miscellaneous:400, expenses:1100, revenue:1500},
+        {category:"5/4/2010", miscellaneous:200, expenses:1900, revenue:2800},
         {category:"5/5/2010", miscellaneous:5000, expenses:5000, revenue:2650}
     ],
     DataProvider,
-    suite  = new Y.Test.Suite("Charts: Series Marker"),
     zeroValueColumnMouseOverTests = new Y.ChartMarkerEventTestCase({
         type: "column",
-        render: "#mychart",
+        render: "#testdiv",
         dataProvider: DataProviderWithZeros,
         seriesKeys: SeriesKeys
     }, "mouseover"),
     zeroValueBarMouseOverTests = new Y.ChartMarkerEventTestCase({
         type: "bar",
-        render: "#mychart",
+        render: "#testdiv",
         dataProvider: DataProviderWithZeros,
         seriesKeys: SeriesKeys
     }, "mouseover"),
     zeroValueStackedColumnMouseOverTests = new Y.ChartMarkerEventTestCase({
         type: "column",
         stacked: true,
-        render: "#mychart",
+        render: "#testdiv",
         dataProvider: DataProviderWithZeros,
         seriesKeys: SeriesKeys
     }, "mouseover"),
     zeroValueStackedBarMouseOverTests = new Y.ChartMarkerEventTestCase({
         type: "bar",
         stacked: true,
-        render: "#mychart",
+        render: "#testdiv",
         dataProvider: DataProviderWithZeros,
         seriesKeys: SeriesKeys
     }, "mouseover"),
     nullValueColumnMouseOverTests = new Y.ChartMarkerEventTestCase({
         type: "column",
-        render: "#mychart",
+        render: "#testdiv",
         dataProvider: DataProviderWithNull,
         seriesKeys: SeriesKeys
     }, "mouseover"),
     nullValueBarMouseOverTests = new Y.ChartMarkerEventTestCase({
         type: "bar",
-        render: "#mychart",
+        render: "#testdiv",
         dataProvider: DataProviderWithNull,
         seriesKeys: SeriesKeys
     }, "mouseover"),
     nullValueStackedColumnMouseOverTests = new Y.ChartMarkerEventTestCase({
         type: "column",
         stacked: true,
-        render: "#mychart",
+        render: "#testdiv",
         dataProvider: DataProviderWithNull,
         seriesKeys: SeriesKeys
     }, "mouseover"),
     nullValueStackedBarMouseOverTests = new Y.ChartMarkerEventTestCase({
         type: "bar",
         stacked: true,
-        render: "#mychart",
+        render: "#testdiv",
         dataProvider: DataProviderWithNull,
         seriesKeys: SeriesKeys
     }, "mouseover"),
     zeroValueComboMouseOverTests = new Y.ChartMarkerEventTestCase({
-        render: "#mychart",
+        render: "#testdiv",
         dataProvider: DataProviderWithZeros,
         seriesKeys: SeriesKeys
     }, "mouseover"),
     nullValueComboMouseOverTests = new Y.ChartMarkerEventTestCase({
-        render: "#mychart",
+        render: "#testdiv",
         dataProvider: DataProviderWithNull,
         seriesKeys: SeriesKeys
     }, "mouseover"),
     missingSeriesAndSeriesStartingWithZero = new Y.ChartMarkerEventTestCase(MissingSeriesAndSeriesStartingWithZeroConfig, "mouseover"),
     categoryWithNumericValuesChart = new Y.ChartMarkerEventTestCase({
         dataProvider: numericCategoryValuesDataProvider,
-        render: "#mychart"
+        render: "#testdiv"
     }, "mouseover"),
     missingValueComboMouseOverTests = new Y.ChartMarkerEventTestCase({
-        render: "#mychart",
+        render: "#testdiv",
         dataProvider: DataProviderWithNull,
         seriesKeys: SeriesKeys
     }, "mouseover"),
     missingValueColumnMouseOverTests = new Y.ChartMarkerEventTestCase({
         type: "column",
-        render: "#mychart",
+        render: "#testdiv",
         dataProvider: DataProviderWithMissingKeyEntries,
         testKeys: SeriesKeys
     }, "mouseover"),
     missingValueBarMouseOverTests = new Y.ChartMarkerEventTestCase({
         type: "bar",
-        render: "#mychart",
+        render: "#testdiv",
         dataProvider: DataProviderWithMissingKeyEntries,
         testKeys: SeriesKeys
     }, "mouseover"),
     missingValueStackedColumnMouseOverTests = new Y.ChartMarkerEventTestCase({
         type: "column",
         stacked: true,
-        render: "#mychart",
+        render: "#testdiv",
         dataProvider: DataProviderWithMissingKeyEntries,
         testKeys: SeriesKeys
     }, "mouseover"),
     missingValueStackedBarMouseOverTests = new Y.ChartMarkerEventTestCase({
         type: "bar",
         stacked: true,
-        render: "#mychart",
+        render: "#testdiv",
         dataProvider: DataProviderWithMissingKeyEntries,
         testKeys: SeriesKeys
     }, "mouseover"),
@@ -539,7 +550,7 @@ YUI.add('series-tests', function(Y) {
                     valueDisplayName: "Revenue"
                 }
             ],
-            render: "#mychart"
+            render: "#testdiv"
         };
         if(direction && direction == "vertical")
         {
@@ -569,9 +580,9 @@ YUI.add('series-tests', function(Y) {
                 yDisplayName: "Revenue"
             }
         ],
-        render: "#mychart"
+        render: "#testdiv"
     }, "mouseover");
-    
+
     suite.add(zeroValueColumnMouseOverTests);
     suite.add(zeroValueBarMouseOverTests);
     suite.add(zeroValueStackedColumnMouseOverTests);
@@ -582,7 +593,7 @@ YUI.add('series-tests', function(Y) {
     suite.add(nullValueStackedBarMouseOverTests);
     suite.add(zeroValueComboMouseOverTests);
     suite.add(nullValueComboMouseOverTests);
-    suite.add(missingSeriesAndSeriesStartingWithZero); 
+    suite.add(missingSeriesAndSeriesStartingWithZero);
     suite.add(missingValueComboMouseOverTests);
     suite.add(missingValueColumnMouseOverTests);
     suite.add(missingValueBarMouseOverTests);
@@ -592,7 +603,6 @@ YUI.add('series-tests', function(Y) {
     suite.add(categoryAndValueDisplayName());
     suite.add(categoryAndValueDisplayName("vertical"));
     suite.add(xAndYDisplayName);
-
 
     //add to the testrunner and run
     //Y.Test.Runner.add(Y.Tests.SeriesMarkerTests);

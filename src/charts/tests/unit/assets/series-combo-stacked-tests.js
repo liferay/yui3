@@ -1,7 +1,8 @@
 YUI.add('series-combo-stacked-tests', function(Y) {
-    var MockStackedComboSeries = Y.Base.create("mockStackedComboSeries", Y.Base, [], {
+    var DOC = Y.config.doc,
+        MockStackedComboSeries = Y.Base.create("mockStackedComboSeries", Y.Base, [], {
             _linesDrawn: false,
-            
+
             _fillDrawn: false,
 
             _markersDrawn: false,
@@ -48,25 +49,26 @@ YUI.add('series-combo-stacked-tests', function(Y) {
         },
 
         tearDown: function() {
-            this.series = null;
+            this.series.destroy();
+            Y.Event.purgeElement(DOC, false);
         },
-       
+
         "test: drawSeries()" : function() {
             var series = this.series,
                 mockStackedComboSeries = new MockStackedComboSeries();
             series.drawSeries.apply(mockStackedComboSeries);
-            Y.Assert.isFalse(mockStackedComboSeries._linesDrawn, "The drawLines method should not have been called.");     
-            Y.Assert.isFalse(mockStackedComboSeries._fillDrawn, "The drawFill method should not have been called.");     
-            Y.Assert.isFalse(mockStackedComboSeries._markersDrawn, "The drawMarkers method should not have been called.");     
+            Y.Assert.isFalse(mockStackedComboSeries._linesDrawn, "The drawLines method should not have been called.");
+            Y.Assert.isFalse(mockStackedComboSeries._fillDrawn, "The drawFill method should not have been called.");
+            Y.Assert.isFalse(mockStackedComboSeries._markersDrawn, "The drawMarkers method should not have been called.");
             mockStackedComboSeries._showLines = true;
             mockStackedComboSeries._showAreaFill = true;
             mockStackedComboSeries._showMarkers = true;
             series.drawSeries.apply(mockStackedComboSeries);
-            Y.Assert.isTrue(mockStackedComboSeries._linesDrawn, "The drawLines method should have been called.");     
-            Y.Assert.isTrue(mockStackedComboSeries._fillDrawn, "The drawFill method should have been called.");     
-            Y.Assert.isTrue(mockStackedComboSeries._markersDrawn, "The drawMarkers method should have been called.");     
+            Y.Assert.isTrue(mockStackedComboSeries._linesDrawn, "The drawLines method should have been called.");
+            Y.Assert.isTrue(mockStackedComboSeries._fillDrawn, "The drawFill method should have been called.");
+            Y.Assert.isTrue(mockStackedComboSeries._markersDrawn, "The drawMarkers method should have been called.");
         },
-    
+
         "test: setAreaData()" : function()
         {
             var series = this.series,
@@ -80,7 +82,7 @@ YUI.add('series-combo-stacked-tests', function(Y) {
             Y.StackedComboSeries.superclass.setAreaData = storedSetAreaDataMethod;
         }
     });
-    
+
     suite.add(new Y.StackedComboSeriesTest({
         name: "StackedComboSeries Tests"
     }));

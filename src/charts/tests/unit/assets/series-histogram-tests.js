@@ -1,11 +1,12 @@
 YUI.add('series-histogram-tests', function(Y) {
-    var MockSeries = function() {
+    var DOC = Y.config.doc,
+        MockSeries = function() {
             MockSeries.superclass.constructor.apply(this, arguments);
         },
         suite = new Y.Test.Suite("Charts: Histogram");
     Y.extend(MockSeries, Y.Histogram, {
         _getDefaultColor: function(order, type) {
-            if(type === "border") {
+           if(type === "border") {
                 return "#00f";
             } else {
                 return "#f00";
@@ -25,8 +26,9 @@ YUI.add('series-histogram-tests', function(Y) {
 
         tearDown: function() {
             this.series = null;
+            Y.Event.purgeElement(DOC, false);
         },
-       
+
         getDrawSeriesData: function(
             xcoords,
             ycoords,
@@ -36,9 +38,12 @@ YUI.add('series-histogram-tests', function(Y) {
             groupMarkers,
             order,
             graphOrder,
-            direction
+            direction,
+            width,
+            height
         ) {
             var markers = [],
+                style,
                 setSize,
                 calculatedSize,
                 i = 0,
@@ -93,27 +98,42 @@ YUI.add('series-histogram-tests', function(Y) {
             }
             setSize = style[setSizeKey];
             calculatedSize = style[calculatedSizeKey];
-            this._createMarkerCache();
-            for(; i < seriesLen; ++i)
+            markerCacheCreated = true;
+
+            maxSize = graphic.get(setSizeKey);
+            if(seriesTypeCollection && seriesLen > 1)
             {
-                renderer = seriesTypeCollection[i];
-                seriesSize += renderer.get("styles").marker[setSizeKey];
-                if(order > i)
+                for(; i < seriesLen; ++i)
                 {
-                    offset = seriesSize;
+                    renderer = seriesTypeCollection[i];
+                    seriesSize += renderer.get("styles").marker[setSizeKey];
+                    if(order > i)
+                    {
+                        offset = seriesSize;
+                    }
+                }
+                totalSize = len * seriesSize;
+                if(totalSize > maxSize)
+                {
+                    ratio = graphic.get(setSizeKey)/totalSize;
+                    seriesSize *= ratio;
+                    offset *= ratio;
+                    setSize *= ratio;
+                    setSize = Math.max(setSize, 1);
+                    maxSize = setSize;
                 }
             }
-            totalSize = len * seriesSize;
-            maxSize = graphic.get(setSizeKey);
-            if(totalSize > maxSize)
+            else
             {
-                ratio = graphic.get(setSizeKey)/totalSize;
-                seriesSize *= ratio;
-                offset *= ratio;
-                setSize *= ratio;
-                setSize = Math.max(setSize, 1);
-                maxSize = setSize;
+                seriesSize = style[setSizeKey];
+                totalSize = len * seriesSize;
+                if(totalSize  > maxSize)
+                {
+                    seriesSize = maxSize/len;
+                    maxSize = seriesSize;
+                }
             }
+
             offset -= seriesSize/2;
             for(i = 0; i < len; ++i)
             {
@@ -132,6 +152,11 @@ YUI.add('series-histogram-tests', function(Y) {
                     left: xcoords[i],
                     top: ycoords[i]
                 };
+                if(direction === "vertical") {
+                    config.calculatedSize = xcoords[i];
+                } else {
+                    config.calculatedSize = height - ycoords[i];
+                }
                 if(!isNaN(config.calculatedSize) && config.calculatedSize > 0)
                 {
                     top = config.top;
@@ -159,10 +184,12 @@ YUI.add('series-histogram-tests', function(Y) {
                             style.border.color = borderColors[i % borderColors.length];
                         }
                         marker = {
-                            style: style, 
-                            graphOrder: graphOrder, 
+                            fillColor: style.fill.color,
+                            borderColor: style.border.color,
+                            graphOrder: graphOrder,
                             i: i
                         };
+                        markers.push(marker);
                     }
 
                 }
@@ -190,8 +217,6 @@ YUI.add('series-histogram-tests', function(Y) {
             return {
                 maxSize: maxSize,
                 markers: markers,
-                fillColors: fillColors,
-                borderColors: borderColors,
                 setSize: setSize,
                 calculatedSize: calculatedSize,
                 groupMarker: groupMarker,
@@ -199,37 +224,58 @@ YUI.add('series-histogram-tests', function(Y) {
                 markerCacheCreated: markerCacheCreated,
                 xMarkerPlane: xMarkerPlane,
                 yMarkerPlane: yMarkerPlane
-            }
+            };
         },
 
-        "test: _drawSeries()" : function() {
+        "test: drawSeries()" : function() {
             var width = 400,
                 height = 400,
-                HistogramMockGraphic = Y.Base.create("histogramMockGraphic", Y.Base, [], {}, {
+                test = this,
+                HistogramMockGraphic = Y.Base.create("histogramMockGraphic", Y.Base, [], {
                 }, {
                     ATTRS: {
                         width: {
-                            value: 0
+                            valueFn: function() {
+                                return width;
+                            }
                         },
                         height: {
-                            value: 0
+                            valueFn: function() {
+                                return height;
+                            }
                         }
                     }
                 }),
                 HistogramDrawSeriesMock = Y.Base.create("histogramDrawSeriesMock", Y.CartesianSeries, [Y.Histogram], {
                     _leftOrigin: 0,
 
-                    _bottomOrigin: height, 
+                    _bottomOrigin: height,
 
                     _getMarkerDimensions: function(x, y, size, offset) {
                         return {
                             top: y,
-                            left: x   
+                            left: x,
+                            width: size,
+                            height: size,
+                            offset: offset,
+                            calculatedSize: size
                         };
                     },
-                    
+
+                    getMarker: function(style, graphOrder, i) {
+                        var marker =  {
+                            fillColor: style.fill.color,
+                            borderColor: style.border.color,
+                            graphOrder: graphOrder,
+                            i: i
+                        };
+                        this._markers.push(marker);
+                        return marker;
+                    },
+
                     _createMarkerCache: function() {
                         this._markerCacheCreated = true;
+                        this._markers = [];
                     },
 
                     _clearMarkerCache: function() {
@@ -243,7 +289,7 @@ YUI.add('series-histogram-tests', function(Y) {
                     _getDefaultStyles: function() {
                         var styles = {};
                         styles.marker = this._getPlotDefaults();
-                        return styles;        
+                        return styles;
                     }
                 }, {
                     ATTRS: {
@@ -256,6 +302,8 @@ YUI.add('series-histogram-tests', function(Y) {
                             valueFn: function() {
                                 return [];
                             }
+                        },
+                        graphic: {
                         }
                     }
                 }),
@@ -269,25 +317,118 @@ YUI.add('series-histogram-tests', function(Y) {
                     width: width,
                     height: height,
                     graphic: graphic,
-                    seriesTypeCollection: seriesTypeCollection 
+                    seriesTypeCollection: seriesTypeCollection,
+                    order: 0,
+                    styles: {
+                        marker: {
+                            border: {
+                                color: "#f00"
+                            },
+                            fill: {
+                                color: "#00f"
+                            }
+                        }
+                    }
                 }),
                 series2 = new HistogramDrawSeriesMock({
                     width: width,
                     height: height,
                     graphic: graphic,
-                    seriesTypeCollection: seriesTypeCollection 
-                });
+                    seriesTypeCollection: seriesTypeCollection,
+                    order: 1,
+                    styles: {
+                        marker: {
+                            border: {
+                                color: ["#f00", "#00f"]
+                            },
+                            fill: {
+                                color: ["#00f", "#f00"]
+                            }
+                        }
+                    }
+                }),
+                testDrawSeries = function(series) {
+                    var i,
+                        len,
+                        fillColor,
+                        strokeColor,
+                        testMarker,
+                        marker,
+                        testData = test.getDrawSeriesData(
+                        series.get("xcoords"),
+                        series.get("ycoords"),
+                        series.get("styles").marker,
+                        series.get("graphic"),
+                        seriesTypeCollection,
+                        series.get("groupMarkers"),
+                        series.get("order"),
+                        series.get("graphOrder"),
+                        series.get("direction"),
+                        width,
+                        height
+                    );
+                    //test _maxSize
+                    Y.Assert.areEqual(
+                        testData.maxSize, series._maxSize,
+                        "The _maxSize of the series should be " + testData.maxSize + "."
+                    );
+                    //test markers
+                    len = testData.markers.length;
+                    Y.Assert.areEqual(
+                        len,
+                        series._markers.length,
+                        "There should be " + len + " markers."
+                    );
+                    for(i = 0; i < len; i = i + 1) {
+                        testMarker = testData.markers[i];
+                        marker = series._markers[i];
+                        if(testMarker) {
+                            Y.Assert.isNotNull(marker, "There should be a marker.");
+                            fillColor = testMarker.fillColor;
+                            strokeColor = testMarker.borderColor;
+                            Y.Assert.areEqual(fillColor, marker.fillColor, "The marker's fill color should be " + fillColor + ".");
+                            Y.Assert.areEqual(strokeColor, marker.borderColor, "The marker's border color should be " + strokeColor + ".");
+                        }
+                    }
+                };
                 seriesTypeCollection.push(series1);
-                seriesTypeCollection.push(series2); 
                 series1._markers = [];
-                series2._markers = [];
                 series.drawSeries.apply(series1);
                 series1.set("xcoords", [20, 60, 100, 140, 180, 220, 260, 300, 340, 380]);
-                series1.set("ycoords", [280, 80, 310, 270, 300, 210, 240, 160, 220, 40]);
+                series1.set("ycoords", [280, 80, 310, 270, 300, 400, 240, 160, 220, 40]);
                 series.drawSeries.apply(series1);
-
+                testDrawSeries(series1);
+                series1.set("styles", {
+                   marker: {
+                        width: 50
+                   }
+                });
+                series.drawSeries.apply(series1);
+                testDrawSeries(series1);
+                series1.set("styles", {
+                   marker: {
+                        width: 12
+                   }
+                });
                 series1.set("direction", "vertical");
                 series.drawSeries.apply(series1);
+                testDrawSeries(series1);
+                seriesTypeCollection.push(series2);
+                series2._markers = [];
+                series1.set("direction", "horizontal");
+                series.drawSeries.apply(series1);
+                testDrawSeries(series1);
+                series2.set("xcoords", [20, 60, 100, 140, 180, 220, 260, 300, 340, 380]);
+                series2.set("ycoords", [280, 80, 310, 270, 300, 210, 240, 160, 220, 40]);
+                series.drawSeries.apply(series2);
+                testDrawSeries(series2);
+                series1.set("styles", {
+                   marker: {
+                        width: 30
+                   }
+                });
+                series.drawSeries.apply(series1);
+                testDrawSeries(series1);
         },
 
         "test: _getPlotDefaults()" : function() {
@@ -313,13 +454,13 @@ YUI.add('series-histogram-tests', function(Y) {
             for(key in testFill) {
                 if(testFill.hasOwnProperty(key)) {
                     Y.Assert.isTrue(plotDefaults.fill.hasOwnProperty(key), "The fill should have a " + key + " value.");
-                    Y.Assert.areEqual(testFill[key], plotDefaults.fill[key], "The " + key + " value of fill should be " + testFill[key] + "."); 
+                    Y.Assert.areEqual(testFill[key], plotDefaults.fill[key], "The " + key + " value of fill should be " + testFill[key] + ".");
                 }
             }
             for(key in testBorder) {
                 if(testBorder.hasOwnProperty(key)) {
                     Y.Assert.isTrue(plotDefaults.border.hasOwnProperty(key), "The border should have a " + key + " value.");
-                    Y.Assert.areEqual(testBorder[key], plotDefaults.border[key], "The " + key + " value of border should be " + testBorder[key] + "."); 
+                    Y.Assert.areEqual(testBorder[key], plotDefaults.border[key], "The " + key + " value of border should be " + testBorder[key] + ".");
                 }
             }
             Y.Assert.areEqual(testWidth, plotDefaults.width, "The width should be " + testWidth + ".");
@@ -330,9 +471,9 @@ YUI.add('series-histogram-tests', function(Y) {
             Y.Assert.areEqual(0, plotDefaults.padding.right, "The right padding should be zero.");
             Y.Assert.areEqual(0, plotDefaults.padding.bottom, "The bottom padding should be zero.");
         }
-            
+
     });
-    
+
     suite.add(new Y.HistogramTest({
         name: "Histogram Tests"
     }));

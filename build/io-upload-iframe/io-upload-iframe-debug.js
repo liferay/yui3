@@ -25,7 +25,7 @@ var w = Y.config.win,
  * @param {Object} io
  */
 function _cFrame(o, c, io) {
-    var i = Y.Node.create('<iframe src="#" id="io_iframe' + o.id + '" name="io_iframe' + o.id + '" />');
+    var i = Y.Node.create('<iframe id="io_iframe' + o.id + '" name="io_iframe' + o.id + '" />');
         i._node.style.position = 'absolute';
         i._node.style.top = '-1000px';
         i._node.style.left = '-1000px';
@@ -52,7 +52,7 @@ Y.mix(Y.IO.prototype, {
    /**
     * Parses the POST data object and creates hidden form elements
     * for each key-value, and appends them to the HTML form object.
-    * @method appendData
+    * @method _addData
     * @private
     * @static
     * @param {Object} f HTML form object.
@@ -298,12 +298,16 @@ Y.mix(Y.IO.prototype, {
                 // Restore HTML form attributes to their original values.
                 form = (typeof form.id === 'string') ? d.getElementById(form.id) : form.id;
 
-                io._resetAttrs(form, this._originalFormAttrs);
+                // Check whether the form still exists before resetting it.
+                if (form) {
+                    io._resetAttrs(form, this._originalFormAttrs);
+                }
             }
         }
 
         return _end.call(this, transaction, config);
     }
 }, true);
+
 
 }, '@VERSION@', {"requires": ["io-base", "node-base"]});

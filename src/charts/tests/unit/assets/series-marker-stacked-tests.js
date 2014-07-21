@@ -1,5 +1,6 @@
 YUI.add('series-marker-stacked-tests', function(Y) {
-    var MockStackedMarkerSeries = Y.Base.create("mockStackedMarkerSeries", Y.Base, [], {
+    var DOC = Y.config.doc,
+        MockStackedMarkerSeries = Y.Base.create("mockStackedMarkerSeries", Y.Base, [], {
             _coordinatesStacked: false,
 
             _stackCoordinates: function() {
@@ -16,9 +17,10 @@ YUI.add('series-marker-stacked-tests', function(Y) {
         },
 
         tearDown: function() {
-            this.series = null;
+            this.series.destroy();
+            Y.Event.purgeElement(DOC, false);
         },
-       
+
         "test: setAreaData()" : function()
         {
             var series = this.series,
@@ -32,7 +34,7 @@ YUI.add('series-marker-stacked-tests', function(Y) {
             Y.StackedMarkerSeries.superclass.setAreaData = storedSetAreaDataMethod;
         }
     });
-    
+
     suite.add(new Y.StackedMarkerSeriesTest({
         name: "StackedMarkerSeries Tests"
     }));

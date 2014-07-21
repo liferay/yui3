@@ -6,6 +6,60 @@ CSS Grids Change History
 
 * No changes.
 
+3.17.2
+------
+
+* No changes.
+
+3.17.1
+------
+
+* No changes.
+
+3.17.0
+------
+
+* No changes.
+
+3.16.0
+------
+
+* Import Grids from Pure 0.4.2. You can now use non-reduced fraction class names when laying out a grid. This means that we have rules for classes such as `.pure-u-12-24` as well as `.pure-u-1-2`.
+
+3.15.0
+------
+
+* No changes.
+
+3.14.1
+------
+
+* No changes.
+
+3.14.0
+------
+
+* Grids is now imported into YUI from Pure via Grunt. ([#1240][])
+
+
+[#1240]: https://github.com/yui/yui3/issues/1240
+
+
+3.13.0
+------
+
+* No changes.
+
+3.12.0
+------
+
+* No changes.
+
+3.11.0
+------
+
+* No changes.
+
 3.10.3
 ------
 

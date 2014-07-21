@@ -1,5 +1,6 @@
 YUI.add('series-line-tests', function(Y) {
-    var MockLineSeries = Y.Base.create("mockLineSeries", Y.LineSeries, [], {
+    var DOC = Y.config.doc,
+        MockLineSeries = Y.Base.create("mockLineSeries", Y.LineSeries, [], {
             _linesDrawn: false,
 
             drawLines: function() {
@@ -16,14 +17,15 @@ YUI.add('series-line-tests', function(Y) {
         },
 
         tearDown: function() {
-            this.series = null;
+            this.series.destroy();
+            Y.Event.purgeElement(DOC, false);
         },
-       
+
         "test: drawSeries()" : function() {
             var series = this.series,
                 mockLineSeries = new MockLineSeries();
             series.drawSeries.apply(mockLineSeries);
-            Y.Assert.isTrue(mockLineSeries._linesDrawn, "The drawLines method should have been called.");     
+            Y.Assert.isTrue(mockLineSeries._linesDrawn, "The drawLines method should have been called.");
         },
 
         "test: _setStyles()" : function() {
@@ -60,7 +62,7 @@ YUI.add('series-line-tests', function(Y) {
             }
         }
     });
-    
+
     suite.add(new Y.LineSeriesTest({
         name: "LineSeries Tests"
     }));

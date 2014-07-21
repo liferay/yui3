@@ -1,7 +1,8 @@
 YUI.add('series-combospline-stacked-tests', function(Y) {
-    var MockStackedComboSplineSeries = Y.Base.create("mockStackedComboSplineSeries", Y.Base, [], {
+    var DOC = Y.config.doc,
+        MockStackedComboSplineSeries = Y.Base.create("mockStackedComboSplineSeries", Y.Base, [], {
             _splineDrawn: false,
-            
+
             _fillDrawn: false,
 
             _markersDrawn: false,
@@ -38,26 +39,27 @@ YUI.add('series-combospline-stacked-tests', function(Y) {
         },
 
         tearDown: function() {
-            this.series = null;
+            this.series.destroy();
+            Y.Event.purgeElement(DOC, false);
         },
-       
+
         "test: drawSeries()" : function() {
             var series = this.series,
                 mockStackedComboSplineSeries = new MockStackedComboSplineSeries();
             series.drawSeries.apply(mockStackedComboSplineSeries);
-            Y.Assert.isFalse(mockStackedComboSplineSeries._splineDrawn, "The drawSpline method should not have been called.");     
-            Y.Assert.isFalse(mockStackedComboSplineSeries._fillDrawn, "The drawFill method should not have been called.");     
-            Y.Assert.isFalse(mockStackedComboSplineSeries._markersDrawn, "The drawMarkers method should not have been called.");     
+            Y.Assert.isFalse(mockStackedComboSplineSeries._splineDrawn, "The drawSpline method should not have been called.");
+            Y.Assert.isFalse(mockStackedComboSplineSeries._fillDrawn, "The drawFill method should not have been called.");
+            Y.Assert.isFalse(mockStackedComboSplineSeries._markersDrawn, "The drawMarkers method should not have been called.");
             mockStackedComboSplineSeries._showLines = true;
             mockStackedComboSplineSeries._showAreaFill = true;
             mockStackedComboSplineSeries._showMarkers = true;
             series.drawSeries.apply(mockStackedComboSplineSeries);
-            Y.Assert.isTrue(mockStackedComboSplineSeries._splineDrawn, "The drawSpline method should have been called.");     
-            Y.Assert.isTrue(mockStackedComboSplineSeries._fillDrawn, "The drawFill method should have been called.");     
-            Y.Assert.isTrue(mockStackedComboSplineSeries._markersDrawn, "The drawMarkers method should have been called.");     
+            Y.Assert.isTrue(mockStackedComboSplineSeries._splineDrawn, "The drawSpline method should have been called.");
+            Y.Assert.isTrue(mockStackedComboSplineSeries._fillDrawn, "The drawFill method should have been called.");
+            Y.Assert.isTrue(mockStackedComboSplineSeries._markersDrawn, "The drawMarkers method should have been called.");
         }
     });
-    
+
     suite.add(new Y.StackedComboSplineSeriesTest({
         name: "StackedComboSplineSeries Tests"
     }));

@@ -13,14 +13,19 @@ YUI.add('tabview-test', function(Y) {
 
         'should return the selected tab': function() {
             Y.Assert.areEqual(0, tabview.get('selection').get('index'));
-        },            
+        },
+
+        'should contain the correct ARIA role in tablist': function() {
+            var listNode = tabview.get('contentBox').one('.yui3-tabview-list');
+            Y.Assert.areSame('tablist', listNode.getAttribute('role'));
+        },
 
         'should update the selected tab': function() {
             tabview.selectChild(1);
             Y.Assert.areEqual(1, tabview.get('selection').get('index'));
             tabview.selectChild(0);
             Y.Assert.areEqual(0, tabview.get('selection').get('index'));
-        },            
+        },
 
         'should fire selection change': function() {
             var test = this;
@@ -31,14 +36,14 @@ YUI.add('tabview-test', function(Y) {
 
             tabview.selectChild(1);
 
-        },            
+        },
 
         'should add the new tab to the tabview': function() {
             var tab = new Y.Tab({ label: 'new tab', content: 'new tab content' }),
                 children = tabview.add(tab);
 
             Y.Assert.areEqual(1, children.size());
-        },            
+        },
 
         'should remove the selected tab': function() {
             tabview.selectChild(1);
@@ -51,7 +56,7 @@ YUI.add('tabview-test', function(Y) {
             tabview.add(removedTab, 0);
             Y.Assert.areEqual(1, tabview.get('selection').get('index'));
             tabview.selectChild(0);
-        },            
+        },
 
         'should fire selectionChange event': function() {
             var pass = false;
@@ -162,5 +167,5 @@ YUI.add('tabview-test', function(Y) {
             Y.Assert.isTrue(clicked);
             tabview.destroy();
         }
-    })); 
+    }));
 }, '@VERSION@' ,{requires:['tabview', 'test']});

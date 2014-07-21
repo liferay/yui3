@@ -49,7 +49,7 @@ YUI.add('get', function (Y, NAME) {
     * @private
     * @param {String} data The JS to execute
     * @param {String} url The path to the file that was parsed
-    * @param {Callback} cb The callback to execute when this is completed
+    * @param {Function} cb The callback to execute when this is completed
     * @param {Error} cb.err=null Error object
     * @param {String} cb.url The URL that was just parsed
     */
@@ -65,7 +65,9 @@ YUI.add('get', function (Y, NAME) {
         if (typeof YUI._getLoadHook === 'function') {
             data = YUI._getLoadHook(data, url);
         }
-        mod._compile('module.exports = function (YUI) {' + data + '\n;return YUI;};', url);
+        mod._compile('module.exports = function (YUI) {' +
+            'return (function () {'+ data + '\n;return YUI;}).apply(global);' +
+        '};', url);
 
         /*global YUI:true */
         YUI = mod.exports(YUI);
@@ -81,7 +83,7 @@ YUI.add('get', function (Y, NAME) {
     * @method _include
     * @private
     * @param {String} url The URL/File path to fetch the content from
-    * @param {Callback} cb The callback to fire once the content has been executed via `_exec`
+    * @param {Function} cb The callback to fire once the content has been executed via `_exec`
     */
     Y.Get._include = function (url, cb) {
         var cfg,
@@ -174,7 +176,7 @@ YUI.add('get', function (Y, NAME) {
                 }
             });
         }
-        
+
         //Keeping Signature in the browser.
         return {
             execute: function() {}

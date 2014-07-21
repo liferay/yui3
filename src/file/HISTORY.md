@@ -6,6 +6,58 @@ File Module Change History
 
 * No changes.
 
+3.17.2
+------
+
+* No changes.
+
+3.17.1
+------
+
+* No changes.
+
+3.17.0
+------
+
+* No changes.
+
+3.16.0
+------
+
+* No changes.
+
+3.15.0
+------
+
+* No changes.
+
+3.14.1
+------
+
+* No changes.
+
+3.14.0
+------
+
+* No changes.
+
+3.13.0
+------
+
+* Added a check to make sure the XHR exists before aborting. ([#1053][] @JetFault)
+
+[#1053]: https://github.com/yui/yui3/issues/1053
+
+3.12.0
+------
+
+* No changes.
+
+3.11.0
+------
+
+* No changes.
+
 3.10.3
 ------
 

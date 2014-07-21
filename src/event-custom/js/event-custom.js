@@ -229,6 +229,18 @@ Y.CustomEvent.prototype = {
      */
 
     /**
+     * Flag for the default function to execute only if the
+     * firing event is the current target. This happens only
+     * when using custom event delegation and setting the
+     * flag to `true` mimics the behavior of event delegation
+     * in the DOM.
+     *
+     * @property defaultTargetOnly
+     * @type Boolean
+     * @default false
+     */
+
+    /**
      * The function to execute if a subscriber calls
      * stopPropagation or stopImmediatePropagation
      * @property stoppedFn
@@ -438,26 +450,35 @@ Y.CustomEvent.prototype = {
 
         if (!fn) { this.log('Invalid callback for CE: ' + this.type); }
 
-        var s = new Y.Subscriber(fn, context, args, when);
+        var s = new Y.Subscriber(fn, context, args, when),
+            firedWith;
 
         if (this.fireOnce && this.fired) {
+
+            firedWith = this.firedWith;
+
+            // It's a little ugly for this to know about facades,
+            // but given the current breakup, not much choice without
+            // moving a whole lot of stuff around.
+            if (this.emitFacade && this._addFacadeToArgs) {
+                this._addFacadeToArgs(firedWith);
+            }
+
             if (this.async) {
-                setTimeout(Y.bind(this._notify, this, s, this.firedWith), 0);
+                setTimeout(Y.bind(this._notify, this, s, firedWith), 0);
             } else {
-                this._notify(s, this.firedWith);
+                this._notify(s, firedWith);
             }
         }
 
         if (when === AFTER) {
             if (!this._afters) {
                 this._afters = [];
-                this._hasAfters = true;
             }
             this._afters.push(s);
         } else {
             if (!this._subscribers) {
                 this._subscribers = [];
-                this._hasSubs = true;
             }
             this._subscribers.push(s);
         }
@@ -528,7 +549,7 @@ Y.CustomEvent.prototype = {
      * @param {Function} fn  The subscribed function to remove, if not supplied
      *                       all will be removed.
      * @param {Object}   context The context object passed to subscribe.
-     * @return {int} returns the number of subscribers unsubscribed.
+     * @return {Number} returns the number of subscribers unsubscribed.
      */
     detach: function(fn, context) {
         // unsubscribe handle
@@ -759,7 +780,7 @@ Y.CustomEvent.prototype = {
     /**
      * Removes all listeners
      * @method unsubscribeAll
-     * @return {int} The number of listeners unsubscribed.
+     * @return {Number} The number of listeners unsubscribed.
      * @deprecated use detachAll.
      */
     unsubscribeAll: function() {
@@ -769,7 +790,7 @@ Y.CustomEvent.prototype = {
     /**
      * Removes all listeners
      * @method detachAll
-     * @return {int} The number of listeners unsubscribed.
+     * @return {Number} The number of listeners unsubscribed.
      */
     detachAll: function() {
         return this.detach();
@@ -797,14 +818,6 @@ Y.CustomEvent.prototype = {
 
             if (s && subs[i] === s) {
                 subs.splice(i, 1);
-
-                if (subs.length === 0) {
-                    if (when === AFTER) {
-                        this._hasAfters = false;
-                    } else {
-                        this._hasSubs = false;
-                    }
-                }
             }
         }
 

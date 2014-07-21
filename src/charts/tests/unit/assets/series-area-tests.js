@@ -1,5 +1,6 @@
 YUI.add('series-area-tests', function(Y) {
-    var MockAreaSeries = Y.Base.create("mockAreaSeries", Y.AreaSeries, [], {
+    var DOC = Y.config.doc,
+        MockAreaSeries = Y.Base.create("mockAreaSeries", Y.AreaSeries, [], {
             _getClosingPoints: function() {
                 return [];
             },
@@ -20,14 +21,15 @@ YUI.add('series-area-tests', function(Y) {
         },
 
         tearDown: function() {
-            this.series = null;
+            this.series.destroy();
+            Y.Event.purgeElement(DOC, false);
         },
-       
+
         "test: drawSeries()" : function() {
             var series = this.series,
                 mockAreaSeries = new MockAreaSeries();
             series.drawSeries.apply(mockAreaSeries);
-            Y.Assert.isTrue(mockAreaSeries._fillDrawn, "The drawFill method should have been called.");     
+            Y.Assert.isTrue(mockAreaSeries._fillDrawn, "The drawFill method should have been called.");
         },
 
         "test: _setStyles()" : function() {
@@ -62,7 +64,7 @@ YUI.add('series-area-tests', function(Y) {
             }
         }
     });
-    
+
     suite.add(new Y.AreaSeriesTest({
         name: "AreaSeries Tests"
     }));

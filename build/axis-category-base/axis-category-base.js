@@ -6,6 +6,7 @@ YUI.add('axis-category-base', function (Y, NAME) {
  * @module charts
  * @submodule axis-category-base
  */
+var Y_Lang = Y.Lang;
 
 /**
  * CategoryImpl contains logic for managing category data. CategoryImpl is used by the following classes:
@@ -25,6 +26,18 @@ function CategoryImpl()
 CategoryImpl.NAME = "categoryImpl";
 
 CategoryImpl.ATTRS = {
+    /**
+     * Pattern used by the `labelFunction` to format a label. The default `labelFunction` values for
+     * `CategoryAxis` and `CategoryAxisBase` do not accept a format object. This value can be used by
+     * a custom method.
+     *
+     * @attribute labelFormat
+     * @type Object
+     */
+    labelFormat: {
+        value: null
+    },
+
     /**
      * Determines whether and offset is automatically calculated for the edges of the axis.
      *
@@ -161,6 +174,39 @@ CategoryImpl.prototype = {
     getTotalMajorUnits: function()
     {
         return this.get("data").length;
+    },
+
+    /**
+     * Returns a coordinate corresponding to a data values.
+     *
+     * @method _getCoordFromValue
+     * @param {Number} min The minimum for the axis.
+     * @param {Number} max The maximum for the axis.
+     * @param {Number} length The distance that the axis spans.
+     * @param {Number} dataValue A value used to ascertain the coordinate.
+     * @param {Number} offset Value in which to offset the coordinates.
+     * @param {Boolean} reverse Indicates whether the coordinates should start from
+     * the end of an axis. Only used in the numeric implementation.
+     * @return Number
+     * @private
+     */
+    _getCoordFromValue: function(min, max, length, dataValue, offset)
+    {
+        var range,
+            multiplier,
+            valuecoord;
+        if(Y_Lang.isNumber(dataValue))
+        {
+            range = max - min;
+            multiplier = length/range;
+            valuecoord = (dataValue - min) * multiplier;
+            valuecoord = offset + valuecoord;
+        }
+        else
+        {
+            valuecoord = NaN;
+        }
+        return valuecoord;
     },
 
     /**

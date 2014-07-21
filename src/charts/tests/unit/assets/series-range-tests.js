@@ -1,12 +1,14 @@
 YUI.add('series-range-tests', function(Y) {
-    var suite = new Y.Test.Suite("Charts: RangeSeries"),
+    var DOC = Y.config.doc,
+        suite = new Y.Test.Suite("Charts: RangeSeries"),
         seriesTest = new Y.Test.Case({
         setUp: function() {
             this.series = new Y.RangeSeries();
         },
 
         tearDown: function() {
-            this.series = null;
+            this.series.destroy();
+            Y.Event.purgeElement(DOC, false);
         },
 
         "test: get('type')" : function() {
@@ -19,7 +21,7 @@ YUI.add('series-range-tests', function(Y) {
                 RangeMockSeries = Y.Base.create("rangeMockSeries", Y.RangeSeries, [], {
                     _drawMarkers: function(xcoords, opencoords, highcoords, lowcoords, closecoords, len, width, halfwidth, styles) {
                         this._drawMarkersArgs = {
-                            xcoords: xcoords, 
+                            xcoords: xcoords,
                             opencoords: opencoords,
                             highcoords: highcoords,
                             lowcoords: lowcoords,
@@ -27,14 +29,14 @@ YUI.add('series-range-tests', function(Y) {
                             len: len,
                             width: width,
                             halfwidth: halfwidth,
-                            styles: styles  
+                            styles: styles
                         };
                     }
                 }, {
                     ATTRS: {
                         width: {
                             getter: function() {
-                                return width;   
+                                return width;
                             }
                         }
                     }
@@ -59,17 +61,29 @@ YUI.add('series-range-tests', function(Y) {
                 resultHighCoords,
                 resultLowCoords,
                 resultCloseCoords,
+                calculateMarkerWidth = function(width, count, spacing) {
+                    var val = 0;
+                    while(val < 3 && spacing > -1)
+                    {
+                        spacing = spacing - 1;
+                        val = Math.round(width/count - spacing);
+                        if(val % 2 === 0) {
+                            val = val - 1;
+                        }
+                    }
+                    return Math.max(1, val);
+                },
                 drawMarkersArgs;
             mockSeries.set("xcoords", xcoords);
             mockSeries.set("ycoords", ycoords);
             mockSeries.set("width", width);
             styles = mockSeries.get("styles");
             dataWidth = width - (styles.padding.left + styles.padding.right);
-            markerWidth = dataWidth/len;
+            markerWidth = calculateMarkerWidth(dataWidth, len, 3);
             halfwidth = markerWidth/2;
             series.drawSeries.apply(mockSeries);
             drawMarkersArgs = mockSeries._drawMarkersArgs;
-            
+
             resultOpenCoords = drawMarkersArgs.opencoords;
             resultHighCoords = drawMarkersArgs.highcoords;
             resultLowCoords = drawMarkersArgs.lowcoords;

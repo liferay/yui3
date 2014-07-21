@@ -2,11 +2,14 @@ YUI.add('drawing-tests', function(Y) {
 
 var parentDiv = Y.DOM.create('<div id="testdiv" style="width: 400px; height: 400px;">'),
     suite = new Y.Test.Suite("Graphics: Drawing"),
+    drawingTests,
+    DOC = Y.config.doc;
+    DOC.body.appendChild(parentDiv);
     drawingTests = new Y.Test.Case({
 
         setUp: function() {
             this.graphic = new Y.Graphic({
-                render: parentDiv 
+                render: parentDiv
             });
             this.path = this.graphic.addShape({
                 type: "path"
@@ -15,6 +18,8 @@ var parentDiv = Y.DOM.create('<div id="testdiv" style="width: 400px; height: 400
 
         tearDown: function() {
             this.graphic.destroy();
+            //remove the focus event from the document as its not related to graphics.
+            Y.Event.purgeElement(DOC, false);
         },
 
         "test: moveTo()" : function() {
@@ -87,9 +92,8 @@ var parentDiv = Y.DOM.create('<div id="testdiv" style="width: 400px; height: 400
             Y.Assert.areEqual(this.path, this.path.drawWedge(175, 175, -3, 0, 175), "The drawWedge method should return a reference to the path.");
         }
     });
-    
+
     suite.add(drawingTests);
     Y.Test.Runner.add( suite );
-
 
 }, '@VERSION@' ,{requires:['graphics', 'test']});

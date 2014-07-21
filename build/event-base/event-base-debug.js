@@ -1,15 +1,3 @@
-(function () {
-var GLOBAL_ENV = YUI.Env;
-
-if (!GLOBAL_ENV._ready) {
-    GLOBAL_ENV._ready = function() {
-        GLOBAL_ENV.DOMReady = true;
-        GLOBAL_ENV.remove(YUI.config.doc, 'DOMContentLoaded', GLOBAL_ENV._ready);
-    };
-
-    GLOBAL_ENV.add(YUI.config.doc, 'DOMContentLoaded', GLOBAL_ENV._ready);
-}
-})();
 YUI.add('event-base', function (Y, NAME) {
 
 /*
@@ -63,7 +51,7 @@ if (YUI.Env.DOMReady) {
  * @class DOMEventFacade
  * @param ev {Event} the DOM event
  * @param currentTarget {HTMLElement} the element the listener was attached to
- * @param wrapper {Event.Custom} the custom event wrapper for this DOM event
+ * @param wrapper {CustomEvent} the custom event wrapper for this DOM event
  */
 
     var ua = Y.UA,
@@ -210,7 +198,9 @@ Y.extend(DOMEventFacade, Object, {
     preventDefault: function(returnValue) {
         var e = this._event;
         e.preventDefault();
-        e.returnValue = returnValue || false;
+        if (returnValue) {
+            e.returnValue = returnValue;
+        }
         this._wrapper.prevented = 1;
         this.prevented = 1;
     },
@@ -234,7 +224,7 @@ Y.DOMEventFacade = DOMEventFacade;
     /**
      * The native event
      * @property _event
-     * @type {Native DOM Event}
+     * @type {DOMEvent}
      * @private
      */
 
@@ -475,7 +465,7 @@ Event = function() {
      * Custom event wrappers for DOM events.  Key is
      * 'event:' + Element uid stamp + event type
      * @property _wrappers
-     * @type Y.Event.Custom
+     * @type CustomEvent
      * @static
      * @private
      */
@@ -593,8 +583,6 @@ Event._interval = setInterval(Event._poll, Event.POLL_INTERVAL);
         onAvailable: function(id, fn, p_obj, p_override, checkContent, compat) {
 
             var a = Y.Array(id), i, availHandle;
-
-            // Y.log('onAvailable registered for: ' + id);
 
             for (i=0; i<a.length; i=i+1) {
                 _avail.push({
@@ -764,8 +752,7 @@ Event._interval = setInterval(Event._poll, Event.POLL_INTERVAL);
             }
 
             if (!fn || !fn.call) {
-// throw new TypeError(type + " attach call failed, callback undefined");
-Y.log(type + " attach call failed, invalid callback", "error", "event");
+                Y.log(type + " attach call failed, invalid callback", "error", "event");
                 return false;
             }
 
@@ -817,9 +804,7 @@ Y.log(type + " attach call failed, invalid callback", "error", "event");
                 // Not found = defer adding the event until the element is available
                 } else {
 
-                    // Y.log(el + ' not found');
                     ret = Event.onAvailable(el, function() {
-                        // Y.log('lazy attach: ' + args);
 
                         ret.handle = Event._attach(args, conf);
 
@@ -1009,7 +994,6 @@ Y.log(type + " attach call failed, invalid callback", "error", "event");
          */
         _load: function(e) {
             if (!_loadComplete) {
-                // Y.log('Load Complete', 'info', 'event');
                 _loadComplete = true;
 
                 // Just in case DOMReady did not go off for some reason
@@ -1049,7 +1033,6 @@ Y.log(type + " attach call failed, invalid callback", "error", "event");
 
             Event.locked = true;
 
-            // Y.log.debug("poll");
             // keep trying until after the page is loaded.  We need to
             // check the page load state prior to trying to bind the
             // elements so that we can be certain all elements have been
@@ -1096,11 +1079,9 @@ Y.log(type + " attach call failed, invalid callback", "error", "event");
                     el = (item.compat) ? Y.DOM.byId(item.id) : Y.Selector.query(item.id, null, true);
 
                     if (el) {
-                        // Y.log('avail: ' + el);
                         executeItem(el, item);
                         _avail[i] = null;
                     } else {
-                        // Y.log('NOT avail: ' + el);
                         notAvail.push(item);
                     }
                 }
@@ -1274,7 +1255,7 @@ Y.log(type + " attach call failed, invalid callback", "error", "event");
          * @param {HTMLElement} el      the element to bind the handler to
          * @param {string}      type   the type of event handler
          * @param {function}    fn      the callback to invoke
-         * @param {boolen}      capture capture or bubble phase
+         * @param {Boolean}      capture capture or bubble phase
          * @static
          * @private
          */
@@ -1287,7 +1268,7 @@ Y.log(type + " attach call failed, invalid callback", "error", "event");
          * @param {HTMLElement} el      the element to bind the handler to
          * @param {string}      type   the type of event handler
          * @param {function}    fn      the callback to invoke
-         * @param {boolen}      capture capture or bubble phase
+         * @param {Boolean}      capture capture or bubble phase
          * @static
          * @private
          */
@@ -1307,13 +1288,18 @@ if (config.injected || YUI.Env.windowLoaded) {
 // Process onAvailable/onContentReady items when when the DOM is ready in IE
 if (Y.UA.ie) {
     Y.on(EVENT_READY, Event._poll);
-}
 
-try {
-    add(win, "unload", onUnload);
-} catch(e) {
-    /*jshint maxlen:300*/
-    Y.log("Registering unload listener failed. This is known to happen in Chrome Packaged Apps and Extensions, which don't support unload, and don't provide a way to test for support", "warn", "event-base");
+    // In IE6 and below, detach event handlers when the page is unloaded in
+    // order to try and prevent cross-page memory leaks. This isn't done in
+    // other browsers because a) it's not necessary, and b) it breaks the
+    // back/forward cache.
+    if (Y.UA.ie < 7) {
+        try {
+            add(win, "unload", onUnload);
+        } catch(e) {
+            Y.log("Registering unload listener failed.", "warn", "event-base");
+        }
+    }
 }
 
 Event.Custom = Y.CustomEvent;

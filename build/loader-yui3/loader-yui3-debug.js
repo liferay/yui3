@@ -31,7 +31,8 @@ Y.mix(YUI.Env[Y.version].modules, {
     "anim-base": {
         "requires": [
             "base-base",
-            "node-style"
+            "node-style",
+            "color-base"
         ]
     },
     "anim-color": {
@@ -88,6 +89,7 @@ Y.mix(YUI.Env[Y.version].modules, {
             "model",
             "model-list",
             "model-sync-rest",
+            "model-sync-local",
             "router",
             "view",
             "view-node-map"
@@ -262,6 +264,7 @@ Y.mix(YUI.Env[Y.version].modules, {
         "lang": [
             "en",
             "es",
+            "hu",
             "it"
         ],
         "requires": [
@@ -422,7 +425,8 @@ Y.mix(YUI.Env[Y.version].modules, {
     },
     "base-observable": {
         "requires": [
-            "attribute-observable"
+            "attribute-observable",
+            "base-core"
         ]
     },
     "base-pluginhost": {
@@ -442,7 +446,8 @@ Y.mix(YUI.Env[Y.version].modules, {
         "requires": [
             "attribute-core",
             "classnamemanager",
-            "node-base"
+            "node-base",
+            "escape"
         ]
     },
     "button-group": {
@@ -484,20 +489,6 @@ Y.mix(YUI.Env[Y.version].modules, {
         ]
     },
     "calendar": {
-        "lang": [
-            "de",
-            "en",
-            "es",
-            "es-AR",
-            "fr",
-            "it",
-            "ja",
-            "nb-NO",
-            "nl",
-            "pt-BR",
-            "ru",
-            "zh-HANT-TW"
-        ],
         "requires": [
             "calendar-base",
             "calendarnavigator"
@@ -511,12 +502,17 @@ Y.mix(YUI.Env[Y.version].modules, {
             "es",
             "es-AR",
             "fr",
+            "hu",
             "it",
             "ja",
             "nb-NO",
             "nl",
             "pt-BR",
             "ru",
+            "zh-Hans",
+            "zh-Hans-CN",
+            "zh-Hant",
+            "zh-Hant-HK",
             "zh-HANT-TW"
         ],
         "requires": [
@@ -624,6 +620,7 @@ Y.mix(YUI.Env[Y.version].modules, {
         "lang": [
             "en",
             "es",
+            "hu",
             "it",
             "ja"
         ],
@@ -639,6 +636,14 @@ Y.mix(YUI.Env[Y.version].modules, {
             "console"
         ],
         "skinnable": true
+    },
+    "content-editable": {
+        "requires": [
+            "node-base",
+            "editor-selection",
+            "stylesheet",
+            "plugin"
+        ]
     },
     "controller": {
         "use": [
@@ -688,22 +693,19 @@ Y.mix(YUI.Env[Y.version].modules, {
     },
     "cssgrids": {
         "optional": [
-            "cssreset",
-            "cssfonts"
+            "cssnormalize"
         ],
         "type": "css"
     },
     "cssgrids-base": {
         "optional": [
-            "cssreset",
-            "cssfonts"
+            "cssnormalize"
         ],
         "type": "css"
     },
     "cssgrids-responsive": {
         "optional": [
-            "cssreset",
-            "cssfonts"
+            "cssnormalize"
         ],
         "requires": [
             "cssgrids",
@@ -713,8 +715,7 @@ Y.mix(YUI.Env[Y.version].modules, {
     },
     "cssgrids-units": {
         "optional": [
-            "cssreset",
-            "cssfonts"
+            "cssnormalize"
         ],
         "requires": [
             "cssgrids-base"
@@ -896,6 +897,12 @@ Y.mix(YUI.Env[Y.version].modules, {
             "datasource-local"
         ]
     },
+    "datatable-foot": {
+        "requires": [
+            "datatable-core",
+            "view"
+        ]
+    },
     "datatable-formatters": {
         "requires": [
             "datatable-body",
@@ -911,11 +918,24 @@ Y.mix(YUI.Env[Y.version].modules, {
             "classnamemanager"
         ]
     },
+    "datatable-highlight": {
+        "requires": [
+            "datatable-base",
+            "event-hover"
+        ],
+        "skinnable": true
+    },
+    "datatable-keynav": {
+        "requires": [
+            "datatable-base"
+        ]
+    },
     "datatable-message": {
         "lang": [
             "en",
             "fr",
             "es",
+            "hu",
             "it"
         ],
         "requires": [
@@ -926,6 +946,25 @@ Y.mix(YUI.Env[Y.version].modules, {
     "datatable-mutable": {
         "requires": [
             "datatable-base"
+        ]
+    },
+    "datatable-paginator": {
+        "lang": [
+            "en",
+            "fr"
+        ],
+        "requires": [
+            "model",
+            "view",
+            "paginator-core",
+            "datatable-foot",
+            "datatable-paginator-templates"
+        ],
+        "skinnable": true
+    },
+    "datatable-paginator-templates": {
+        "requires": [
+            "template"
         ]
     },
     "datatable-scroll": {
@@ -940,7 +979,8 @@ Y.mix(YUI.Env[Y.version].modules, {
         "lang": [
             "en",
             "fr",
-            "es"
+            "es",
+            "hu"
         ],
         "requires": [
             "datatable-base"
@@ -1016,6 +1056,7 @@ Y.mix(YUI.Env[Y.version].modules, {
             "fr-FR",
             "hi",
             "hi-IN",
+            "hu",
             "id",
             "id-ID",
             "it",
@@ -1067,7 +1108,11 @@ Y.mix(YUI.Env[Y.version].modules, {
         ]
     },
     "datatype-number-format": {},
-    "datatype-number-parse": {},
+    "datatype-number-parse": {
+        "requires": [
+            "escape"
+        ]
+    },
     "datatype-xml": {
         "use": [
             "datatype-xml-parse",
@@ -1122,7 +1167,8 @@ Y.mix(YUI.Env[Y.version].modules, {
     },
     "dd-drag": {
         "requires": [
-            "dd-ddm-base"
+            "dd-ddm-base",
+            "selector-css2"
         ]
     },
     "dd-drop": {
@@ -1170,7 +1216,8 @@ Y.mix(YUI.Env[Y.version].modules, {
     "dial": {
         "lang": [
             "en",
-            "es"
+            "es",
+            "hu"
         ],
         "requires": [
             "widget",
@@ -1203,11 +1250,6 @@ Y.mix(YUI.Env[Y.version].modules, {
             "features"
         ]
     },
-    "dom-deprecated": {
-        "requires": [
-            "dom-base"
-        ]
-    },
     "dom-screen": {
         "requires": [
             "dom-base",
@@ -1216,8 +1258,7 @@ Y.mix(YUI.Env[Y.version].modules, {
     },
     "dom-style": {
         "requires": [
-            "dom-base",
-            "color-base"
+            "dom-base"
         ]
     },
     "dom-style-ie": {
@@ -1252,7 +1293,8 @@ Y.mix(YUI.Env[Y.version].modules, {
             "trigger": "dom-style"
         },
         "requires": [
-            "dom-style"
+            "dom-style",
+            "color-base"
         ]
     },
     "dump": {
@@ -1290,6 +1332,12 @@ Y.mix(YUI.Env[Y.version].modules, {
     "editor-br": {
         "requires": [
             "editor-base"
+        ]
+    },
+    "editor-inline": {
+        "requires": [
+            "editor-base",
+            "content-editable"
         ]
     },
     "editor-lists": {
@@ -1522,6 +1570,7 @@ Y.mix(YUI.Env[Y.version].modules, {
         "requires": [
             "base",
             "node",
+            "plugin",
             "selector-css3",
             "yui-throttle"
         ]
@@ -1560,7 +1609,8 @@ Y.mix(YUI.Env[Y.version].modules, {
             "trigger": "graphics"
         },
         "requires": [
-            "graphics"
+            "graphics",
+            "color-base"
         ]
     },
     "graphics-canvas-default": {
@@ -1589,7 +1639,7 @@ Y.mix(YUI.Env[Y.version].modules, {
         useSVG = !Y.config.defaultGraphicEngine || Y.config.defaultGraphicEngine != "canvas",
 		canvas = DOCUMENT && DOCUMENT.createElement("canvas"),
         svg = (DOCUMENT && DOCUMENT.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1"));
-    
+
     return svg && (useSVG || !canvas);
 },
             "trigger": "graphics"
@@ -1606,7 +1656,7 @@ Y.mix(YUI.Env[Y.version].modules, {
         useSVG = !Y.config.defaultGraphicEngine || Y.config.defaultGraphicEngine != "canvas",
 		canvas = DOCUMENT && DOCUMENT.createElement("canvas"),
         svg = (DOCUMENT && DOCUMENT.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1"));
-    
+
     return svg && (useSVG || !canvas);
 },
             "trigger": "graphics"
@@ -1623,7 +1673,8 @@ Y.mix(YUI.Env[Y.version].modules, {
             "trigger": "graphics"
         },
         "requires": [
-            "graphics"
+            "graphics",
+            "color-base"
         ]
     },
     "graphics-vml-default": {
@@ -1674,7 +1725,6 @@ Y.mix(YUI.Env[Y.version].modules, {
         "use": [
             "history-base",
             "history-hash",
-            "history-hash-ie",
             "history-html5"
         ]
     },
@@ -1808,7 +1858,7 @@ Y.mix(YUI.Env[Y.version].modules, {
     function workingNative( k, v ) {
         return k === "ok" ? true : v;
     }
-    
+
     // Double check basic functionality.  This is mainly to catch early broken
     // implementations of the JSON API in Firefox 3.1 beta1 and beta2
     if ( nativeSupport ) {
@@ -1922,6 +1972,12 @@ Y.mix(YUI.Env[Y.version].modules, {
             "model"
         ]
     },
+    "model-sync-local": {
+        "requires": [
+            "model",
+            "json-stringify"
+        ]
+    },
     "model-sync-rest": {
         "requires": [
             "model",
@@ -1942,18 +1998,14 @@ Y.mix(YUI.Env[Y.version].modules, {
         "requires": [
             "event-base",
             "node-core",
-            "dom-base"
+            "dom-base",
+            "dom-style"
         ]
     },
     "node-core": {
         "requires": [
             "dom-core",
             "selector"
-        ]
-    },
-    "node-deprecated": {
-        "requires": [
-            "node-base"
         ]
     },
     "node-event-delegate": {
@@ -2022,11 +2074,12 @@ Y.mix(YUI.Env[Y.version].modules, {
     },
     "node-scroll-info": {
         "requires": [
+            "array-extras",
             "base-build",
-            "dom-screen",
             "event-resize",
             "node-pluginhost",
-            "plugin"
+            "plugin",
+            "selector"
         ]
     },
     "node-style": {
@@ -2050,6 +2103,21 @@ Y.mix(YUI.Env[Y.version].modules, {
             "widget-position-constrain"
         ],
         "skinnable": true
+    },
+    "paginator": {
+        "requires": [
+            "paginator-core"
+        ]
+    },
+    "paginator-core": {
+        "requires": [
+            "base"
+        ]
+    },
+    "paginator-url": {
+        "requires": [
+            "paginator"
+        ]
     },
     "panel": {
         "requires": [
@@ -2699,13 +2767,13 @@ Y.mix(YUI.Env[Y.version].modules, {
     },
     "uploader-flash": {
         "requires": [
-            "swf",
+            "swfdetect",
+            "escape",
             "widget",
             "base",
             "cssbutton",
             "node",
             "event-custom",
-            "file-flash",
             "uploader-queue"
         ]
     },
@@ -2796,11 +2864,6 @@ Y.mix(YUI.Env[Y.version].modules, {
             "widget-base"
         ]
     },
-    "widget-locale": {
-        "requires": [
-            "widget-base"
-        ]
-    },
     "widget-modality": {
         "requires": [
             "base-build",
@@ -2871,10 +2934,10 @@ Y.mix(YUI.Env[Y.version].modules, {
     */
     return (!Y.UA.nodejs && !Y.UA.winjs);
 },
-            "trigger": "yql",
-            "when": "after"
+            "trigger": "yql"
         },
         "requires": [
+            "yql",
             "jsonp",
             "jsonp-url"
         ]
@@ -2883,17 +2946,21 @@ Y.mix(YUI.Env[Y.version].modules, {
         "condition": {
             "name": "yql-nodejs",
             "trigger": "yql",
-            "ua": "nodejs",
-            "when": "after"
-        }
+            "ua": "nodejs"
+        },
+        "requires": [
+            "yql"
+        ]
     },
     "yql-winjs": {
         "condition": {
             "name": "yql-winjs",
             "trigger": "yql",
-            "ua": "winjs",
-            "when": "after"
-        }
+            "ua": "winjs"
+        },
+        "requires": [
+            "yql"
+        ]
     },
     "yui": {},
     "yui-base": {},
@@ -2913,7 +2980,7 @@ Y.mix(YUI.Env[Y.version].modules, {
         ]
     }
 });
-YUI.Env[Y.version].md5 = 'd7ced98e3907d3c3c0655a93c6ac6867';
+YUI.Env[Y.version].md5 = '7ef189c2dd804768209f77293bfb00d9';
 
 
 }, '@VERSION@', {"requires": ["loader-base"]});

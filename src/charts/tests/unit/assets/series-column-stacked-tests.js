@@ -1,12 +1,14 @@
 YUI.add('series-column-stacked-tests', function(Y) {
-    var suite = new Y.Test.Suite("Charts: StackedColumnSeries"),
+    var DOC = Y.config.doc,
+        suite = new Y.Test.Suite("Charts: StackedColumnSeries"),
         seriesTest = new Y.Test.Case({
         setUp: function() {
             this.series = new Y.StackedColumnSeries();
         },
 
         tearDown: function() {
-            this.series = null;
+            this.series.destroy();
+            Y.Event.purgeElement(DOC, false);
         },
 
         "test: get('type')" : function() {
@@ -20,7 +22,7 @@ YUI.add('series-column-stacked-tests', function(Y) {
                     indexStyles: null,
 
                     set: function(prop, val) {
-                        
+
                         if(Y.Lang.isObject(prop)) {
                             this.indexStyles = prop;
                         } else {
@@ -33,7 +35,7 @@ YUI.add('series-column-stacked-tests', function(Y) {
                         x: {
                             getter: function() {
                                 return this.indexStyles.x;
-                            }   
+                            }
                         }
                     }
                 }),
@@ -42,7 +44,7 @@ YUI.add('series-column-stacked-tests', function(Y) {
                         return val;
                     }
                 }, {
-                    ATTRS: {   
+                    ATTRS: {
                         xcoords: {
                             value: [20, 60, 100, 140, 180, 220, 260, 300, 340, 380]
                         },
@@ -56,24 +58,22 @@ YUI.add('series-column-stacked-tests', function(Y) {
                         order: 0,
                         graphOrder: 0,
                         ycoords: [280, 100, 60, 49, 38, 42, 120, 90, 45, 60],
-                        seriesTypeCollection: seriesTypeCollection 
+                        seriesTypeCollection: seriesTypeCollection
                     }),
                     new updateMarkerStateMockColumnSeries({
                         order: 1,
                         graphOrder: 1,
                         ycoords: [210, 150, 40, 89, 78, 142, 130, 80, 65, 90],
-                        seriesTypeCollection: seriesTypeCollection   
+                        seriesTypeCollection: seriesTypeCollection
                     })
                 ],
                 markerStyles,
-                series,
                 mockSeries,
                 seriesIterator,
                 markerIterator,
                 len = mockSeriesCollection.length,
                 markerNum = 10,
                 marker,
-                markerStyles,
                 testFill,
                 markerXs,
                 markerX,
@@ -126,7 +126,7 @@ YUI.add('series-column-stacked-tests', function(Y) {
                         order: 2,
                         graphOrder: 2,
                         xcoords: [null, null, null, null, null, null, null, null, null, null],
-                        seriesTypeCollection: seriesTypeCollection   
+                        seriesTypeCollection: seriesTypeCollection
                     })
             );
             for(seriesIterator = 0; seriesIterator < len; seriesIterator = seriesIterator + 1) {
@@ -204,13 +204,13 @@ YUI.add('series-column-stacked-tests', function(Y) {
             for(key in testFill) {
                 if(testFill.hasOwnProperty(key)) {
                     Y.Assert.isTrue(plotDefaults.fill.hasOwnProperty(key), "The fill should have a " + key + " value.");
-                    Y.Assert.areEqual(testFill[key], plotDefaults.fill[key], "The " + key + " value of fill should be " + testFill[key] + "."); 
+                    Y.Assert.areEqual(testFill[key], plotDefaults.fill[key], "The " + key + " value of fill should be " + testFill[key] + ".");
                 }
             }
             for(key in testBorder) {
                 if(testBorder.hasOwnProperty(key)) {
                     Y.Assert.isTrue(plotDefaults.border.hasOwnProperty(key), "The border should have a " + key + " value.");
-                    Y.Assert.areEqual(testBorder[key], plotDefaults.border[key], "The " + key + " value of border should be " + testBorder[key] + "."); 
+                    Y.Assert.areEqual(testBorder[key], plotDefaults.border[key], "The " + key + " value of border should be " + testBorder[key] + ".");
                 }
             }
             Y.Assert.areEqual(testWidth, plotDefaults.width, "The width should be " + testWidth + ".");

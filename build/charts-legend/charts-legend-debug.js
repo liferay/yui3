@@ -6,8 +6,7 @@ YUI.add('charts-legend', function (Y, NAME) {
  * @module charts
  * @submodule charts-legend
  */
-var DOCUMENT = Y.config.doc,
-TOP = "top",
+var TOP = "top",
 RIGHT = "right",
 BOTTOM = "bottom",
 LEFT = "left",
@@ -1236,17 +1235,17 @@ Y.ChartLegend = Y.Base.create("chartlegend", Y.Widget, [Y.Renderer], {
      * @param {String | Class} shapeClass The type of shape
      * @param {Object} fill Properties for the shape's fill
      * @param {Object} border Properties for the shape's border
-     * @param {String} text String to be rendered as the legend's text
+     * @param {String} labelStyles String to be rendered as the legend's text
      * @param {Number} width Total width of the legend item
      * @param {Number} height Total height of the legend item
-     * @param {HTML | String} text Text for the legendItem
+     * @param {String} text Text for the legendItem
      * @return Object
      * @private
      */
     _getLegendItem: function(node, shapeClass, fill, border, labelStyles, w, h, text)
     {
-        var containerNode = Y.one(DOCUMENT.createElement("div")),
-            textField = Y.one(DOCUMENT.createElement("span")),
+        var containerNode = Y.Node.create("<div>"),
+            textField = Y.Node.create("<span>"),
             shape,
             dimension,
             padding,
@@ -1256,9 +1255,9 @@ Y.ChartLegend = Y.Base.create("chartlegend", Y.Widget, [Y.Renderer], {
         containerNode.setStyle(POSITION, "absolute");
         textField.setStyle(POSITION, "absolute");
         textField.setStyles(labelStyles);
-        textField.appendChild(DOCUMENT.createTextNode(text));
+        textField.set("text", text);
         containerNode.appendChild(textField);
-        node.appendChild(containerNode);
+        node.append(containerNode);
         dimension = textField.get("offsetHeight");
         padding = dimension - h;
         left = w + padding + 2;

@@ -19,7 +19,8 @@
     "anim-base": {
         "requires": [
             "base-base",
-            "node-style"
+            "node-style",
+            "color-base"
         ]
     },
     "anim-color": {
@@ -76,6 +77,7 @@
             "model",
             "model-list",
             "model-sync-rest",
+            "model-sync-local",
             "router",
             "view",
             "view-node-map"
@@ -241,6 +243,7 @@
         "lang": [
             "en",
             "es",
+            "hu",
             "it"
         ],
         "requires": [
@@ -388,7 +391,8 @@
     },
     "base-observable": {
         "requires": [
-            "attribute-observable"
+            "attribute-observable",
+            "base-core"
         ]
     },
     "base-pluginhost": {
@@ -408,7 +412,8 @@
         "requires": [
             "attribute-core",
             "classnamemanager",
-            "node-base"
+            "node-base",
+            "escape"
         ]
     },
     "button-group": {
@@ -450,20 +455,6 @@
         ]
     },
     "calendar": {
-        "lang": [
-            "de",
-            "en",
-            "es",
-            "es-AR",
-            "fr",
-            "it",
-            "ja",
-            "nb-NO",
-            "nl",
-            "pt-BR",
-            "ru",
-            "zh-HANT-TW"
-        ],
         "requires": [
             "calendar-base",
             "calendarnavigator"
@@ -477,12 +468,17 @@
             "es",
             "es-AR",
             "fr",
+            "hu",
             "it",
             "ja",
             "nb-NO",
             "nl",
             "pt-BR",
             "ru",
+            "zh-Hans",
+            "zh-Hans-CN",
+            "zh-Hant",
+            "zh-Hant-HK",
             "zh-HANT-TW"
         ],
         "requires": [
@@ -590,6 +586,7 @@
         "lang": [
             "en",
             "es",
+            "hu",
             "it",
             "ja"
         ],
@@ -605,6 +602,14 @@
             "console"
         ],
         "skinnable": true
+    },
+    "content-editable": {
+        "requires": [
+            "node-base",
+            "editor-selection",
+            "stylesheet",
+            "plugin"
+        ]
     },
     "controller": {
         "use": [
@@ -654,22 +659,19 @@
     },
     "cssgrids": {
         "optional": [
-            "cssreset",
-            "cssfonts"
+            "cssnormalize"
         ],
         "type": "css"
     },
     "cssgrids-base": {
         "optional": [
-            "cssreset",
-            "cssfonts"
+            "cssnormalize"
         ],
         "type": "css"
     },
     "cssgrids-responsive": {
         "optional": [
-            "cssreset",
-            "cssfonts"
+            "cssnormalize"
         ],
         "requires": [
             "cssgrids",
@@ -679,8 +681,7 @@
     },
     "cssgrids-units": {
         "optional": [
-            "cssreset",
-            "cssfonts"
+            "cssnormalize"
         ],
         "requires": [
             "cssgrids-base"
@@ -862,6 +863,12 @@
             "datasource-local"
         ]
     },
+    "datatable-foot": {
+        "requires": [
+            "datatable-core",
+            "view"
+        ]
+    },
     "datatable-formatters": {
         "requires": [
             "datatable-body",
@@ -877,11 +884,24 @@
             "classnamemanager"
         ]
     },
+    "datatable-highlight": {
+        "requires": [
+            "datatable-base",
+            "event-hover"
+        ],
+        "skinnable": true
+    },
+    "datatable-keynav": {
+        "requires": [
+            "datatable-base"
+        ]
+    },
     "datatable-message": {
         "lang": [
             "en",
             "fr",
             "es",
+            "hu",
             "it"
         ],
         "requires": [
@@ -892,6 +912,25 @@
     "datatable-mutable": {
         "requires": [
             "datatable-base"
+        ]
+    },
+    "datatable-paginator": {
+        "lang": [
+            "en",
+            "fr"
+        ],
+        "requires": [
+            "model",
+            "view",
+            "paginator-core",
+            "datatable-foot",
+            "datatable-paginator-templates"
+        ],
+        "skinnable": true
+    },
+    "datatable-paginator-templates": {
+        "requires": [
+            "template"
         ]
     },
     "datatable-scroll": {
@@ -906,7 +945,8 @@
         "lang": [
             "en",
             "fr",
-            "es"
+            "es",
+            "hu"
         ],
         "requires": [
             "datatable-base"
@@ -982,6 +1022,7 @@
             "fr-FR",
             "hi",
             "hi-IN",
+            "hu",
             "id",
             "id-ID",
             "it",
@@ -1033,7 +1074,11 @@
         ]
     },
     "datatype-number-format": {},
-    "datatype-number-parse": {},
+    "datatype-number-parse": {
+        "requires": [
+            "escape"
+        ]
+    },
     "datatype-xml": {
         "use": [
             "datatype-xml-parse",
@@ -1088,7 +1133,8 @@
     },
     "dd-drag": {
         "requires": [
-            "dd-ddm-base"
+            "dd-ddm-base",
+            "selector-css2"
         ]
     },
     "dd-drop": {
@@ -1136,7 +1182,8 @@
     "dial": {
         "lang": [
             "en",
-            "es"
+            "es",
+            "hu"
         ],
         "requires": [
             "widget",
@@ -1169,11 +1216,6 @@
             "features"
         ]
     },
-    "dom-deprecated": {
-        "requires": [
-            "dom-base"
-        ]
-    },
     "dom-screen": {
         "requires": [
             "dom-base",
@@ -1182,8 +1224,7 @@
     },
     "dom-style": {
         "requires": [
-            "dom-base",
-            "color-base"
+            "dom-base"
         ]
     },
     "dom-style-ie": {
@@ -1193,7 +1234,8 @@
             "trigger": "dom-style"
         },
         "requires": [
-            "dom-style"
+            "dom-style",
+            "color-base"
         ]
     },
     "dump": {
@@ -1231,6 +1273,12 @@
     "editor-br": {
         "requires": [
             "editor-base"
+        ]
+    },
+    "editor-inline": {
+        "requires": [
+            "editor-base",
+            "content-editable"
         ]
     },
     "editor-lists": {
@@ -1460,6 +1508,7 @@
         "requires": [
             "base",
             "node",
+            "plugin",
             "selector-css3",
             "yui-throttle"
         ]
@@ -1492,7 +1541,8 @@
             "trigger": "graphics"
         },
         "requires": [
-            "graphics"
+            "graphics",
+            "color-base"
         ]
     },
     "graphics-canvas-default": {
@@ -1531,7 +1581,8 @@
             "trigger": "graphics"
         },
         "requires": [
-            "graphics"
+            "graphics",
+            "color-base"
         ]
     },
     "graphics-vml-default": {
@@ -1578,7 +1629,6 @@
         "use": [
             "history-base",
             "history-hash",
-            "history-hash-ie",
             "history-html5"
         ]
     },
@@ -1783,6 +1833,12 @@
             "model"
         ]
     },
+    "model-sync-local": {
+        "requires": [
+            "model",
+            "json-stringify"
+        ]
+    },
     "model-sync-rest": {
         "requires": [
             "model",
@@ -1803,18 +1859,14 @@
         "requires": [
             "event-base",
             "node-core",
-            "dom-base"
+            "dom-base",
+            "dom-style"
         ]
     },
     "node-core": {
         "requires": [
             "dom-core",
             "selector"
-        ]
-    },
-    "node-deprecated": {
-        "requires": [
-            "node-base"
         ]
     },
     "node-event-delegate": {
@@ -1883,11 +1935,12 @@
     },
     "node-scroll-info": {
         "requires": [
+            "array-extras",
             "base-build",
-            "dom-screen",
             "event-resize",
             "node-pluginhost",
-            "plugin"
+            "plugin",
+            "selector"
         ]
     },
     "node-style": {
@@ -1911,6 +1964,21 @@
             "widget-position-constrain"
         ],
         "skinnable": true
+    },
+    "paginator": {
+        "requires": [
+            "paginator-core"
+        ]
+    },
+    "paginator-core": {
+        "requires": [
+            "base"
+        ]
+    },
+    "paginator-url": {
+        "requires": [
+            "paginator"
+        ]
     },
     "panel": {
         "requires": [
@@ -2545,13 +2613,13 @@
     },
     "uploader-flash": {
         "requires": [
-            "swf",
+            "swfdetect",
+            "escape",
             "widget",
             "base",
             "cssbutton",
             "node",
             "event-custom",
-            "file-flash",
             "uploader-queue"
         ]
     },
@@ -2642,11 +2710,6 @@
             "widget-base"
         ]
     },
-    "widget-locale": {
-        "requires": [
-            "widget-base"
-        ]
-    },
     "widget-modality": {
         "requires": [
             "base-build",
@@ -2712,10 +2775,10 @@
         "condition": {
             "name": "yql-jsonp",
             "test": "jsonp.js",
-            "trigger": "yql",
-            "when": "after"
+            "trigger": "yql"
         },
         "requires": [
+            "yql",
             "jsonp",
             "jsonp-url"
         ]
@@ -2724,17 +2787,21 @@
         "condition": {
             "name": "yql-nodejs",
             "trigger": "yql",
-            "ua": "nodejs",
-            "when": "after"
-        }
+            "ua": "nodejs"
+        },
+        "requires": [
+            "yql"
+        ]
     },
     "yql-winjs": {
         "condition": {
             "name": "yql-winjs",
             "trigger": "yql",
-            "ua": "winjs",
-            "when": "after"
-        }
+            "ua": "winjs"
+        },
+        "requires": [
+            "yql"
+        ]
     },
     "yui": {},
     "yui-base": {},

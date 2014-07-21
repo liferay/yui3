@@ -1,5 +1,6 @@
 YUI.add('series-bar-tests', function(Y) {
-    var suite = new Y.Test.Suite("Charts: BarSeries");
+    var DOC = Y.config.doc,
+        suite = new Y.Test.Suite("Charts: BarSeries");
     Y.BarSeriesTest = function() {
         Y.BarSeriesTest.superclass.constructor.apply(this, arguments);
     };
@@ -9,9 +10,10 @@ YUI.add('series-bar-tests', function(Y) {
         },
 
         tearDown: function() {
-            this.series = null;
+            this.series.destroy();
+            Y.Event.purgeElement(DOC, false);
         },
-        
+
         _getMarkerDimensions: function(xcoord, ycoord, calculatedSize, offset, leftOrigin)
         {
             var config = {
@@ -29,12 +31,11 @@ YUI.add('series-bar-tests', function(Y) {
             }
             return config;
         },
-       
+
         "test: _getMarkerDimensions()" : function() {
             var series = this.series,
                 testData,
                 actualData,
-                key,
                 offset = 8;
                 xcoord1 = 150,
                 xcoord2 = 20,
@@ -42,10 +43,11 @@ YUI.add('series-bar-tests', function(Y) {
                 ycoord2 = 50,
                 calculatedSize = "width",
                 assertMarkerDimensionsAreEqual  = function() {
+                    var key;
                     for(key in testData) {
                         if(testData.hasOwnProperty(key)) {
                             Y.Assert.isTrue(actualData.hasOwnProperty(key), "The _getMarkerDimensions method should have a value for " + key + ".");
-                            Y.Assert.areEqual(testData[key], actualData[key], "The " + key + " property should equal " + testData[key] + ".");   
+                            Y.Assert.areEqual(testData[key], actualData[key], "The " + key + " property should equal " + testData[key] + ".");
                         }
                     }
                 };
@@ -64,7 +66,7 @@ YUI.add('series-bar-tests', function(Y) {
                     indexStyles: null,
 
                     set: function(prop, val) {
-                        
+
                         if(Y.Lang.isObject(prop)) {
                             this.indexStyles = prop;
                         } else {
@@ -77,7 +79,7 @@ YUI.add('series-bar-tests', function(Y) {
                         y: {
                             getter: function() {
                                 return this._y;
-                            }   
+                            }
                         }
                     }
                 }),
@@ -86,7 +88,7 @@ YUI.add('series-bar-tests', function(Y) {
                         return val;
                     }
                 }, {
-                    ATTRS: {   
+                    ATTRS: {
                         xcoords: {},
                         ycoords: {
                             value: [380, 340, 300, 260, 220, 180, 140, 100, 60, 20]
@@ -100,24 +102,22 @@ YUI.add('series-bar-tests', function(Y) {
                         order: 0,
                         graphOrder: 0,
                         xcoords: [280, 100, 60, 49, 38, 42, 120, 90, 45, 60],
-                        seriesTypeCollection: seriesTypeCollection 
+                        seriesTypeCollection: seriesTypeCollection
                     }),
                     new updateMarkerStateMockBarSeries({
                         order: 1,
                         graphOrder: 1,
                         xcoords: [210, 150, 40, 89, 78, 142, 130, 80, 65, 90],
-                        seriesTypeCollection: seriesTypeCollection   
+                        seriesTypeCollection: seriesTypeCollection
                     })
                 ],
                 markerStyles,
-                series,
                 mockSeries,
                 seriesIterator,
                 markerIterator,
                 len = mockSeriesCollection.length,
                 markerNum = 10,
                 marker,
-                markerStyles,
                 testFill,
                 markerYs,
                 markerY,
@@ -194,7 +194,7 @@ YUI.add('series-bar-tests', function(Y) {
                         order: 2,
                         graphOrder: 2,
                         xcoords: [null, null, null, null, null, null, null, null, null, null],
-                        seriesTypeCollection: seriesTypeCollection   
+                        seriesTypeCollection: seriesTypeCollection
                     })
             );
             for(seriesIterator = 0; seriesIterator < len; seriesIterator = seriesIterator + 1) {
@@ -265,9 +265,9 @@ YUI.add('series-bar-tests', function(Y) {
                 series.updateMarkerState.apply(mockSeries, ["off", markerNum]);
             }
         }
-            
+
     });
-    
+
     suite.add(new Y.BarSeriesTest({
         name: "BarSeries Tests"
     }));

@@ -1,13 +1,12 @@
 YUI.add('column-legend-styles-tests', function(Y) {
     var suite = new Y.Test.Suite("Charts: ColumnLegendStyles"),
-        testBed = Y.Node.create('<div style="position:absolute;top:0px;left:0px;width:800px;height:600px" id="mychart"></div>'),
         columnStylesTest,
         columnGlobalStylesTest,
         dataProvider = [
-            {category:"5/1/2010", miscellaneous:2000, expenses:3700, revenue:2200}, 
-            {category:"5/2/2010", miscellaneous:50, expenses:9100, revenue:100}, 
-            {category:"5/3/2010", miscellaneous:400, expenses:1100, revenue:1500}, 
-            {category:"5/4/2010", miscellaneous:200, expenses:1900, revenue:2800}, 
+            {category:"5/1/2010", miscellaneous:2000, expenses:3700, revenue:2200},
+            {category:"5/2/2010", miscellaneous:50, expenses:9100, revenue:100},
+            {category:"5/3/2010", miscellaneous:400, expenses:1100, revenue:1500},
+            {category:"5/4/2010", miscellaneous:200, expenses:1900, revenue:2800},
             {category:"5/5/2010", miscellaneous:5000, expenses:5000, revenue:2650}
         ],
         seriesStyles = {
@@ -32,8 +31,10 @@ YUI.add('column-legend-styles-tests', function(Y) {
                     }
                 }
             }
-        };
-    Y.one('body').append(testBed);
+        },
+        parentDiv = Y.DOM.create('<div style="position:absolute;top:500px;left:0px;width:500px;height:400px" id="testdiv"></div>'),
+        DOC = Y.config.doc;
+    DOC.body.appendChild(parentDiv);
     function ChartsLegendStylesTest(cfg)
     {
         ChartsLegendStylesTest.superclass.constructor.apply(this);
@@ -44,9 +45,10 @@ YUI.add('column-legend-styles-tests', function(Y) {
         setUp: function() {
             this.chart = new Y.Chart(this.attrCfg);
         },
-        
+
         tearDown: function() {
             this.chart.destroy(true);
+            Y.Event.purgeElement(DOC, false);
         },
 
         testStyles: function() {
@@ -58,7 +60,7 @@ YUI.add('column-legend-styles-tests', function(Y) {
                 color,
                 i,
                 shape,
-                styles
+                styles,
                 len = items.length;
             for(i = 0; i < len; i = i + 1) {
                 item = items[i];
@@ -91,9 +93,9 @@ YUI.add('column-legend-styles-tests', function(Y) {
             position: "right"
         },
         type: "column",
-        render: "#mychart"
+        render: "#testdiv"
     });
-    
+
     columnGlobalStylesTest = new ChartsLegendStylesTest({
         dataProvider: dataProvider,
         styles: {
@@ -103,11 +105,10 @@ YUI.add('column-legend-styles-tests', function(Y) {
             position: "right"
         },
         type: "column",
-        render: "#mychart"
+        render: "#testdiv"
     });
-    
+
     suite.add(columnStylesTest);
     suite.add(columnGlobalStylesTest);
     Y.Test.Runner.add(suite);
-    testBed.destroy(true);
 }, '@VERSION@' ,{requires:['charts-legend', 'test']});

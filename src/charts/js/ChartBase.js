@@ -20,7 +20,7 @@ ChartBase.ATTRS = {
         valueFn: function()
         {
             var defDataProvider = [];
-            if(!this._seriesKeysExplicitlySet)
+            if(!this._wereSeriesKeysExplicitlySet())
             {
                 this.set("seriesKeys", this._buildSeriesKeys(defDataProvider), {src: "internal"});
             }
@@ -30,7 +30,7 @@ ChartBase.ATTRS = {
         setter: function(val)
         {
             var dataProvider = this._setDataValues(val);
-            if(!this._seriesKeysExplicitlySet)
+            if(!this._wereSeriesKeysExplicitlySet())
             {
                 this.set("seriesKeys", this._buildSeriesKeys(dataProvider), {src: "internal"});
             }
@@ -97,8 +97,7 @@ ChartBase.ATTRS = {
         {
             if(this._description)
             {
-                this._description.setContent("");
-                this._description.appendChild(DOCUMENT.createTextNode(val));
+                this._description.set("text", val);
             }
             return val;
         }
@@ -257,6 +256,22 @@ ChartBase.ATTRS = {
 };
 
 ChartBase.prototype = {
+
+    /**
+     * Utility method to determine if `seriesKeys` was explicitly provided
+     * (for example during construction, or set by the user), as opposed to
+     * being derived from the dataProvider for example.
+     *
+     * @method _wereSeriesKeysExplicitlySet
+     * @private
+     * @return boolean true if the `seriesKeys` attribute was explicitly set.
+     */
+    _wereSeriesKeysExplicitlySet : function()
+    {
+        var seriesKeys = this.get("seriesKeys");
+        return seriesKeys && this._seriesKeysExplicitlySet;
+    },
+
     /**
      * Handles groupMarkers change event.
      *
@@ -532,7 +547,7 @@ ChartBase.prototype = {
         cb.setAttribute("aria-describedby", id);
         description.set("id", id);
         description.set("tabIndex", -1);
-        description.appendChild(DOCUMENT.createTextNode(this.get("ariaDescription")));
+        description.set("text", this.get("ariaDescription"));
         liveRegion.set("id", "live-region");
         liveRegion.set("aria-live", "polite");
         liveRegion.set("aria-atomic", "true");
@@ -600,8 +615,7 @@ ChartBase.prototype = {
             {
                 e.halt();
                 msg = this._getAriaMessage(numKey);
-                this._liveRegion.setContent("");
-                this._liveRegion.appendChild(DOCUMENT.createTextNode(msg));
+                this._liveRegion.set("text", msg);
             }
         }, this), this.get("contentBox"));
         if(interactionType === "marker")
@@ -1000,7 +1014,15 @@ ChartBase.prototype = {
         if(Y_Lang.isObject(val))
         {
             styles = val.styles;
-            node = Y.one(val.node) || tt.node;
+            if(val.node && tt.node)
+            {
+                tt.node.destroy(true);
+                node = Y.one(val.node);
+            }
+            else
+            {
+                node = tt.node;
+            }
             if(styles)
             {
                 for(i in styles)
@@ -1092,7 +1114,7 @@ ChartBase.prototype = {
      *  @param {Number} index The index of the item within its series.
      *  @param {Array} seriesArray Array of series instances for each value item.
      *  @param {Number} seriesIndex The index of the series in the `seriesCollection`.
-     *  @return {String | HTML}
+     *  @return {HTMLElement}
      * @private
      */
     _planarLabelFunction: function(categoryAxis, valueItems, index, seriesArray)
@@ -1160,7 +1182,7 @@ ChartBase.prototype = {
      *      <dt>key</dt><dd>The key for the series.</dd>
      *      <dt>value</dt><dd>The value for the series item.</dd>
      *  </dl>
-     * @return {String | HTML}
+     * @return {HTMLElement}
      * @private
      */
     _tooltipLabelFunction: function(categoryItem, valueItem)
@@ -1228,7 +1250,7 @@ ChartBase.prototype = {
      */
     _setText: function(textField, val)
     {
-        textField.setContent("");
+        textField.empty();
         if(Y_Lang.isNumber(val))
         {
             val = val + "";

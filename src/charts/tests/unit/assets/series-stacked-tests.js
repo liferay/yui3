@@ -1,5 +1,6 @@
 YUI.add('series-stacked-tests', function(Y) {
-    var MockStackingUtil = Y.Base.create("mockStackingUtil", Y.StackingUtil, [], {
+    var DOC = Y.config.doc,
+        MockStackingUtil = Y.Base.create("mockStackingUtil", Y.StackingUtil, [], {
         }),
         suite = new Y.Test.Suite("Charts: StackingUtil");
     Y.StackingUtilTest = function() {
@@ -12,8 +13,9 @@ YUI.add('series-stacked-tests', function(Y) {
 
         tearDown: function() {
             this.stackingUtil = null;
+            Y.Event.purgeElement(DOC, false);
         },
-        
+
         "test: _stackCoordinates()" : function() {
             var MockStackCoordinatesStackingUtil = Y.Base.create("mockStackCoordinatesStackingUtil", Y.StackingUtil, [], {
                     _direction: "horizontal",
@@ -23,7 +25,7 @@ YUI.add('series-stacked-tests', function(Y) {
                     _stackYCoordsCalled: false,
 
                     _stackXCoords: function() {
-                        this._stackXCoordsCalled = true;    
+                        this._stackXCoordsCalled = true;
                     },
 
                     _stackYCoords: function() {
@@ -72,14 +74,14 @@ YUI.add('series-stacked-tests', function(Y) {
                 testCoords = ycoords.concat(),
                 stackingUtil = this.stackingUtil,
                 nextValidY = 400,
-                nextValidX = 400, 
+                nextValidX = 400,
                 previousValidY = 180,
                 previousValidX = 200,
                 x = 300,
                 i,
                 len = xcoords.length,
                 m;
-            
+
             //calculate slope and solve for y
             m = (nextValidY - previousValidY) / (nextValidX - previousValidX);
             testCoords[3] = previousValidY + ((m * x) - (m * previousValidX));
@@ -107,7 +109,7 @@ YUI.add('series-stacked-tests', function(Y) {
             Y.Assert.areEqual(40, stackingUtil._getNextValidCoordValue(testCoords, 3), "The next valid coord should be 40.");
         }
     });
-    
+
     suite.add(new Y.StackingUtilTest({
         name: "StackingUtil Tests"
     }));

@@ -6,6 +6,63 @@ Custom Event Infrastructure Change History
 
 * No changes.
 
+3.17.2
+------
+
+* No changes.
+
+3.17.1
+------
+
+* No changes.
+
+3.17.0
+------
+
+* No changes.
+
+3.16.0
+------
+
+* No changes.
+
+3.15.0
+------
+
+* No changes.
+
+3.14.1
+------
+
+* No changes.
+
+3.14.0
+------
+
+* No changes.
+
+3.13.0
+------
+
+* Made `addTarget` and `removeTarget` chainable.
+
+3.12.0
+------
+
+* Fixed regression introduced in 3.10.0, where `EventTarget.detach('cat|*')`
+  would throw an exception, when the EventTarget was configured with a prefix.
+
+3.11.0
+------
+
+* Fixed issue with fireOnce subscribers not receiving the facade,
+  if subscription came in after the fire, and the initial fire had
+  no listeners (the bug was introduced in 3.10.0, with the no listener
+  perf. optimizations).
+
+  The subscribers in the broken code would have received the raw payload
+  instead (e.g. {opts:foo}).
+
 3.10.3
 ------
 

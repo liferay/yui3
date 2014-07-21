@@ -1,5 +1,6 @@
 YUI.add('series-areaspline-tests', function(Y) {
-    var MockAreaSplineSeries = Y.Base.create("mockAreaSplineSeries", Y.AreaSplineSeries, [], {
+    var DOC = Y.config.doc,
+        MockAreaSplineSeries = Y.Base.create("mockAreaSplineSeries", Y.AreaSplineSeries, [], {
             _areaSplineDrawn: false,
 
             drawAreaSpline: function() {
@@ -16,17 +17,18 @@ YUI.add('series-areaspline-tests', function(Y) {
         },
 
         tearDown: function() {
-            this.series = null;
+            this.series.destroy();
+            Y.Event.purgeElement(DOC, false);
         },
-       
+
         "test: drawSeries()" : function() {
             var series = this.series,
                 mockAreaSplineSeries = new MockAreaSplineSeries();
             series.drawSeries.apply(mockAreaSplineSeries);
-            Y.Assert.isTrue(mockAreaSplineSeries._areaSplineDrawn, "The drawAreaSpline method should have been called.");     
+            Y.Assert.isTrue(mockAreaSplineSeries._areaSplineDrawn, "The drawAreaSpline method should have been called.");
         }
     });
-    
+
     suite.add(new Y.AreaSplineSeriesTest({
         name: "AreaSplineSeries Tests"
     }));

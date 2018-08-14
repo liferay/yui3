@@ -86,10 +86,16 @@ Y.CategoryAxis = Y.Base.create("categoryAxis", Y.Axis, [Y.CategoryImpl], {
             data = this.get("data"),
             offset = edgeOffset;
         dataValues = dataValues || data;
+        var indexMap = new Map();
         for(i = 0; i < count; i = i + 1)
         {
             labelValue = dataValues[i];
             labelIndex = Y.Array.indexOf(data, labelValue);
+            if(indexMap.has(labelValue))
+            {
+            	labelIndex = Y.Array.indexOf(data, labelValue, indexMap.get(labelValue)+1);
+            }
+            indexMap.set(labelValue, labelIndex);
             if(Y_Lang.isNumber(labelIndex) && labelIndex > -1)
             {
                 point = {};

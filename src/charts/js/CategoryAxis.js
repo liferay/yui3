@@ -93,7 +93,7 @@ Y.CategoryAxis = Y.Base.create("categoryAxis", Y.Axis, [Y.CategoryImpl], {
             labelIndex = Y.Array.indexOf(data, labelValue);
             if(indexMap.has(labelValue))
             {
-            	labelIndex = Y.Array.indexOf(data, labelValue, indexMap.get(labelValue)+1);
+            	labelIndex = Y.Array.indexOf(data, labelValue, indexMap.get(labelValue) + 1);
             }
             indexMap.set(labelValue, labelIndex);
             if(Y_Lang.isNumber(labelIndex) && labelIndex > -1)

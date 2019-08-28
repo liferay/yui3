@@ -234,16 +234,6 @@ PositionAlign.prototype = {
 
     // -- Lifecycle Methods ----------------------------------------------------
 
-    initializer: function() {
-        if ( ! this._posNode) {
-            Y.error('WidgetPosition needs to be added to the Widget, ' +
-                'before WidgetPositionAlign is added');
-        }
-
-        Y.after(this._bindUIPosAlign, this, 'bindUI');
-        Y.after(this._syncUIPosAlign, this, 'syncUI');
-    },
-
     destructor: function () {
         this._detachPosAlignUIHandles();
     },

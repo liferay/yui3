@@ -202,6 +202,10 @@ available.
             if (hasWin) {
                 remove(doc, 'DOMContentLoaded', handleReady);
             }
+
+            if (doc && doc.body && YUI.Env.cssStampEl && (!doc.body.contains(YUI.Env.cssStampEl))) {
+                doc.body.appendChild(YUI.Env.cssStampEl);
+            }
         },
         handleLoad = function() {
             YUI.Env.windowLoaded = true;

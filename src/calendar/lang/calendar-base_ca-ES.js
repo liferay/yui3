@@ -1,5 +1,5 @@
 {
-    very_short_weekdays : ["Dg", "Dl", "Dt", "Dc", "Dj", "Dv", "Ds"],
+    very_short_weekdays : ["Dl", "Dt", "Dc", "Dj", "Dv", "Ds", "Dg"],
     first_weekday : 1,
     weekends : [0,6]
 }

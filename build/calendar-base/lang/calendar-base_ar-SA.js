@@ -1,0 +1,1 @@
+YUI.add("lang/calendar-base_ar-SA",function(a){a.Intl.add("calendar-base","ar-SA",{very_short_weekdays:["أحد","إثنين","ثلاثاء","أربعاء","خميس","جمعة","سبت"],first_weekday:0,weekends:[0,6]})},"@VERSION@");

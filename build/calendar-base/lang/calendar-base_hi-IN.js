@@ -1,0 +1,1 @@
+YUI.add("lang/calendar-base_hi-IN",function(e){e.Intl.add("calendar-base","hi-IN",{very_short_weekdays:["रवि ","सोम ","मंगल ","बुध ","गुरु ","शुक्र ","शनि "],first_weekday:0,weekends:[0,6]})},"@VERSION@");

@@ -1,0 +1,1 @@
+YUI.add("lang/calendar-base_sv-SE",function(e){e.Intl.add("calendar-base","sv-SE",{very_short_weekdays:["sön","mån","tis","ons","tor","fre","lör"],first_weekday:1,weekends:[0,6]})},"@VERSION@");

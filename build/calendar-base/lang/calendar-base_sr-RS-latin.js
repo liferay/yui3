@@ -1,0 +1,1 @@
+YUI.add("lang/calendar-base_sr-RS-latin",function(e){e.Intl.add("calendar-base","sr-RS-latin",{very_short_weekdays:["ned","pon","uto","sre","čet","pet","sub"],first_weekday:0,weekends:[0,6]})},"@VERSION@");

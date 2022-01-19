@@ -1,0 +1,1 @@
+YUI.add("lang/calendar-base_iw-IL",function(e){e.Intl.add("calendar-base","iw-IL",{very_short_weekdays:["א'","ב'","ג'","ד'","ה'","ו'","ש'"],first_weekday:0,weekends:[0,6]})},"@VERSION@");

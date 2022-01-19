@@ -1,0 +1,1 @@
+YUI.add("lang/calendar-base_ro-RO",function(a){a.Intl.add("calendar-base","ro-RO",{very_short_weekdays:["Du","Lu","Ma","Mi","Jo","Vi","Sî"],first_weekday:1,weekends:[0,6]})},"@VERSION@");

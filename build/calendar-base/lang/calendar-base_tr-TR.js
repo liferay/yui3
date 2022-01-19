@@ -1,0 +1,1 @@
+YUI.add("lang/calendar-base_tr-TR",function(a){a.Intl.add("calendar-base","tr-TR",{very_short_weekdays:["Paz","Pzt","Sal","Çrş","Prş","Cum","Cts"],first_weekday:1,weekends:[0,6]})},"@VERSION@");

@@ -1,0 +1,1 @@
+YUI.add("lang/calendar-base_lo-LA",function(e){e.Intl.add("calendar-base","lo-LA",{very_short_weekdays:["ອາທິດ","ຈັນ","ອັງຄານ","ພຸດ","ພະຫັດ","ວັນສຸກ","ເສົາ"],first_weekday:0,weekends:[0,6]})},"@VERSION@");

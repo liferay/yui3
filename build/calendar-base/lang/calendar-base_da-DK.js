@@ -1,0 +1,1 @@
+YUI.add("lang/calendar-base_da-DK",function(a){a.Intl.add("calendar-base","da-DK",{very_short_weekdays:["søn","man","tir","ons","tor","fre","lør"],first_weekday:1,weekends:[0,6]})},"@VERSION@");

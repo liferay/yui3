@@ -1,0 +1,1 @@
+YUI.add("lang/calendar-base_uk-UA",function(e){e.Intl.add("calendar-base","uk-UA",{very_short_weekdays:["Ндл","Пнд","Втр","Срд","Чтв","Птн","Сбт"],first_weekday:1,weekends:[0,6]})},"@VERSION@");

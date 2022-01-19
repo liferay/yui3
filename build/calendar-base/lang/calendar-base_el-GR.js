@@ -1,0 +1,1 @@
+YUI.add("lang/calendar-base_el-GR",function(e){e.Intl.add("calendar-base","el-GR",{very_short_weekdays:["Κυρ","Δευ","Τρι","Τετ","Πεμ","Παρ","Σαβ"],first_weekday:1,weekends:[0,6]})},"@VERSION@");

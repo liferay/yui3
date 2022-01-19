@@ -1,1 +1,1 @@
-YUI.add("lang/calendar-base_ca-ES",function(e){e.Intl.add("calendar-base","ca-ES",{very_short_weekdays:["Dg","Dl","Dt","Dc","Dj","Dv","Ds"],first_weekday:1,weekends:[0,6]})},"@VERSION@");
+YUI.add("lang/calendar-base_ca-ES",function(a){a.Intl.add("calendar-base","ca-ES",{very_short_weekdays:["Dl","Dt","Dc","Dj","Dv","Ds","Dg"],first_weekday:1,weekends:[0,6]})},"@VERSION@");

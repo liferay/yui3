@@ -1,1 +1,1 @@
-YUI.add("json-parse",function(e,t){var n=e.config.global.JSON;e.namespace("JSON").parse=function(e,t,r){return n.parse(typeof e=="string"?e:e+"",t,r)}},"@VERSION@",{requires:["yui-base"]});
+YUI.add("json-parse",function(e,a){var r=e.config.global.JSON;e.namespace("JSON").parse=function(e,a,n){return r.parse("string"==typeof e?e:e+"",a,n)}},"@VERSION@",{requires:["yui-base"]});

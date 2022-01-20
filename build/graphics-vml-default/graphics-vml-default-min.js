@@ -1,1 +1,1 @@
-YUI.add("graphics-vml-default",function(e,t){e.Graphic=e.VMLGraphic,e.Shape=e.VMLShape,e.Circle=e.VMLCircle,e.Rect=e.VMLRect,e.Ellipse=e.VMLEllipse,e.Path=e.VMLPath,e.Drawing=e.VMLDrawing},"@VERSION@");
+YUI.add("graphics-vml-default",function(a,i){a.Graphic=a.VMLGraphic,a.Shape=a.VMLShape,a.Circle=a.VMLCircle,a.Rect=a.VMLRect,a.Ellipse=a.VMLEllipse,a.Path=a.VMLPath,a.Drawing=a.VMLDrawing},"@VERSION@");

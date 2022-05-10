@@ -48,7 +48,7 @@
 
 .yui3-skin-sam .yui3-calendar-selection-disabled,
 .yui3-skin-sam .yui3-calendar-selection-disabled:hover {
-  color: #A6A6A6;
+  color: #717171;
   background: #CCCCCC;
 }
 
@@ -57,7 +57,7 @@
 }
 
 .yui3-skin-sam .yui3-calendar-prevmonth-day, .yui3-skin-sam .yui3-calendar-nextmonth-day {
-  color: #A6A6A6;
+  color: #717171;
 }
 
 .yui3-skin-sam .yui3-calendar-day {

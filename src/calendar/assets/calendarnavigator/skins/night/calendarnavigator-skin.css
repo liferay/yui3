@@ -5,15 +5,6 @@
   margin: 0;
   border: 10px solid transparent;
   position: absolute;
-  /* ie6 height fix */
-  font-size: 0;
-  line-height: 0;
-  /* ie6 transparent fix */
-  _border-left-color: black;
-  _border-top-color: black;
-  _border-right-color: black;
-  _border-bottom-color: black;
-  _filter: chroma(color=black);
 }
 
 .yui3-skin-night .yui3-calendarnav-prevmonth:hover,

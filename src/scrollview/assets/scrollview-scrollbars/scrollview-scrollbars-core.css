@@ -43,9 +43,6 @@
 .yui3-scrollview-scrollbar-horiz .yui3-scrollview-child {
     display:-moz-inline-stack;
     display:inline-block;
-    zoom:1;
-    *display:inline;
-
     top: 0;
     left: 0;
     bottom: auto;
@@ -71,15 +68,12 @@
 
 .yui3-scrollview-scrollbar-vert-basic .yui3-scrollview-child {
     position:static;
-    _overflow:hidden;
-    _line-height:4px;
 }
 
 .yui3-scrollview-scrollbar-horiz-basic {
     width:auto;
     white-space:nowrap;
     line-height:6px;
-    _overflow:hidden;
 }
 
 .yui3-scrollview-scrollbar-horiz-basic .yui3-scrollview-child {

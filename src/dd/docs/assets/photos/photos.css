@@ -10,7 +10,6 @@
     background-position: 40% 40%;
 }
 #yui-main .yui-g ul li {
-    *float: left;
     display: inline-block;
     margin: 1em;
     width: 10%;

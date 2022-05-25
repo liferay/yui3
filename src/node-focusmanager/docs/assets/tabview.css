@@ -14,7 +14,6 @@
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
-	zoom: 1;	/* Clear the floated <LI> elements in IE */
 }
 
 .yui3-tabview ul:after {  /* Clear the floated <LI> elements in Webkit, Opera and Gecko */
@@ -34,8 +33,6 @@
 	border: solid 1px #000;
 	margin: 0 -1px -1px 0;
 	background-color: #ccc;
-	*position: relative;	/* Necessary to get negative margins in IE */
-	*bottom: -1px;
 }
 
 .yui3-tabview .yui3-tab a {
@@ -65,20 +62,17 @@
 	border-color: #999;
 	border-bottom-width: 2px;
 	margin-bottom: -1px;
-	*position: relative;	/* Necessary to get negative margins in IE */
 }
 
 .yui3-tabview .yui3-tab-selected a em {
 	background-color: #fff;
 	border-bottom: 3px solid #fff;
 	margin-bottom: -3px;
-	*position: relative;	/* Necessary to get negative margins in IE */
 }
 
 .yui3-tabview .yui3-tab-focus a em {
 	background-color: #B3D4FF;
 	border-color: #B3D4FF;
-	_display: inline-block;	/* Necessary fix the disappearing background color bug in IE 6 */
 }
 
 .yui3-tabview .yui3-tabpanel {

@@ -5,7 +5,6 @@
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dcdbd9', endColorstr='#F6F5F3',GradientType=0 ); /* ie */
 
     border-bottom: 1px solid #dfdfdf;
-    *zoom: 1;
     padding: 1em;
 }
 #hd h1 {
@@ -26,7 +25,6 @@
 #feeds {
     margin-top: .75em;
     min-height: 500px;
-    *height: 500px;
     padding: .5em;
     position: relative;
 
@@ -65,9 +63,7 @@ ul.list {
     width: 325px;
     float: left;
     min-height: 500px;
-    *height: 500px;
     zoom: 1;
-
 }
 
 .yui3-dd-proxy {

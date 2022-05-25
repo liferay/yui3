@@ -9,8 +9,6 @@
     /* xbrowser inline-block styles */
     display: -moz-inline-stack; /* FF2 */
     display: inline-block;
-    *display: inline; /* IE 7- (with zoom) */
-    zoom: 1;
     vertical-align: top;
 }
 .yui3-skin-sam .yui3-console-inline .yui3-console-content {
@@ -19,7 +17,6 @@
 
 .yui3-skin-sam .yui3-console-content {
     background: #777;
-    _background: #D8D8DA url(bg.png) repeat-x 0 0;
     font: normal 13px/1.3 Arial, sans-serif;
     text-align: left;
 
@@ -45,7 +42,6 @@
     padding: 1ex;
 
     border: 1px solid transparent;
-    _border: 0 none;
     border-top-right-radius: 10px;
     border-top-left-radius: 10px;
     -moz-border-radius-topright: 10px;
@@ -63,14 +59,12 @@
     overflow: auto;
     overflow-x: auto;
     overflow-y: scroll;
-    _width: 100%;
 }
 
 .yui3-skin-sam .yui3-console-ft {
     background: #D8D8DA url(bg.png) repeat-x 0 0;
 
     border: 1px solid transparent;
-    _border: 0 none;
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
     -moz-border-radius-bottomright: 10px;
@@ -120,7 +114,6 @@
 .yui3-skin-sam .yui3-console-entry {
     border-bottom: 1px solid #aaa;
     min-height: 32px;
-    _height: 32px;
 }
 
 .yui3-skin-sam .yui3-console-entry-meta {

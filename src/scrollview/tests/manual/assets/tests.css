@@ -54,7 +54,6 @@ h1 {
     display:-moz-inline-stack;
     display: inline-block;
     width: 100%;
-    *display:inline;
 }
 
 #scrollable li div {

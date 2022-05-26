@@ -27,7 +27,6 @@
 
 .yui3-tab {
     display:inline-block;
-    *display:inline; /* IE */
     vertical-align:bottom; /* safari: for overlap */
     cursor:pointer;
 }

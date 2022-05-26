@@ -16,11 +16,9 @@
 }
 .yui3-datatable-paginator .yui3-datatable-paginator-group {
     display: inline-block;
-    zoom: 1; *display: inline;
 }
 .yui3-datatable-paginator .yui3-datatable-paginator-control {
     display: inline-block;
-    zoom: 1; *display: inline;
     margin: 0 3px;
     padding: 0 0.2em;
     text-align: center;

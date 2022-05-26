@@ -12,9 +12,6 @@
 	list-style:none;
 	zoom:1;
 }
-.yui3-skin-night .yui3-overlay-content li{
-	*float:left;
-}
 .yui3-skin-night .yui3-overlay-content {
     background-color:#6d6e6e;
 	-moz-box-shadow:0 0 17px rgba(0,0,0,0.58);

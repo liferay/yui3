@@ -28,16 +28,6 @@ html, body {
     background-color:#fff;
 }
 
-/* For IE 6/7 - needs a background color (above) to pick up events, and zoom, to fill the UL */
-#scrollview-content li {
-    *zoom:1;
-}
-
-/* For IE7 - needs zoom, otherwise clipped content is not rendered */
-#scrollview-content ul {
-    *zoom:1;
-}
-
 /* === scrollview container and header styles === */
 
 #scrollview-container {

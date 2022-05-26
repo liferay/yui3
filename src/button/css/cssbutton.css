@@ -1,11 +1,7 @@
 .yui3-button {
     /* Structure */
     display: inline-block;
-    *display: inline; /*IE 6/7*/
-    zoom: 1;
     font-size: 100%;
-    *font-size: 90%; /*IE 6/7 - To reduce IE's oversized button text*/
-    *overflow: visible; /*IE 6/7 - Because of IE's overly large left/right padding on buttons */
     padding: 0.4em 1em 0.45em;
     line-height: normal;
     white-space: nowrap;
@@ -20,7 +16,6 @@
     /* Presentation */
     color: #444; /* rgba not supported (IE 8) */
     color: rgba(0, 0, 0, 0.80); /* rgba supported */
-    *color: #444; /* IE 6 & 7 */
     border: 1px solid #999;  /*IE 6/7/8*/
     border: none rgba(0, 0, 0, 0);  /*IE9 + everything else*/
     background-color: #E6E6E6;
@@ -66,7 +61,6 @@ a.yui3-button {
 
 .yui3-button-active,
 .yui3-button:active {
-    border: inset 1px solid #999;  /*IE 6/7/8*/
     border: none rgba(0, 0, 0, 0);  /*IE9 + everything else*/
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1A000000', endColorstr='#26000000', GradientType=0);
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(rgba(0,0,0, 0.10)), to(rgba(0,0,0, 0.15)));

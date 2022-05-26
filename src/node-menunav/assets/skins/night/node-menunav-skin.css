@@ -5,7 +5,6 @@
 
     font-size: 100%;
     line-height: 2.25;  /* 18px 1.5*/
-    *line-height: 1.45; /* For IE */
     border: solid 1px #303030;
     background: #151515;
     /*padding: 3px 0;*/
@@ -23,7 +22,6 @@
 .yui3-skin-night .yui3-menu-horizontal .yui3-menu-content {
 
     line-height: 2;  /* ~24px */
-    *line-height: 1.9; /* For IE */
     background-color:#3b3c3d;
 	background: -moz-linear-gradient(
 		0% 100% 90deg,
@@ -66,27 +64,6 @@
 	padding: 0;
 	margin: 0;
 	border: 0;
-
-}
-
-
-.yui3-skin-night .yui3-menu li,
-.yui3-skin-night .yui3-menu .yui3-menu li {
-
-    /*
-        For and IE 6 (Strict Mode and Quirks Mode) and IE 7 (Quirks Mode only):
-		Used to collapse superfluous white space between <li> elements that is
-		triggered by the "display" property of the <a> elements being set to
-		"block" by node-menunav-core.css file.
-    */
-
-    _border-bottom: solid 1px #151515;
-
-}
-
-.yui3-skin-night .yui3-menu-horizontal li {
-
-	_border-bottom: 0;
 
 }
 

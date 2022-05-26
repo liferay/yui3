@@ -39,8 +39,6 @@ ul#demo,
 ul#demo2 {
     width: 10em;
     display: inline-block;
-    zoom: 1;
-    *display: inline;
     list-style: none outside none;
 }
 

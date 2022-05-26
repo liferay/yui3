@@ -1,15 +1,4 @@
 /* foundational CSS */
-.yui3-datatable-scrollable-x {
-    _overflow-x: hidden;
-    _position: relative;
-}
-
-.yui3-datatable-scrollable-y,
-.yui3-datatable-scrollable-y .yui3-datatable-x-scroller {
-    _overflow-y: hidden;
-    _position: relative;
-}
-
 .yui3-datatable-y-scroller-container {
     overflow-x: hidden;
     position: relative;

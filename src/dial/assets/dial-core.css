@@ -3,14 +3,11 @@ v\:shadow,
 v\:fill {
     behavior: url(#default#VML);
     display: inline-block;
-    zoom: 1; *display: inline; /* IE < 8: fake inline-block */
 }
 .yui3-dial{
 	position:relative;
 	display:-moz-inline-stack;
 	display:inline-block;
-	zoom:1;
-	*display:inline;
 	/*text-align:center;   This causes problems with the angle calc with longer labels*/
 }
 .yui3-dial-content,

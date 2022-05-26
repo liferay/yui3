@@ -4,8 +4,6 @@
  */
 .yui3-cssfonts body, .yui3-cssfonts {
 	font:13px/1.231 arial,helvetica,clean,sans-serif;
-	*font-size:small; /* for IE */
-	*font:x-small; /* for IE in quirks mode */
 }
 
 /**
@@ -35,6 +33,5 @@
 .yui3-cssfonts samp,
 .yui3-cssfonts tt {
 	font-family:monospace;
-	*font-size:108%;
 	line-height:100%;
 }

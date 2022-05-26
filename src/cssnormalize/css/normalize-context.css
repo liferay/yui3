@@ -43,8 +43,6 @@ Copyright (c) Nicolas Gallagher and Jonathan Neal
 .yui3-normalized canvas,
 .yui3-normalized video {
     display: inline-block;
-    *display: inline;
-    *zoom: 1;
 }
 
 /**
@@ -235,7 +233,6 @@ Copyright (c) Nicolas Gallagher and Jonathan Neal
 .yui3-normalized pre,
 .yui3-normalized samp {
     font-family: monospace, serif;
-    _font-family: 'courier new', monospace;
     font-size: 1em;
 }
 
@@ -404,8 +401,6 @@ Copyright (c) Nicolas Gallagher and Jonathan Neal
     padding: 0;
     white-space: normal;
     /* 2 */
-    *margin-left: -7px;
-    /* 3 */
 }
 
 /**
@@ -424,8 +419,6 @@ Copyright (c) Nicolas Gallagher and Jonathan Neal
     margin: 0;
     /* 2 */
     vertical-align: baseline;
-    /* 3 */
-    *vertical-align: middle;
     /* 3 */
 }
 
@@ -470,8 +463,6 @@ input[type="reset"],
     /* 2 */
     cursor: pointer;
     /* 3 */
-    *overflow: visible;
-    /* 4 */
 }
 
 /**
@@ -496,10 +487,6 @@ input[type="reset"],
     /* 1 */
     padding: 0;
     /* 2 */
-    *height: 13px;
-    /* 3 */
-    *width: 13px;
-    /* 3 */
 }
 
 /**

@@ -14,10 +14,6 @@
     font-size:5em;
     opacity: 0.4;
     text-align:center;
-
-    /* IE 6/7 needs inline block hack */
-    *display:inline;
-    *zoom:1;
 }
 
 .vertical li {

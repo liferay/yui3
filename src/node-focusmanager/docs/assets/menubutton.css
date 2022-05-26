@@ -20,8 +20,6 @@
     border-style: solid;
     border-color: #808080;
     margin: 0 -1px;
-	_margin: 0;	/*	Negative margins don't work correctly in IE 6, so
-	 				don't use them. */
 	display: block;
 }
 
@@ -38,7 +36,6 @@
 .yui3-buttonmenu-content {
     font-size: 93%;  /* 12px */
     line-height: 1.5;  /* 18px */
-    *line-height: 1.45; /* For IE */
     border: solid 1px #808080;
     background: #fff;
     padding: 3px 0;
@@ -58,7 +55,6 @@
 	background-color: transparent;
 	border: 0;
     color: #000;
-	*overflow: visible;	/*	Remove superfluous padding on <BUTTON>s in IE. */
 	padding: 0;
 }
 

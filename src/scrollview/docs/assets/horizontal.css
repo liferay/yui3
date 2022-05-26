@@ -38,12 +38,6 @@ html, body {
     background-color:#fff;
 }
 
-/* For IE 6/7 - needs inline block hack */
-#scrollview-content li {
-    *display:inline;
-    *zoom:1;
-}
-
 /* === scrollview container and header styles === */
 
 #scrollview-container {
@@ -57,7 +51,6 @@ html, body {
     border-bottom:#2d3033;
 
     height:44px;
-    *width:320px;
 
     background: -webkit-gradient(
         linear,

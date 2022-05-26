@@ -8,14 +8,12 @@
 
 	font-size: 100%;
     line-height: 1.5;  /* 18px */
-    *line-height: 1.45; /* For IE */
 
 }
 
 .yui3-menu-horizontal {
 
     line-height: 2;  /* ~24px */
-    *line-height: 1.9; /* For IE */
 
 }
 
@@ -89,9 +87,6 @@
 	font-weight: bold;
 	float: left;
     width: auto;
-	_display: inline;	/* Fixes IE margin doubling bug in IE 6 (Standards Mode and Quirks Mode)
-						and IE 7 (Quirks Mode only) */
-
 }
 
 .yui3-menu .yui3-menu .yui3-menu-label,
@@ -108,7 +103,6 @@
 	border: 0;
 	font-weight: normal;
 	float: none;
-	_display: block;
 
 }
 

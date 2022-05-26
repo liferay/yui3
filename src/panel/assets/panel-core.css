@@ -17,6 +17,4 @@
 }
 .yui3-panel .yui3-widget-ft .yui3-widget-buttons {
     display: inline-block;
-    *display: inline;
-    zoom: 1;
 }

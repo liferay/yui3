@@ -3,8 +3,6 @@
     /* xbrowser inline-block styles */
     display: -moz-inline-stack; /* FF2 */
     display: inline-block;
-    *display: inline; /* IE 7- (with zoom) */
-    zoom: 1;
     vertical-align: middle;
 }
 

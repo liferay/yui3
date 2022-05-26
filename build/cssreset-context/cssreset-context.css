@@ -106,12 +106,6 @@
 	font-size:inherit;
 	font-weight:inherit;
 }
-/*to enable resizing for IE*/
-.yui3-cssreset input,
-.yui3-cssreset textarea,
-.yui3-cssreset select {
-	*font-size:100%;
-}
 /*because legend doesn't inherit in IE */
 .yui3-cssreset legend {
 	color:#000;

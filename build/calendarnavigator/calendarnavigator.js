@@ -107,7 +107,7 @@ CalendarNavigator.CALENDARNAV_STRINGS = {
     * @static
     */
 CalendarNavigator.PREV_MONTH_CONTROL_TEMPLATE = '<a class="yui3-u {prev_month_class}" role="button" tabindex="{control_tabindex}">' +
-                                                    '<span class=”sr-only”>{prev_month_arialabel}</span></a>';
+                                                    '<span class="sr-only">{prev_month_arialabel}</span></a>';
    /**
     * The template for the calendar navigator next month control.
     * @property NEXT_MONTH_CONTROL_TEMPLATE
@@ -117,7 +117,7 @@ CalendarNavigator.PREV_MONTH_CONTROL_TEMPLATE = '<a class="yui3-u {prev_month_cl
     * @static
     */
 CalendarNavigator.NEXT_MONTH_CONTROL_TEMPLATE = '<a class="yui3-u {next_month_class}" role="button" tabindex="{control_tabindex}">' +
-                                                    '<span class=”sr-only”>{prev_month_arialabel}</span></a>';
+                                                    '<span class="sr-only">{prev_month_arialabel}</span></a>';
 
 
 Y.extend(CalendarNavigator, Y.Plugin.Base, {

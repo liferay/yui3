@@ -527,7 +527,7 @@ proto = {
         // using eval(). This is critical for Content Security Policy enabled
         // sites and other environments like Chrome extensions
         if (!Y.config.hasOwnProperty('global')) {
-            Y.config.global = Function('return this')();
+            Y.config.global = window || global;
         }
     },
 

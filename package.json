@@ -3,13 +3,15 @@
     "version": "3.19.1",
     "description": "YUI 3 Source",
     "author": "Dav Glass <davglass@gmail.com>",
-    "bugs": { "url" : "https://github.com/yui/yui3/issues" },
+    "bugs": {
+        "url": "https://github.com/yui/yui3/issues"
+    },
     "engines": {
         "node": "8.15.0",
         "npm": "6.4.1"
     },
     "directories": {
-        "lib" : "."
+        "lib": "."
     },
     "main": "./index.js",
     "dependencies": {
@@ -30,14 +32,14 @@
     "scripts": {
         "build": "cd src && npx shifter --walk"
     },
-    "licenses":[
+    "licenses": [
         {
-            "type" : "BSD",
-            "url" : "http://yuilibrary.com/license/"
+            "type": "BSD",
+            "url": "http://yuilibrary.com/license/"
         }
     ],
     "repository": {
-        "type":"git",
-        "url":"http://github.com/yui/yui3.git"
+        "type": "git",
+        "url": "http://github.com/yui/yui3.git"
     }
 }

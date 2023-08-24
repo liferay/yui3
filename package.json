@@ -27,8 +27,7 @@
         "archiver": "0.4.10"
     },
     "scripts": {
-        "postinstall": "grunt build",
-        "test": "grunt test"
+        "build": "cd src && npx shifter --walk"
     },
     "licenses":[
         {

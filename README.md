@@ -2,6 +2,8 @@
 
 > :warning: Use `npm install` followed by `npm run build` to build this project since we have overridden the original build from YUI3.
 
+> :warning: See [Confluence](https://liferay.atlassian.net/wiki/spaces/ENGFRONTENDINFRA/pages/1965457449/Releasing+YUI+AUI) for instructions on how to release a new version.
+
 YUI 3: The Yahoo User Interface Library
 =======================================
 

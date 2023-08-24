@@ -1,5 +1,7 @@
 > :warning: This fork is intended for use in liferay-portal only. Our fork of YUI is deprecated and only critical patches will be applied case by case.
 
+> :warning: Use `npm install` followed by `npm run build` to build this project since we have overridden the original build from YUI3.
+
 YUI 3: The Yahoo User Interface Library
 =======================================
 

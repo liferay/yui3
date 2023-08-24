@@ -5,7 +5,8 @@
     "author": "Dav Glass <davglass@gmail.com>",
     "bugs": { "url" : "https://github.com/yui/yui3/issues" },
     "engines": {
-        "node" : ">=0.8.0"
+        "node": "8.15.0",
+        "npm": "6.4.1"
     },
     "directories": {
         "lib" : "."

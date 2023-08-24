@@ -1,1 +1,1 @@
-YUI.add("lang/calendar-base_hi-IN",function(e){e.Intl.add("calendar-base","hi-IN",{very_short_weekdays:["रवि ","सोम ","मंगल ","बुध ","गुरु ","शुक्र ","शनि "],first_weekday:0,weekends:[0,6]})},"@VERSION@");
+YUI.add("lang/calendar-base_hi-IN",function(e){e.Intl.add("calendar-base","hi-IN",{very_short_weekdays:["\u0930\u0935\u093f ","\u0938\u094b\u092e ","\u092e\u0902\u0917\u0932 ","\u092c\u0941\u0927 ","\u0917\u0941\u0930\u0941 ","\u0936\u0941\u0915\u094d\u0930 ","\u0936\u0928\u093f "],first_weekday:0,weekends:[0,6]})},"@VERSION@");

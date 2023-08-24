@@ -1,1 +1,1 @@
-YUI.add("lang/calendar-base_sr-RS",function(e){e.Intl.add("calendar-base","sr-RS",{very_short_weekdays:["Нед","Пон","Ут","Ср","Чет","Пет","Суб"],first_weekday:0,weekends:[0,6]})},"@VERSION@");
+YUI.add("lang/calendar-base_sr-RS",function(e){e.Intl.add("calendar-base","sr-RS",{very_short_weekdays:["\u041d\u0435\u0434","\u041f\u043e\u043d","\u0423\u0442","\u0421\u0440","\u0427\u0435\u0442","\u041f\u0435\u0442","\u0421\u0443\u0431"],first_weekday:0,weekends:[0,6]})},"@VERSION@");

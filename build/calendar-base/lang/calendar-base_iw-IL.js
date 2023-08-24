@@ -1,1 +1,1 @@
-YUI.add("lang/calendar-base_iw-IL",function(e){e.Intl.add("calendar-base","iw-IL",{very_short_weekdays:["א'","ב'","ג'","ד'","ה'","ו'","ש'"],first_weekday:0,weekends:[0,6]})},"@VERSION@");
+YUI.add("lang/calendar-base_iw-IL",function(e){e.Intl.add("calendar-base","iw-IL",{very_short_weekdays:["\u05d0'","\u05d1'","\u05d2'","\u05d3'","\u05d4'","\u05d5'","\u05e9'"],first_weekday:0,weekends:[0,6]})},"@VERSION@");

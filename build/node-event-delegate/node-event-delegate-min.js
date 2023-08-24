@@ -1,1 +1,1 @@
-YUI.add("node-event-delegate",function(n,e){n.Node.prototype.delegate=function(e){var t=n.Array(arguments,0,!0),a=n.Lang.isObject(e)&&!n.Lang.isArray(e)?1:2;return t.splice(a,0,this._node),n.delegate.apply(n,t)}},"@VERSION@",{requires:["node-base","event-delegate"]});
+YUI.add("node-event-delegate",function(e,t){e.Node.prototype.delegate=function(t){var n=e.Array(arguments,0,!0),r=e.Lang.isObject(t)&&!e.Lang.isArray(t)?1:2;return n.splice(r,0,this._node),e.delegate.apply(e,n)}},"@VERSION@",{requires:["node-base","event-delegate"]});

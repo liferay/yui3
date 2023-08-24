@@ -1,1 +1,1 @@
-YUI.add("lang/calendar-base_lo-LA",function(e){e.Intl.add("calendar-base","lo-LA",{very_short_weekdays:["ອາທິດ","ຈັນ","ອັງຄານ","ພຸດ","ພະຫັດ","ວັນສຸກ","ເສົາ"],first_weekday:0,weekends:[0,6]})},"@VERSION@");
+YUI.add("lang/calendar-base_lo-LA",function(e){e.Intl.add("calendar-base","lo-LA",{very_short_weekdays:["\u0ead\u0eb2\u0e97\u0eb4\u0e94","\u0e88\u0eb1\u0e99","\u0ead\u0eb1\u0e87\u0e84\u0eb2\u0e99","\u0e9e\u0eb8\u0e94","\u0e9e\u0eb0\u0eab\u0eb1\u0e94","\u0ea7\u0eb1\u0e99\u0eaa\u0eb8\u0e81","\u0ec0\u0eaa\u0ebb\u0eb2"],first_weekday:0,weekends:[0,6]})},"@VERSION@");

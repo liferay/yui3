@@ -1,1 +1,1 @@
-YUI.add("file",function(e,i){var l=e.config.win;l&&l.File&&l.FormData&&l.XMLHttpRequest?e.File=e.FileHTML5:e.File=e.FileFlash},"@VERSION@",{requires:["file-flash","file-html5"]});
+YUI.add("file",function(e,t){var n=e.config.win;n&&n.File&&n.FormData&&n.XMLHttpRequest?e.File=e.FileHTML5:e.File=e.FileFlash},"@VERSION@",{requires:["file-flash","file-html5"]});

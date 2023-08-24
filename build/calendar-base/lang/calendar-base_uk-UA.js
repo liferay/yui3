@@ -1,1 +1,1 @@
-YUI.add("lang/calendar-base_uk-UA",function(e){e.Intl.add("calendar-base","uk-UA",{very_short_weekdays:["Ндл","Пнд","Втр","Срд","Чтв","Птн","Сбт"],first_weekday:1,weekends:[0,6]})},"@VERSION@");
+YUI.add("lang/calendar-base_uk-UA",function(e){e.Intl.add("calendar-base","uk-UA",{very_short_weekdays:["\u041d\u0434\u043b","\u041f\u043d\u0434","\u0412\u0442\u0440","\u0421\u0440\u0434","\u0427\u0442\u0432","\u041f\u0442\u043d","\u0421\u0431\u0442"],first_weekday:1,weekends:[0,6]})},"@VERSION@");

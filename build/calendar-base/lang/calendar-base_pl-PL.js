@@ -1,1 +1,1 @@
-YUI.add("lang/calendar-base_pl-PL",function(e){e.Intl.add("calendar-base","pl-PL",{very_short_weekdays:["nie","pon","wto","śro","czw","pią","sob"],first_weekday:1,weekends:[0,6]})},"@VERSION@");
+YUI.add("lang/calendar-base_pl-PL",function(e){e.Intl.add("calendar-base","pl-PL",{very_short_weekdays:["nie","pon","wto","\u015bro","czw","pi\u0105","sob"],first_weekday:1,weekends:[0,6]})},"@VERSION@");

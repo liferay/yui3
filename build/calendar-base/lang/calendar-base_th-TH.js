@@ -1,1 +1,1 @@
-YUI.add("lang/calendar-base_th-TH",function(e){e.Intl.add("calendar-base","th-TH",{very_short_weekdays:["อา","จ","อ","พ","พฤ","ศ","ส"],first_weekday:0,weekends:[0,6]})},"@VERSION@");
+YUI.add("lang/calendar-base_th-TH",function(e){e.Intl.add("calendar-base","th-TH",{very_short_weekdays:["\u0e2d\u0e32","\u0e08","\u0e2d","\u0e1e","\u0e1e\u0e24","\u0e28","\u0e2a"],first_weekday:0,weekends:[0,6]})},"@VERSION@");

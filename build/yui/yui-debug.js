@@ -5362,6 +5362,10 @@ Transaction.prototype = {
         if (isScript) {
             node.setAttribute('src', req.url);
 
+            if (Liferay.CSP.nonce) {
+                node.setAttribute('nonce', Liferay.CSP.nonce);
+            }
+
             if (req.async) {
                 // Explicitly indicate that we want the browser to execute this
                 // script asynchronously. This is necessary for older browsers
@@ -12378,7 +12382,7 @@ Y.mix(YUI.Env[Y.version].modules, {
         ]
     }
 });
-YUI.Env[Y.version].md5 = '95eb05a1b097773b5af03e0680e7dda4';
+YUI.Env[Y.version].md5 = '4b2dc680eb7f08db806c63cb67a01005';
 
 
 }, '@VERSION@', {"requires": ["loader-base"]});

@@ -1,1 +1,1 @@
-YUI.add("base-pluginhost",function(u,l){var n=u.Base,s=u.Plugin.Host;u.mix(n,s,!1,null,1),n.plug=s.plug,n.unplug=s.unplug},"@VERSION@",{requires:["base-base","pluginhost"]});
+YUI.add("base-pluginhost",function(e,t){var n=e.Base,r=e.Plugin.Host;e.mix(n,r,!1,null,1),n.plug=r.plug,n.unplug=r.unplug},"@VERSION@",{requires:["base-base","pluginhost"]});

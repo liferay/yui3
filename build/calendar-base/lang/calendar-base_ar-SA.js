@@ -1,1 +1,1 @@
-YUI.add("lang/calendar-base_ar-SA",function(a){a.Intl.add("calendar-base","ar-SA",{very_short_weekdays:["أحد","إثنين","ثلاثاء","أربعاء","خميس","جمعة","سبت"],first_weekday:0,weekends:[0,6]})},"@VERSION@");
+YUI.add("lang/calendar-base_ar-SA",function(e){e.Intl.add("calendar-base","ar-SA",{very_short_weekdays:["\u0623\u062d\u062f","\u0625\u062b\u0646\u064a\u0646","\u062b\u0644\u0627\u062b\u0627\u0621","\u0623\u0631\u0628\u0639\u0627\u0621","\u062e\u0645\u064a\u0633","\u062c\u0645\u0639\u0629","\u0633\u0628\u062a"],first_weekday:0,weekends:[0,6]})},"@VERSION@");

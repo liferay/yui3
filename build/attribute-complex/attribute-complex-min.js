@@ -1,1 +1,1 @@
-YUI.add("attribute-complex",function(t,e){var r=t.Attribute;r.Complex=function(){},r.Complex.prototype={_normAttrVals:r.prototype._normAttrVals,_getAttrInitVal:r.prototype._getAttrInitVal},t.AttributeComplex=r.Complex},"@VERSION@",{requires:["attribute-base"]});
+YUI.add("attribute-complex",function(e,t){var n=e.Attribute;n.Complex=function(){},n.Complex.prototype={_normAttrVals:n.prototype._normAttrVals,_getAttrInitVal:n.prototype._getAttrInitVal},e.AttributeComplex=n.Complex},"@VERSION@",{requires:["attribute-base"]});

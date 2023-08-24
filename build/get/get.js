@@ -1067,6 +1067,10 @@ Transaction.prototype = {
         if (isScript) {
             node.setAttribute('src', req.url);
 
+            if (Liferay.CSP.nonce) {
+                node.setAttribute('nonce', Liferay.CSP.nonce);
+            }
+
             if (req.async) {
                 // Explicitly indicate that we want the browser to execute this
                 // script asynchronously. This is necessary for older browsers

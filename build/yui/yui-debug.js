@@ -5362,7 +5362,7 @@ Transaction.prototype = {
         if (isScript) {
             node.setAttribute('src', req.url);
 
-            if (Liferay.CSP.nonce) {
+            if (Liferay.CSP && Liferay.CSP.nonce) {
                 node.setAttribute('nonce', Liferay.CSP.nonce);
             }
 

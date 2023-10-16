@@ -135,7 +135,6 @@ List = Y.Base.create('autocompleteList', Y.Widget, [
 
         inputNode.addClass(this.getClassName('input')).setAttrs({
             'aria-autocomplete': LIST,
-            'aria-expanded'    : false,
             'aria-owns'        : listNode.get('id')
         });
 

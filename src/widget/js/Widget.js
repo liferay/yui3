@@ -1219,7 +1219,7 @@ Y.extend(Widget, Y.Base, {
      * @param {EventFacade} e
      */
     _setAttrUI : function(e) {
-        if (e.target === this) {
+        if (e.target === this && (e.src !== undefined  || e.attrName !== 'focused')) {
             this[_UISET + _toInitialCap(e.attrName)](e.newVal, e.src);
         }
     },

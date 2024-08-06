@@ -487,7 +487,7 @@ proto = {
         //Register the CSS stamp element
         if (doc && !doc.getElementById(CSS_STAMP_EL)) {
             el = doc.createElement('div');
-            el.innerHTML = '<div id="' + CSS_STAMP_EL + '" style="position: absolute !important; visibility: hidden !important"></div>';
+            el.innerHTML = '<div id="' + CSS_STAMP_EL + '"></div>';
             YUI.Env.cssStampEl = el.firstChild;
             if (doc.body) {
                 doc.body.appendChild(YUI.Env.cssStampEl);

@@ -5346,13 +5346,14 @@ Transaction.prototype = {
             self._progress(null, req);
         }
 
+        // Deal with CSP nonce
+        if (Liferay.CSP && Liferay.CSP.nonce && ['link', 'script', 'style'].includes(nodeType)) {
+            node.setAttribute('nonce', Liferay.CSP.nonce);
+        }
+
         // Deal with script asynchronicity.
         if (isScript) {
             node.setAttribute('src', req.url);
-
-            if (Liferay.CSP && Liferay.CSP.nonce) {
-                node.setAttribute('nonce', Liferay.CSP.nonce);
-            }
 
             if (req.async) {
                 // Explicitly indicate that we want the browser to execute this

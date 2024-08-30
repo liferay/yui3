@@ -1527,7 +1527,7 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
         * @static
         */
     CALDAY_TEMPLATE: '<td class="{calendar_col_class} {calendar_day_class} {calendar_col_visibility_class}" id="{calendar_day_id}" ' +
-                        'role="gridcell" tabindex="-1">' +
+                        'role="button" tabindex="-1">' +
                         '{day_content}' +
                     '</td>',
 

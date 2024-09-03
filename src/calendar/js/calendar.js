@@ -103,6 +103,22 @@ Y.Calendar = Y.extend(Calendar, Y.CalendarBase, {
     },
 
     /**
+     * Prevent button focus on tab navigation, enable on arrow navigation
+     * @method _setTabIndex
+     * @param node {Node} The parent node
+     * @param tabIndexValue {Number} Corresponding to the value to be updated in the tabindex
+     * @protected
+     */
+    _setTabIndex : function (node, tabIndexValue) {
+        var buttonChild = node.one('button');
+        buttonChild.setAttribute('tabindex', tabIndexValue);
+
+        if(tabIndexValue === 0) {
+            buttonChild.focus();
+        }
+    },
+
+    /**
      * Highlights a specific date node with keyboard highlight class
      * @method _highlightDateNode
      * @param oDate {Date} Date corresponding the node to be highlighted
@@ -111,7 +127,7 @@ Y.Calendar = Y.extend(Calendar, Y.CalendarBase, {
     _highlightDateNode : function (oDate) {
         this._unhighlightCurrentDateNode();
         var newNode = this._dateToNode(oDate);
-        newNode.focus();
+        this._setTabIndex(newNode, 0);
         newNode.addClass(CAL_DAY_HILITED);
     },
 
@@ -124,6 +140,10 @@ Y.Calendar = Y.extend(Calendar, Y.CalendarBase, {
         var allHilitedNodes = this.get("contentBox").all("." + CAL_DAY_HILITED);
         if (allHilitedNodes) {
             allHilitedNodes.removeClass(CAL_DAY_HILITED);
+
+            for (var i = 0; i < allHilitedNodes.length; i++) {
+                this._setTabIndex(allHilitedNodes[i], -1);
+            }
         }
     },
 

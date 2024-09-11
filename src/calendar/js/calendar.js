@@ -141,9 +141,7 @@ Y.Calendar = Y.extend(Calendar, Y.CalendarBase, {
         if (allHilitedNodes) {
             allHilitedNodes.removeClass(CAL_DAY_HILITED);
 
-            for (var i = 0; i < allHilitedNodes.length; i++) {
-                this._setTabIndex(allHilitedNodes[i], -1);
-            }
+            this._setTabIndex(allHilitedNodes, -1);
         }
     },
 

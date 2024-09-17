@@ -176,7 +176,7 @@ Y.Calendar = Y.extend(Calendar, Y.CalendarBase, {
      * @protected
      */
     _focusCalendarCell : function (ev) {
-        this._highlightedDateNode = ev.target;
+        this._highlightedDateNode = ev.currentTarget;
         ev.stopPropagation();
     },
 

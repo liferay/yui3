@@ -113,10 +113,13 @@ Y.Calendar = Y.extend(Calendar, Y.CalendarBase, {
      */
     _setTabIndex : function (node, tabIndexValue) {
         var buttonChild = node.one('button');
-        buttonChild.setAttribute('tabindex', tabIndexValue);
 
-        if(tabIndexValue === 0) {
-            buttonChild.focus();
+        if(buttonChild) {
+            buttonChild.setAttribute('tabindex', tabIndexValue);
+
+            if(tabIndexValue === 0) {
+                buttonChild.focus();
+            }
         }
     },
 
@@ -175,7 +178,7 @@ Y.Calendar = Y.extend(Calendar, Y.CalendarBase, {
      * @protected
      */
     _focusCalendarCell : function (ev) {
-        this._highlightedDateNode = ev.target;
+        this._highlightedDateNode = ev.currentTarget;
         ev.stopPropagation();
     },
 

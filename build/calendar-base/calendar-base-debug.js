@@ -850,7 +850,7 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
             this._paneProperties[pane_id].daysInPrevMonth = daysInPrevMonth;
 
             for (cell = 5; cell >= 0; cell--) {
-                pane.one("#" + pane_id + "_" + cell + "_" + (cell-5)).set('text', daysInPrevMonth--);
+                pane.one("#" + pane_id + "_" + cell + "_" + (cell-5)).one('button').set('text', daysInPrevMonth--);
             }
         }
     },
@@ -870,7 +870,7 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
         this._paneProperties[pane_id].daysInPrevMonth = 0;
 
         for (cell = 5; cell >= 0; cell--) {
-            pane.one("#" + pane_id + "_" + cell + "_" + (cell-5)).setContent("&nbsp;");
+            pane.one("#" + pane_id + "_" + cell + "_" + (cell-5)).one('button').setContent("&nbsp;");
         }
     },
 
@@ -907,7 +907,10 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
             startingCell;
 
         for (cell = daysInMonth - 22; cell < cutoffCol + 7; cell++) {
-            pane.one("#" + pane_id + "_" + cell + "_" + (cell+23)).set("text", dayCounter++).addClass(CAL_NEXTMONTH_DAY);
+            var currCell = pane.one("#" + pane_id + "_" + cell + "_" + (cell+23));
+
+            currCell.addClass(CAL_NEXTMONTH_DAY);
+            currCell.one('button').set("text", dayCounter++);
         }
 
         startingCell = cutoffCol;
@@ -919,7 +922,10 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
         }
 
         for (cell = startingCell ; cell < cutoffCol + 7; cell++) {
-            pane.one("#" + pane_id + "_" + cell + "_" + (cell+30)).set("text", dayCounter++).addClass(CAL_NEXTMONTH_DAY);
+            var currCell = pane.one("#" + pane_id + "_" + cell + "_" + (cell+30));
+
+            currCell.addClass(CAL_NEXTMONTH_DAY);
+            currCell.one('button').set("text", dayCounter++)
         }
     },
 
@@ -939,7 +945,10 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
                 startingCell;
 
             for (cell = daysInMonth - 22; cell <= 12; cell++) {
-                pane.one("#" + pane_id + "_" + cell + "_" + (cell+23)).setContent("&nbsp;").addClass(CAL_NEXTMONTH_DAY);
+                var currCell = pane.one("#" + pane_id + "_" + cell + "_" + (cell+23));
+
+                currCell.addClass(CAL_NEXTMONTH_DAY);
+                currCell.one('button').setContent("&nbsp;")
             }
 
             startingCell = 0;
@@ -951,7 +960,10 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
             }
 
             for (cell = startingCell ; cell <= 12; cell++) {
-                pane.one("#" + pane_id + "_" + cell + "_" + (cell+30)).setContent("&nbsp;").addClass(CAL_NEXTMONTH_DAY);
+                var currCell = pane.one("#" + pane_id + "_" + cell + "_" + (cell+30));
+
+                currCell.addClass(CAL_NEXTMONTH_DAY)
+                currCell.one('button').setContent("&nbsp;");
             }
     },
 
@@ -1205,51 +1217,56 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
                 switch(column) {
                     case 0:
                         curCell = pane.one("#" + paneId + "_0_30");
+                        curCellButton = curCell.one('button');
                         if (daysInMonth >= 30) {
-                            curCell.set("text", "30");
+                            curCellButton.set("text", "30");
                             curCell.removeClass(CAL_NEXTMONTH_DAY).addClass(CAL_DAY);
                         } else {
-                            curCell.setContent("&nbsp;");
+                            curCellButton.setContent("&nbsp;");
                             curCell.removeClass(CAL_DAY).addClass(CAL_NEXTMONTH_DAY);
                         }
                         break;
                     case 1:
                         curCell = pane.one("#" + paneId + "_1_31");
+                        curCellButton = curCell.one('button');
                         if (daysInMonth >= 31) {
-                            curCell.set("text", "31");
+                            curCellButton.set("text", "31");
                             curCell.removeClass(CAL_NEXTMONTH_DAY).addClass(CAL_DAY);
                         } else {
-                            curCell.setContent("&nbsp;");
+                            curCellButton.setContent("&nbsp;");
                             curCell.removeClass(CAL_DAY).addClass(CAL_NEXTMONTH_DAY);
                         }
                         break;
                     case 6:
                         curCell = pane.one("#" + paneId + "_6_29");
+                        curCellButton = curCell.one('button');
                         if (daysInMonth >= 29) {
-                            curCell.set("text", "29");
+                            curCellButton.set("text", "29");
                             curCell.removeClass(CAL_NEXTMONTH_DAY).addClass(CAL_DAY);
                         } else {
-                            curCell.setContent("&nbsp;");
+                            curCellButton.setContent("&nbsp;");
                             curCell.removeClass(CAL_DAY).addClass(CAL_NEXTMONTH_DAY);
                         }
                         break;
                     case 7:
                         curCell = pane.one("#" + paneId + "_7_30");
+                        curCellButton = curCell.one('button');
                         if (daysInMonth >= 30) {
-                            curCell.set("text", "30");
+                            curCellButton.set("text", "30");
                             curCell.removeClass(CAL_NEXTMONTH_DAY).addClass(CAL_DAY);
                         } else {
-                            curCell.setContent("&nbsp;");
+                            curCellButton.setContent("&nbsp;");
                             curCell.removeClass(CAL_DAY).addClass(CAL_NEXTMONTH_DAY);
                         }
                         break;
                     case 8:
                         curCell = pane.one("#" + paneId + "_8_31");
+                        curCellButton = curCell.one('button');
                         if (daysInMonth >= 31) {
-                            curCell.set("text", "31");
+                            curCellButton.set("text", "31");
                             curCell.removeClass(CAL_NEXTMONTH_DAY).addClass(CAL_DAY);
                         } else {
-                            curCell.setContent("&nbsp;");
+                            curCellButton.setContent("&nbsp;");
                             curCell.removeClass(CAL_DAY).addClass(CAL_NEXTMONTH_DAY);
                         }
                         break;

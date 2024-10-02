@@ -167,7 +167,7 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
         this._renderSelectedDates();
 
         this.get("boundingBox").setAttribute("aria-labelledby", this._calendarId + "_header");
-
+        this.get("boundingBox").setAttribute("role", "dialog");
     },
 
     /**

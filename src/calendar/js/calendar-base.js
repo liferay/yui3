@@ -1498,7 +1498,7 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
         * @static
         */
     HEADER_TEMPLATE: '<div class="yui3-g {calendar_hd_class}">' +
-                        '<div class="yui3-u {calendar_hd_label_class}" id="{calendar_id}_header">' +
+                        '<div aria-live="polite" class="yui3-u {calendar_hd_label_class}" id="{calendar_id}_header" role="paragraph">' +
                             '{calheader}' +
                         '</div>' +
                     '</div>',

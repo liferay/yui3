@@ -564,7 +564,8 @@ Y.mix(YUI.Env[Y.version].modules, {
             "en",
             "es",
             "es-AR",
-            "eu-ES"
+            "eu-ES",
+            "pt-BR"
         ],
         "requires": [
             "plugin",

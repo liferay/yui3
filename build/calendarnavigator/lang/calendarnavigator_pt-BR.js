@@ -1,0 +1,1 @@
+YUI.add("lang/calendarnavigator_pt-BR",function(e){e.Intl.add("calendarnavigator","pt-BR",{go_to_previous_month:"Ir para o m\u00eas anterior",go_to_next_month:"Ir para o pr\u00f3ximo m\u00eas"})},"@VERSION@");

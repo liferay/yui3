@@ -566,7 +566,8 @@ Y.mix(YUI.Env[Y.version].modules, {
             "en",
             "es",
             "es-AR",
-            "eu-ES"
+            "eu-ES",
+            "pt-BR"
         ],
         "requires": [
             "plugin",
@@ -3033,7 +3034,7 @@ Y.mix(YUI.Env[Y.version].modules, {
         ]
     }
 });
-YUI.Env[Y.version].md5 = '4b2dc680eb7f08db806c63cb67a01005';
+YUI.Env[Y.version].md5 = 'd406172e7b7f8452aad06ff431aefabc';
 
 
 }, '@VERSION@', {"requires": ["loader-base"]});

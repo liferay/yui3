@@ -532,7 +532,8 @@
             "en",
             "es",
             "es-AR",
-            "eu-ES"
+            "eu-ES",
+            "pt-BR"
         ],
         "requires": [
             "plugin",

@@ -318,7 +318,8 @@ Y.namespace("Plugin").CalendarNavigator = CalendarNavigator;
         "en",
         "es",
         "es-AR",
-        "eu-ES"
+        "eu-ES",
+        "pt-BR"
     ],
     "requires": [
         "plugin",

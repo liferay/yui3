@@ -338,6 +338,7 @@ Y.DataType.Date = Y.Date;
         "es-US",
         "es-UY",
         "es-VE",
+        "eu-ES",
         "fi",
         "fi-FI",
         "fr",

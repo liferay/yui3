@@ -1,0 +1,11 @@
+{
+"a":["ig","al","ar","az","og","ol","lr"]
+,"A":["igandea","astelehena","asteartea","asteazkena","osteguna","ostirala","larunbata"]
+,"b":["urt","ots","mar","api","mai","eka","uzt","abu","ira","urr","aza","abe"]
+,"B":["urtarrila","otsaila","martxoa","apirila","maiatza","ekaina","uztaila","abuztua","iraila","urria","azaroa","abendua"]
+,"c":"%a %d %b %Y %k:%M:%S %Z"
+,"p":["A.M.","P.M."]
+,"P":["a.m.","p.m."]
+,"x":"%Y/%m/%d"
+,"X":"%k:%M:%S"
+}

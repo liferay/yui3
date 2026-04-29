@@ -849,6 +849,7 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
 
             for (cell = 5; cell >= 0; cell--) {
                 pane.one("#" + pane_id + "_" + cell + "_" + (cell-5)).one('button').set('text', daysInPrevMonth--);
+                pane.one("#" + pane_id + "_" + cell + "_" + (cell-5)).one('button').removeAttribute("aria-hidden");
             }
         }
     },
@@ -869,6 +870,7 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
 
         for (cell = 5; cell >= 0; cell--) {
             pane.one("#" + pane_id + "_" + cell + "_" + (cell-5)).one('button').setContent("&nbsp;");
+            pane.one("#" + pane_id + "_" + cell + "_" + (cell-5)).one('button').setAttribute("aria-hidden", "true");
         }
     },
 
@@ -909,6 +911,7 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
 
             currCell.addClass(CAL_NEXTMONTH_DAY);
             currCell.one('button').set("text", dayCounter++);
+            currCell.one('button').removeAttribute("aria-hidden");
         }
 
         startingCell = cutoffCol;
@@ -924,6 +927,7 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
 
             currCell.addClass(CAL_NEXTMONTH_DAY);
             currCell.one('button').set("text", dayCounter++)
+            currCell.one('button').removeAttribute("aria-hidden");
         }
     },
 
@@ -947,6 +951,7 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
 
                 currCell.addClass(CAL_NEXTMONTH_DAY);
                 currCell.one('button').setContent("&nbsp;")
+                currCell.one('button').setAttribute("aria-hidden", "true");
             }
 
             startingCell = 0;
@@ -962,6 +967,7 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
 
                 currCell.addClass(CAL_NEXTMONTH_DAY)
                 currCell.one('button').setContent("&nbsp;");
+                currCell.one('button').setAttribute("aria-hidden", "true");
             }
     },
 
@@ -1132,8 +1138,11 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
                 }
 
                 // Cut off dates that fall before the first and after the last date of the month
+                var aria_hidden_attr = '';
+
                 if (date < 1 || date > daysInMonth) {
                     date = "&nbsp;";
+                    aria_hidden_attr = 'aria-hidden="true"';
                 }
 
                 // Decide on whether a column in the masked table is visible or not based on the value of the cutoff column.
@@ -1141,6 +1150,7 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
 
                 // Substitute the values into the partial calendar day template and add it to the current row HTML string
                 row_array[row] += substitute (CalendarBase.CALDAY_TEMPLATE, {
+                    aria_hidden_attr: aria_hidden_attr,
                     day_content: date,
                     calendar_col_class: "calendar_col" + column,
                     calendar_col_visibility_class: column_visibility,
@@ -1218,9 +1228,11 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
                         curCellButton = curCell.one('button');
                         if (daysInMonth >= 30) {
                             curCellButton.set("text", "30");
+                            curCellButton.removeAttribute("aria-hidden");
                             curCell.removeClass(CAL_NEXTMONTH_DAY).addClass(CAL_DAY);
                         } else {
                             curCellButton.setContent("&nbsp;");
+                            curCellButton.setAttribute("aria-hidden", "true");
                             curCell.removeClass(CAL_DAY).addClass(CAL_NEXTMONTH_DAY);
                         }
                         break;
@@ -1229,9 +1241,11 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
                         curCellButton = curCell.one('button');
                         if (daysInMonth >= 31) {
                             curCellButton.set("text", "31");
+                            curCellButton.removeAttribute("aria-hidden");
                             curCell.removeClass(CAL_NEXTMONTH_DAY).addClass(CAL_DAY);
                         } else {
                             curCellButton.setContent("&nbsp;");
+                            curCellButton.setAttribute("aria-hidden", "true");
                             curCell.removeClass(CAL_DAY).addClass(CAL_NEXTMONTH_DAY);
                         }
                         break;
@@ -1240,9 +1254,11 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
                         curCellButton = curCell.one('button');
                         if (daysInMonth >= 29) {
                             curCellButton.set("text", "29");
+                            curCellButton.removeAttribute("aria-hidden");
                             curCell.removeClass(CAL_NEXTMONTH_DAY).addClass(CAL_DAY);
                         } else {
                             curCellButton.setContent("&nbsp;");
+                            curCellButton.setAttribute("aria-hidden", "true");
                             curCell.removeClass(CAL_DAY).addClass(CAL_NEXTMONTH_DAY);
                         }
                         break;
@@ -1251,9 +1267,11 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
                         curCellButton = curCell.one('button');
                         if (daysInMonth >= 30) {
                             curCellButton.set("text", "30");
+                            curCellButton.removeAttribute("aria-hidden");
                             curCell.removeClass(CAL_NEXTMONTH_DAY).addClass(CAL_DAY);
                         } else {
                             curCellButton.setContent("&nbsp;");
+                            curCellButton.setAttribute("aria-hidden", "true");
                             curCell.removeClass(CAL_DAY).addClass(CAL_NEXTMONTH_DAY);
                         }
                         break;
@@ -1262,9 +1280,11 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
                         curCellButton = curCell.one('button');
                         if (daysInMonth >= 31) {
                             curCellButton.set("text", "31");
+                            curCellButton.removeAttribute("aria-hidden");
                             curCell.removeClass(CAL_NEXTMONTH_DAY).addClass(CAL_DAY);
                         } else {
                             curCellButton.setContent("&nbsp;");
+                            curCellButton.setAttribute("aria-hidden", "true");
                             curCell.removeClass(CAL_DAY).addClass(CAL_NEXTMONTH_DAY);
                         }
                         break;
@@ -1543,7 +1563,7 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
         */
     CALDAY_TEMPLATE: '<td class="{calendar_col_class} {calendar_day_class} {calendar_col_visibility_class}" id="{calendar_day_id}" ' +
                         'role="gridcell">' +
-                            '<button tabindex="-1" type="button" style="all: unset">' +
+                            '<button {aria_hidden_attr} tabindex="-1" type="button" style="all: unset">' +
                                 '{day_content}' +
                             '</button>' +
                     '</td>',

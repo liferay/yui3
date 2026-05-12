@@ -848,8 +848,10 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
             this._paneProperties[pane_id].daysInPrevMonth = daysInPrevMonth;
 
             for (cell = 5; cell >= 0; cell--) {
-                pane.one("#" + pane_id + "_" + cell + "_" + (cell-5)).one('button').set('text', daysInPrevMonth--);
-                pane.one("#" + pane_id + "_" + cell + "_" + (cell-5)).one('button').removeAttribute("aria-hidden");
+                var paneButton = pane.one("#" + pane_id + "_" + cell + "_" + (cell-5)).one('button');
+
+                paneButton.set('text', daysInPrevMonth--);
+                paneButton.removeAttribute("aria-hidden");
             }
         }
     },
@@ -869,8 +871,10 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
         this._paneProperties[pane_id].daysInPrevMonth = 0;
 
         for (cell = 5; cell >= 0; cell--) {
-            pane.one("#" + pane_id + "_" + cell + "_" + (cell-5)).one('button').setContent("&nbsp;");
-            pane.one("#" + pane_id + "_" + cell + "_" + (cell-5)).one('button').setAttribute("aria-hidden", "true");
+            var paneButton = pane.one("#" + pane_id + "_" + cell + "_" + (cell-5)).one('button');
+
+            paneButton.setContent("&nbsp;");
+            paneButton.setAttribute("aria-hidden", "true");
         }
     },
 
@@ -910,8 +914,11 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
             var currCell = pane.one("#" + pane_id + "_" + cell + "_" + (cell+23));
 
             currCell.addClass(CAL_NEXTMONTH_DAY);
-            currCell.one('button').set("text", dayCounter++);
-            currCell.one('button').removeAttribute("aria-hidden");
+
+            var currCellButton = currCell.one('button');
+
+            currCellButton.set("text", dayCounter++);
+            currCellButton.removeAttribute("aria-hidden");
         }
 
         startingCell = cutoffCol;
@@ -926,8 +933,11 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
             var currCell = pane.one("#" + pane_id + "_" + cell + "_" + (cell+30));
 
             currCell.addClass(CAL_NEXTMONTH_DAY);
-            currCell.one('button').set("text", dayCounter++)
-            currCell.one('button').removeAttribute("aria-hidden");
+
+            var currCellButton = currCell.one('button');
+
+            currCellButton.set("text", dayCounter++)
+            currCellButton.removeAttribute("aria-hidden");
         }
     },
 
@@ -950,8 +960,11 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
                 var currCell = pane.one("#" + pane_id + "_" + cell + "_" + (cell+23));
 
                 currCell.addClass(CAL_NEXTMONTH_DAY);
-                currCell.one('button').setContent("&nbsp;")
-                currCell.one('button').setAttribute("aria-hidden", "true");
+
+                var currCellButton = currCell.one('button');
+
+                currCellButton.setContent("&nbsp;")
+                currCellButton.setAttribute("aria-hidden", "true");
             }
 
             startingCell = 0;
@@ -966,8 +979,11 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
                 var currCell = pane.one("#" + pane_id + "_" + cell + "_" + (cell+30));
 
                 currCell.addClass(CAL_NEXTMONTH_DAY)
-                currCell.one('button').setContent("&nbsp;");
-                currCell.one('button').setAttribute("aria-hidden", "true");
+
+                var currCellButton = currCell.one('button');
+
+                currCellButton.setContent("&nbsp;");
+                currCellButton.setAttribute("aria-hidden", "true");
             }
     },
 

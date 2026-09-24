@@ -82,6 +82,24 @@ YUI.add('querystring-tests', function(Y) {
             var f = Y.QueryString.parse("a:b;q:x%3Ay%3By%3Az", ";", ":");
             f.q = Y.QueryString.parse(f.q, ";", ":");
             Y.Assert.areSame(J(f), J({ a : "b", q : { x : "y", y : "z" } }));
+        },
+        testParsePrototypePollution : function () {
+            Y.QueryString.parse("constructor[prototype][polluted]=x");
+            Y.QueryString.parse("constructor[prototype][headerJavaScriptPaths][]=x");
+            Y.QueryString.parse("__proto__[polluted]=x");
+            Y.QueryString.parse("__proto__=x");
+
+            var probe = {};
+            Y.Assert.isUndefined(probe.polluted);
+            Y.Assert.isUndefined(probe.headerJavaScriptPaths);
+            Y.Assert.areSame(Object.prototype, Object.getPrototypeOf(probe));
+        },
+        testParseUnsafeKeysIgnored : function () {
+            Y.Assert.areSame(J({}), J(Y.QueryString.parse("constructor=x")));
+            Y.Assert.areSame(J({}), J(Y.QueryString.parse("prototype=x")));
+            Y.Assert.areSame(
+                J({ constructors : "ok" }),
+                J(Y.QueryString.parse("constructors=ok")));
         }
     }));
     suite.add(new Y.Test.Case({

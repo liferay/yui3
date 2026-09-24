@@ -36,6 +36,15 @@ YUI.add('querystring-parse', function (Y, NAME) {
  */
 var QueryString = Y.namespace("QueryString"),
 
+// Reject keys that would let a crafted query string reach Object.prototype
+// (prototype pollution), for example "constructor[prototype][x]=y" or
+// "__proto__[x]=y".
+isUnsafeKey = function (key) {
+    return (key === "__proto__") ||
+        (key === "constructor") ||
+        (key === "prototype");
+},
+
 // Parse a key=val string.
 // These can get pretty hairy
 // example flow:
@@ -72,7 +81,7 @@ pieceParser = function (eq) {
         sliced = /(.*)\[([^\]]*)\]$/.exec(key);
         if (!sliced) {
             ret = {};
-            if (key) {
+            if (key && !isUnsafeKey(key)) {
                 ret[key] = val;
             }
             return ret;
@@ -88,7 +97,9 @@ pieceParser = function (eq) {
 
         // obj: key[subkey]=val
         ret = {};
-        ret[tail] = val;
+        if (!isUnsafeKey(tail)) {
+            ret[tail] = val;
+        }
         return parsePiece(head, ret);
     };
 },
@@ -111,7 +122,7 @@ mergeParams = function(params, addition) {
 // out the simple cases, and need to do the for-in business.
 mergeObjects = function(params, addition) {
     for (var i in addition) {
-        if (i && addition.hasOwnProperty(i)) {
+        if (i && !isUnsafeKey(i) && addition.hasOwnProperty(i)) {
             params[i] = mergeParams(params[i], addition[i]);
         }
     }
